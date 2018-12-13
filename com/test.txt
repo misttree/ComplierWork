@@ -1,0 +1,24 @@
+/*
+  test code version 2.0
+*/
+struct name {
+    int temp = 0;
+    int attribute = 5; 
+}
+void main() {
+    // [test] declaration list.
+    int a = 12; int i = 0, _b;
+    // [test] io statement.
+    scanf(_b);
+    // [test] while statement and if else ambiguty.
+    while (i < 2) {
+        if (_b < 0)
+            { int c=1;}
+        if (_b > 0)
+            a = a + _b;
+        else {}
+        i = i + 1;
+    }
+    // [test] priority of operations.
+    a = a + 2 - 1*_b;
+}
