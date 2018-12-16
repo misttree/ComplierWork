@@ -5,7 +5,7 @@ scanner:scanner.cpp
 	g++ -o scanner.cpp
 
 scanner.cpp: scanner.l
-	flex -oscanner.cpp scanner.l 
+	flex -o scanner.cpp scanner.l 
 
 parser.cpp: parser.y
 	bison -vdty parser.y -oparser.cpp
