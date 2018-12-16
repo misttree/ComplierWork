@@ -688,6 +688,7 @@ ETC .
 }
 
 {STRUCT} {
+	cout<<"asdasdsad"<<endl;
 	if(symboltable->statementNumber == 0)
 		symboltable->statementNumber = 3;
 	//cout << string(yytext) << endl;

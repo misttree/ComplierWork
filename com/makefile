@@ -2,13 +2,13 @@ parser: scanner.cpp parser.cpp Node.h symbol.h
 	g++ scanner.cpp parser.cpp Node.cpp symbol.cpp -o parser 
 
 scanner:scanner.cpp
-	gcc -o scanner.cpp
+	g++ -o scanner.cpp
 
 scanner.cpp: scanner.l
-	flex -o scanner.cpp scanner.l 
+	flex -oscanner.cpp scanner.l 
 
 parser.cpp: parser.y
-	bison -vdty parser.y -o parser.cpp
+	bison -vdty parser.y -oparser.cpp
 
 clean:
 	rm  parser.cpp parser parser.hpp parser.output scanner.cpp
