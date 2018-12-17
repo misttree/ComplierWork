@@ -810,6 +810,7 @@ ETC .
 }
 
 {ID} {
+	symbolNode * pnew;
 	switch(symboltable->statementNumber)
 	{
 		case 0:
@@ -829,7 +830,7 @@ ETC .
 		}
 		case 1:
 		{
-			symbolNode * pnew = new symbolNode(yytext);
+			pnew = new symbolNode(yytext);
 			symboltable->insertNode(pnew);
 			symboltable->statementNumber = 2;
 			break;
@@ -857,7 +858,7 @@ ETC .
 	}
 
 	//cout << string(yytext) << endl;
-	yylval=new Node(string(yytext));
+	yylval=new Node(string(yytext), pnew);
 	return ID;
 }
 
