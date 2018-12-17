@@ -58,6 +58,7 @@ extern symbolTable *symboltable;
 %type <node> return_stmt expression logical_expression assignment_expression simple_expression unary_expression postfix_expression
 %type <node> relop additive_expression term factor call_func args number id array_size self_assign switch_stmt case_list
 %type <node> list_struct mininum array_main array_special init_array_or_point_assignment content_of_list_struct
+%type <node> struct_specifier struct_declaration_list struct_id struct_name_specifier
 
 %locations
 
@@ -83,7 +84,8 @@ external_declaration:
 
 var_declaration: 
 	  declaration_specifiers init_declarator_list SEMI { V v;v.push_back($1);v.push_back($2);$$=newnode(mycount++, "var_declaration", "var_declaration", v); }
-    ;
+    | struct_specifier SEMI {$$=newnode(mycount++, "var_declaration", "var_declaration", $1);}
+	;
 
 init_declarator_list: 
 	  var { $$=newnode(mycount++, "init_declarator_list", "init_declarator_list", $1); }
@@ -127,6 +129,25 @@ pointer:
 	  STAR id { $$=newnode(mycount++, "pointer", "pointer", $2); }
 	| STAR pointer { $$=newnode(mycount++, "pointer", "pointer", $2); }
 	;
+
+struct_specifier:
+      STRUCT id LC struct_declaration_list RC {V v;v.push_back($2);v.push_back($4);$$=newnode(mycount++,"struct_specifier","struct_specifier",v);}
+    | STRUCT id {$$=newnode(mycount++,"struct_specifier","struct_specifier",$2);}
+    ;
+
+struct_declaration_list:
+      declaration_specifiers init_declarator_list SEMI { V v;v.push_back($1);v.push_back($2);$$=newnode(mycount++, "struct_declaration_list", "struct_declaration_list", v); }
+    | declaration_specifiers init_declarator_list SEMI struct_declaration_list { $4->addChild($1);$4->addChild($2);$$=$4; }
+    ;
+
+struct_name_specifier:
+      id id { V v;v.push_back($1);v.push_back($2);$$=newnode(mycount++,"struct_name_specifier","struct_name_specifier",v); }
+	| id id ASSIGNOP id { V v;v.push_back($1);v.push_back($2);v.push_back($4);$$=newnode(mycount++,"struct_name_specifier_and_assignop","struct_name_specifier_and_assignop",v); }
+    ;
+
+struct_id:
+      id DOT id { V v;v.push_back($1);v.push_back($3);$$=newnode(mycount++,"struct_id","struct_id",v); }
+    ;
 
 //definetion of address
 paddress:
@@ -229,6 +250,7 @@ statement:
 	| BREAK SEMI {$$=newnode(mycount++, "BREAK", "break", $1);}
 	| CONTINUE SEMI {$$=newnode(mycount++, "CONTINUE", "continue", $1);}
     | return_stmt {$$=$1;}
+	| struct_name_specifier SEMI {$$=$1;}
     ;
 
 if_stmt: 
@@ -240,7 +262,7 @@ if_stmt:
     ;
 
 switch_stmt:
- 	SWITCH LP id RP LC case_list RC {V v;v.push_back($3);v.push_back($6);$$ = newnode(mycount++, "switch_stmt", "switch_stmt", v);} 
+ 	  SWITCH LP id RP LC case_list RC {V v;v.push_back($3);v.push_back($6);$$ = newnode(mycount++, "switch_stmt", "switch_stmt", v);} 
  	; 
 
 case_list:
@@ -359,7 +381,7 @@ factor:
 	| array{$$ = newnode(mycount++, "factor", "factor", $1); }
 	| paddress { $$ = newnode(mycount++, "factor", "factor", $1); }
 	| pointer { $$ = newnode(mycount++, "factor", "factor", $1); }
-    ;
+	;
 
 call_func: 
 	  id LP RP {$$ = newnode(mycount++, "call_func", "call_func", $1);}
@@ -380,6 +402,7 @@ number:
 
 id:
 	  ID {$$=newnode(mycount++, "ID", $1);}
+	| struct_id {$$=$1;}
 	;
 
 %%

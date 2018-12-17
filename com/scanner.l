@@ -355,10 +355,10 @@ ETC .
 	{
 		symboltable->up();
 	}
-	else
-	{
-		// cout<<"System Error: Unreachable part"<<endl;
-	}
+	// else
+	// {
+	//  cout<<"System Error: Unreachable part"<<endl;
+	// }
 
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));
@@ -402,9 +402,9 @@ ETC .
 		symboltable->insertNode(pnew);
 		symboltable->down();
 	}
-	else{
-		// cout<<"System Error: Unreachable state"<<endl;
-	}
+	// else{
+	// 	 cout<<"System Error: Unreachable state"<<endl;
+	// }
 	
 
 	// cout << string(yytext) << endl;
@@ -422,7 +422,7 @@ ETC .
 
 	if(symboltable->statementNumber == 0)
 		symboltable->statementNumber = 1;
-	else
+	// else
 		 // cout<<"System Error: Unreachable state"<<endl;
 
 	//cout << string(yytext) << endl;
@@ -468,10 +468,10 @@ ETC .
 		symboltable->insertNode(pnew);
 		symboltable->down();
 	}
-	else
-	{
-		// cout<<"System Error: Unreachable part"<<endl;
-	}
+	// else
+	// {
+	// 	 cout<<"System Error: Unreachable part"<<endl;
+	// }
 
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));
@@ -482,7 +482,7 @@ ETC .
 
 	if(symboltable->statementNumber == 0)
 		symboltable->statementNumber = 1;
-	else
+	// else
 		// cout<<"System Error: Unreachable state"<<endl;
 		
 	//cout << string(yytext) << endl;
@@ -522,10 +522,10 @@ ETC .
 		symboltable->insertNode(pnew);
 		symboltable->down();
 	}
-	else
-	{
-		// cout<<"System Error: Unreachable part"<<endl;
-	}
+	// else
+	// {
+	// 	// cout<<"System Error: Unreachable part"<<endl;
+	// }
 
 	yylval=new Node(string(yytext));
 	return FOR;
@@ -551,10 +551,10 @@ ETC .
 		symboltable->insertNode(pnew);
 		symboltable->down();
 	}
-	else
-	{
-		// cout<<"System Error: Unreachable part"<<endl;
-	}
+	// else
+	// {
+	// 	// cout<<"System Error: Unreachable part"<<endl;
+	// }
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));
 	return IF;
@@ -576,7 +576,7 @@ ETC .
 
 	if(symboltable->statementNumber == 0)
 		symboltable->statementNumber = 1;
-	else
+	// else
 		// cout<<"System Error: Unreachable state"<<endl;
 
 	//cout << string(yytext) << endl;
@@ -588,7 +588,7 @@ ETC .
 
 	if(symboltable->statementNumber == 0)
 		symboltable->statementNumber = 1;
-	else
+	// else
 		// cout<<"System Error: Unreachable state"<<endl;
 
 	//cout << string(yytext) << endl;
@@ -648,7 +648,7 @@ ETC .
 
 	if(symboltable->statementNumber == 0)
 		symboltable->statementNumber = 1;
-	else
+	//else
 		// cout<<"System Error: Unreachable state"<<endl;
 
 	//cout << string(yytext) << endl;
@@ -678,7 +678,7 @@ ETC .
 
 	if(symboltable->statementNumber == 0)
 		symboltable->statementNumber = 1;
-	else
+	//else
 		 // cout<<"System Error: Unreachable state"<<endl;
 
 	//cout << string(yytext) << endl;
@@ -700,9 +700,9 @@ ETC .
 		symboltable->insertNode(pnew);
 		symboltable->down();
 	}
-	else{
-		// cout<<"System Error: Unreachable state"<<endl;
-	}
+	// else{
+	// 	// cout<<"System Error: Unreachable state"<<endl;
+	// }
 
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));
@@ -793,10 +793,10 @@ ETC .
 		symboltable->insertNode(pnew);
 		symboltable->down();
 	}
-	else
-	{
-		// cout<<"System Error: Unreachable part"<<endl;
-	}
+	// else
+	// {
+	// 	// cout<<"System Error: Unreachable part"<<endl;
+	// }
 
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));

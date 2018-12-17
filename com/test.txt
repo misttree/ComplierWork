@@ -1,12 +1,15 @@
 /*
   test code version 2.0
 */
-struct name {
-    int temp = 0;
-    int attribute = 5; 
-}
+struct Name {
+    int temp;
+    int attribute = 0; 
+    char sympol;
+};
 void main() {
     // [test] declaration list.
+    Name name;
+    name.temp = name.attribute + 1;
     int a = 12; int i = 0, _b;
     // [test] io statement.
     scanf(_b);
