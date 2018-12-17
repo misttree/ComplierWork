@@ -3,7 +3,6 @@
 //
 
 #include "Node.h"
-#include "symbol.h"
 #include<iomanip>
 Node::Node(int index, const string name, const string detail) {
     this->identifier = index;

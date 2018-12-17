@@ -6,7 +6,6 @@
 #include <string.h>
 #include <iostream>
 #include "Node.h"
-#include "symbol.h"
 
 #define V vector<Node*>
 using namespace std;
