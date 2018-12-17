@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-
+#include "symbol.h"
 using namespace std;
 
 class Node {
@@ -17,11 +17,13 @@ public:
     string detail;
     list<Node*> children;
     int countOfChildren;
-
+    symbolNode * value;
 public:
     Node(int index, const string name, const string detail);
 
     Node(string name);
+
+    Node(string name, symbolNode * value);
 
     int getIdentifier();
 

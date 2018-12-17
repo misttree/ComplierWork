@@ -3,6 +3,7 @@
 //
 
 #include "Node.h"
+#include "symbol.h"
 #include<iomanip>
 Node::Node(int index, const string name, const string detail) {
     this->identifier = index;
@@ -15,6 +16,14 @@ Node::Node(string name) {
     this->identifier = -1;
     this->name = name;
     this->detail = name;
+    countOfChildren = 0;
+}
+
+Node::Node(string name, symbolNode * value) {
+    this->identifier = -1;
+    this->name = name;
+    this->detail = name;
+    this->value = value;
     countOfChildren = 0;
 }
 
