@@ -33,6 +33,7 @@ public:
     
 
     void addChild(Node* child);
+    
     void addChildren(Node* newChildren[], int length);
 
     void addChildren(vector<Node*> newChildren);
