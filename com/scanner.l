@@ -8,7 +8,9 @@ using namespace std;
 #define YYSTYPE Node*
 #include "parser.hpp"
 symbolTable *symboltable = new symbolTable();
-vector<string> typedefString;
+vector<symbolNode* > typedefString;
+bool innerStruct = false;  // 用于在词法中判断是否处于struct的定义内
+string matchStructName = "";  // 用于在词法中传递一次匹配的struct对象 
 %}
 
 %option yylineno
@@ -359,8 +361,8 @@ ETC .
 	// {
 	//  cout<<"System Error: Unreachable part"<<endl;
 	// }
-
 	//cout << string(yytext) << endl;
+	innerStruct = false;
 	yylval=new Node(string(yytext));
 	return RC;
 }
@@ -491,6 +493,12 @@ ETC .
 }
 
 {ELSE} {
+	if(symboltable->statementNumber == 0)
+	{
+		symbolNode * pnew = new symbolNode("else");
+		symboltable->insertNode(pnew);
+		symboltable->down();
+	}
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));
 	return ELSE;
@@ -810,6 +818,7 @@ ETC .
 }
 
 {ID} {
+	// cout<<symboltable->statementNumber<<"  "<<yytext<<endl;  // 输出状态转换信息
 	symbolNode * pnew;
 	switch(symboltable->statementNumber)
 	{
@@ -817,15 +826,15 @@ ETC .
 		{
 			for(int i = 0; i < typedefString.size(); i++)
 			{
-				if(typedefString.at(i) == yytext)
+				if(typedefString.at(i)->getNodeName() == yytext)
 				{
-					symboltable->statementNumber = 1;
+					symboltable->statementNumber = 4;
+					matchStructName = yytext;
 					break;
 				}
 			}
-
-			 // if(symboltable->findNode(symboltable->now, yytext) == NULL)
-				 // cout<<"System Error: Undefined Variable "<<yytext<<endl;
+			// if(symboltable->findNode(symboltable->now, yytext) == NULL)
+			// cout<<"System Error: Undefined Variable "<<yytext<<endl;
 			break;
 		}
 		case 1:
@@ -833,6 +842,11 @@ ETC .
 			pnew = new symbolNode(yytext);
 			symboltable->insertNode(pnew);
 			symboltable->statementNumber = 2;
+			if (innerStruct)
+			{
+				pnew = new symbolNode(yytext);
+				typedefString.at(typedefString.size() - 1 )->children.push_back(pnew);
+			}
 			break;
 		}
 		case 2:
@@ -842,13 +856,32 @@ ETC .
 		}
 		case 3:
 		{
-			typedefString.push_back(yytext);
+			typedefString.push_back(new symbolNode(yytext));
 			string pnew_name = yytext;
 			pnew_name = pnew_name + "(struct)";
 			symbolNode * pnew = new symbolNode(pnew_name);
 			symboltable->insertNode(pnew);
 			symboltable->down();
 			symboltable->statementNumber = 0;
+			innerStruct = true;
+			break;
+		}
+		case 4:
+		{
+			symboltable->statementNumber = 2;
+			symbolNode * pnew = new symbolNode(yytext);
+			symboltable->insertNode(pnew);
+			for( auto  point : typedefString)
+			{
+				if(point->getNodeName() == matchStructName)
+				{
+					for (auto temp : point->children)
+					{
+						pnew->giveChildren(temp->getNodeName());
+					}
+				}
+			} 
+			break;
 		}
 		default:
 		{

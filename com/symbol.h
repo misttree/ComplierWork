@@ -6,9 +6,9 @@ class symbolNode
 {
     private:
         string message;
-        string nodeName;
-        string nodeType;
-        string nodeAttribute;
+        string nodeName;  // 节点的名字
+        string nodeType;  // 节点的类型
+        string nodeAttribute; // 节点的属性
     public:
         vector<symbolNode*> children;
         symbolNode * parentNode;

@@ -61,6 +61,11 @@ void Node::outputNode() {
     cout << endl;
 }
 
+void Node::setValue(symbolNode * newValue)
+{
+    this->value = newValue;
+}
+
 int Node::getIdentifier() {
     return this->identifier;
 }
@@ -72,3 +77,9 @@ string Node::getName() {
 string Node::getDetail() {
     return this->detail;
 }
+
+symbolNode* Node::getValue()
+{
+    return this->value;
+}
+

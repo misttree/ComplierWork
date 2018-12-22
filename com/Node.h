@@ -31,6 +31,7 @@ public:
 
     string getDetail();
     
+    symbolNode * getValue();
 
     void addChild(Node* child);
     
@@ -41,6 +42,8 @@ public:
     void addChildren(list<Node*> newChildren);
 
     void outputNode();
+
+    void setValue(symbolNode * newValue);
 };
 
 #endif //FORHOMEWORK_NODE_H

@@ -6,20 +6,32 @@ struct Name {
     int attribute = 0; 
     char sympol;
 };
+struct Temp {
+    int number;
+    int score;
+};
 void main() {
     // [test] declaration list.
     Name name;
     name.temp = name.attribute + 1;
+    Temp good;
     int a = 12; int i = 0, _b;
     // [test] io statement.
     scanf(_b);
     // [test] while statement and if else ambiguty.
     while (i < 2) {
         if (_b < 0)
-            { int c=1;}
+            { int c=1;
+                int a = 2;
+               Temp asd;            
+            }
         if (_b > 0)
-            a = a + _b;
-        else {}
+        {
+              a = a + _b;
+        }
+        else {
+            int asd = 0;
+        }
         i = i + 1;
     }
     // [test] priority of operations.
