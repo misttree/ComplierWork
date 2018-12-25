@@ -8,6 +8,7 @@ symbolNode::symbolNode()
     this->nodeName = "";
     this->nodeType = "";
     this->nodeAttribute = "";
+    this->nodelength = 0;
     this->parentNode = NULL;
 }
 
@@ -16,12 +17,14 @@ symbolNode::symbolNode (string nodeName){
     this->nodeType = "";
     this->nodeAttribute = "";
     this->message = "";
+    this->nodelength = 0;
     this->parentNode = NULL;
 }
 
 symbolNode::symbolNode (string nodeName, string nodeType){
     this->nodeName = nodeName;
     this->nodeType = nodeType;
+    this->nodelength = 0;
     this->parentNode = NULL;
 }
 
@@ -29,6 +32,7 @@ symbolNode::symbolNode (string nodeName, string nodeType, string nodeAttribute){
     this->nodeName = nodeName;
     this->nodeType = nodeType;
     this->nodeAttribute = nodeAttribute;
+    this->nodelength = 0;
     this->parentNode = NULL;
 }
 
@@ -37,6 +41,7 @@ symbolNode::symbolNode (string nodeName, string nodeType, string nodeAttribute, 
     this->nodeType = nodeType;
     this->nodeAttribute = nodeAttribute;
     this->message = message;
+    this->nodelength = 0;
     this->parentNode = NULL;
 }
 
