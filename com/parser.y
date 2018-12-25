@@ -485,7 +485,7 @@ Node* newnode(int index, const string name, Node* node) {
 }
 
 Node* newnode(int index, Node* node, const string detail) {
-	Node *p = new Node(index, node->name, detail);  // 防止指针为空
+	Node *p = new Node(index, node->name, detail); 
 	ranged_nodes.push_back(p);
 	// outputTree(p);
 	return p;

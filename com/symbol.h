@@ -9,6 +9,7 @@ class symbolNode
         string nodeName;  // 节点的名字
         string nodeType;  // 节点的类型
         string nodeAttribute; // 节点的属性
+        int nodelength;  // 节点的长度，在创建数组的时候使用
     public:
         vector<symbolNode*> children;
         symbolNode * parentNode;
@@ -23,12 +24,13 @@ class symbolNode
         string getNodeName();
         string getNodeType();
         string getNodeAttribute();
+        int getNodeLength();
 
         void setMessage(string message);
         void setNodeName(string nodeName);
         void setNodeType(string nodeType);
         void setNodeAttribute(string nodeAttribute);
-
+        void setNodeLength(int length);
         symbolNode* giveChildren(string nodeName);
         symbolNode* giveChildren(string nodeName, string nodeType);
         symbolNode* giveChildren(string nodeName, string nodeType, string nodeAttribute);

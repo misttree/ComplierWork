@@ -60,6 +60,11 @@ string symbolNode::getNodeType()
     return this->nodeType;
 }
 
+int symbolNode::getNodeLength()
+{
+    return this->nodelength;
+}
+
 void symbolNode::setMessage(string message)
 {
     this->message = message;
@@ -76,6 +81,11 @@ void symbolNode::setNodeType(string nodeType)
 void symbolNode::setNodeAttribute(string nodeAttribute)
 {
     this->nodeAttribute = nodeAttribute;
+}
+
+void symbolNode::setNodeLength(int nodelength)
+{
+    this->nodelength = nodelength;
 }
 
 symbolNode* symbolNode::giveChildren(string nodeName)
