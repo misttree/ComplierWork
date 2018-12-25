@@ -83,7 +83,7 @@ external_declaration:
     ;
 
 var_declaration: 
-	  declaration_specifiers init_declarator_list SEMI { V v;v.push_back($1);v.push_back($2);$$=newnode(mycount++, "var_declaration", "var_declaration", v); }
+	  declaration_specifiers init_declarator_list SEMI { V v;v.push_back($1);v.push_back($2);$$=newnode(mycount++, "var_declaration", "var_declaration", v); $$->addAttribute();}
     | struct_specifier SEMI {$$=newnode(mycount++, "var_declaration", "var_declaration", $1);}
 	;
 
@@ -479,13 +479,15 @@ Node* newnode(int index, const string name, const string detail) {
 
 Node* newnode(int index, const string name, Node* node) {
 	Node *p = new Node(index, name, node->detail);
+	p->setValue(node->value);
 	ranged_nodes.push_back(p);
 	// outputTree(p);
 	return p;
 }
 
 Node* newnode(int index, Node* node, const string detail) {
-	Node *p = new Node(index, node->name, detail); 
+	Node *p = new Node(index, node->name, detail);
+	p->setValue(node->value);
 	ranged_nodes.push_back(p);
 	// outputTree(p);
 	return p;

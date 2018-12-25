@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <iomanip>
 #include "symbol.h"
 using namespace std;
 
@@ -33,6 +34,8 @@ public:
     
     symbolNode * getValue();
 
+    void setValue(symbolNode * value);
+
     void addChild(Node* child);
     
     void addChildren(Node* newChildren[], int length);
@@ -43,7 +46,7 @@ public:
 
     void outputNode();
 
-    void setValue(symbolNode * newValue);
+    void addAttribute();
 };
 
 #endif //FORHOMEWORK_NODE_H

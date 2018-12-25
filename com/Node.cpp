@@ -3,7 +3,7 @@
 //
 
 #include "Node.h"
-#include<iomanip>
+
 Node::Node(int index, const string name, const string detail) {
     this->identifier = index;
     this->name = name;
@@ -24,6 +24,10 @@ Node::Node(string name, symbolNode * value) {
     this->detail = name;
     this->value = value;
     countOfChildren = 0;
+}
+
+void Node::setValue(symbolNode * value) {
+    this->value = value;
 }
 
 void Node::addChild(Node* child) {
@@ -61,11 +65,6 @@ void Node::outputNode() {
     cout << endl;
 }
 
-void Node::setValue(symbolNode * newValue)
-{
-    this->value = newValue;
-}
-
 int Node::getIdentifier() {
     return this->identifier;
 }
@@ -83,3 +82,17 @@ symbolNode* Node::getValue()
     return this->value;
 }
 
+void Node::addAttribute() {
+    if (this->name == "var_declaration") {
+        if (this->children.size() == 2) {
+            string type = this->children.front()->getDetail();
+            list<Node*> var_list = this->children.back()->children;
+            for (list<Node*>::iterator it=var_list.begin(); it!=var_list.end(); it++) {
+                cout << (*it)->children.front()->detail << endl;
+                (*it)->children.front()->value->setNodeType(type);
+            }
+        }
+    } else if (this->name == "assignment_expression") {
+
+    }
+}
