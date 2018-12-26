@@ -156,18 +156,18 @@ paddress:
 
 //数组的定义
 array:
-	  id array_main {V v; v.push_back($2); $$=newnode(mycount++, "array", "array", v);}
+	  id array_main {V v; v.push_back($2); $$=newnode(mycount++, "array", $1->detail, v);}
 	| NEW INT array_main { V v; v.push_back($3); $$=newnode(mycount++, "array", "array", v);}
 	| NEW CHAR array_main { V v; v.push_back($3); $$=newnode(mycount++, "array", "array", v);} 
 	;
 
 //为了int[]={}成立
 array_sigle:
-	  id array_special{V v; v.push_back($2); $$=newnode(mycount++, "array_sigle", "array_sigle", v);}
+	  id array_special {V v; v.push_back($2); $$=newnode(mycount++, "array_sigle", "array_sigle", v);}
 	;
 //数组主要的几种表示方式
 array_main: 
-	  LB array_size RB array_main { V v;v.push_back($2);v.push_back($4);$$=newnode(mycount++, "array", "array", v); }
+	  LB array_size RB array_main { V v;v.push_back($2);v.push_back($4);$$=newnode(mycount++, "array_main", "array_main", v); }
 	| LB RB array_main { $$=newnode(mycount++, "array_main", "array_main", $3); }
 	| LB array_size RB { $$=newnode(mycount++, "array_main", "array_main", $2); }
 	;
@@ -378,7 +378,7 @@ factor:
     | id { $$ = newnode(mycount++, "factor", "factor", $1); }
     | call_func { $$=$1; }
     | number { $$ = newnode(mycount++, "factor", "factor", $1); }
-	| array{$$ = newnode(mycount++, "factor", "factor", $1); }
+	| array {$$ = newnode(mycount++, "factor", "factor", $1); }
 	| paddress { $$ = newnode(mycount++, "factor", "factor", $1); }
 	| pointer { $$ = newnode(mycount++, "factor", "factor", $1); }
 	;
