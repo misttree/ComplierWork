@@ -6,6 +6,7 @@
 #include <string.h>
 #include <iostream>
 #include "Node.h"
+#include "IR.cpp"
 
 #define V vector<Node*>
 using namespace std;
@@ -29,6 +30,7 @@ void outputTable();
 void outputSymbolTable();
 
 static int mycount = 0;
+static Node * uroot;
 static vector<Node*> ranged_nodes;
 extern symbolTable *symboltable;
 
@@ -69,7 +71,8 @@ extern symbolTable *symboltable;
 %%
 
 tree: 
-	  program { outputTree($1); }
+	  program { outputTree($1); 
+	  			uroot = $1;}
 	;
 
 program: 
@@ -188,7 +191,7 @@ declarator:
     ;
 
 fun_declaration: 
-	  declaration_specifiers id declarator compound_stmt { V v;v.push_back($1);v.push_back($2);v.push_back($3);v.push_back($4);$$=newnode(mycount++, "fun_declaration", "fun_declaration", v);}
+	  declaration_specifiers id declarator compound_stmt { V v;v.push_back($1);v.push_back($2);v.push_back($3);v.push_back($4);$$=newnode(mycount++, "fun_declaration", "fun_declaration", v);$$->addAttribute();}
     ;
 
 declaration_specifiers: 
@@ -209,7 +212,7 @@ params_list:
     ;
 
 params: 
-	  declaration_specifiers var { V v;v.push_back($1);v.push_back($2); $$=newnode(mycount++, "params", "params", v); }
+	  declaration_specifiers var { V v;v.push_back($1);v.push_back($2); $$=newnode(mycount++, "params", "params", v); $$->addAttribute(); }
     ;
 
 var: 
@@ -411,6 +414,7 @@ int main(int argc,char* argv[]) {
     yyparse();
 	outputTable();
 	outputSymbolTable();
+	IRCode(uroot);
 	return 0;
 }
 

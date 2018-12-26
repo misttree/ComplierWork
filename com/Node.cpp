@@ -99,7 +99,6 @@ void Node::addAttribute() {
                 } else if ((*it)->detail == "init_array_or_point_assignment" || (*it)->detail == "array") {
                     Node *point = (*it)->children.front()->children.front();
                     // cout << p->name << ":" << p->detail << ":" << p->value << endl; 
-
                     symbolNode* symbol = point->value;
                     stack<pair<symbolNode*, int> > s;
                     pair<symbolNode*, int> p(symbol, 0);
@@ -112,13 +111,12 @@ void Node::addAttribute() {
                             s.push(pnew);
                         }
                         p.first->setNodeType(type);
-                        cout << "symbol: " << p.first->getNodeName() << " " << p.first->children.size() << endl;
+                        // cout << "symbol: " << p.first->getNodeName() << " " << p.first->children.size() << endl;
                         if (p.first->children.size() > 0) {
                             pair<symbolNode*, int> pnew(p.first->children.front(), 0);
                             s.push(pnew);
                         }
                     }
-
                     point->value->setNodeType("Array<"+type+">");
                 } else {
                     // cout << (*it)->children.front()->detail << endl;
@@ -126,8 +124,6 @@ void Node::addAttribute() {
                 }
             }
         }
-    } else if (this->name == "assignment_expression") {
-
     } else if (this->name == "pointer") {
         if (this->children.size() == 1) {
             Node* p=NULL;
@@ -135,6 +131,54 @@ void Node::addAttribute() {
             }
             if (p) {
                 p->value->setNodeType(p->value->getNodeType() + "*");
+            }
+        }
+    } else if (this->name == "fun_declaration") {
+        if (this->children.size() > 0) {
+            list<Node*>::iterator it = this->children.begin();
+            string type = (*it)->detail;
+            it++;
+            symbolNode* value = (*it)->value;
+            value->setNodeType(type);
+            it++;
+            if((*it)->children.size() > 0) {
+                value->setNodeLength((*it)->children.front()->children.size());
+            } else {
+                value->setNodeLength(0);
+            }
+        }
+    } else if (this->name == "params") {
+        if (this->children.size() == 2) {
+            string type = this->children.front()->detail;
+            if (this->children.back()->detail == "array") {
+                symbolNode* symbol = this->children.back()->children.front()->children.front()->value;
+                stack<pair<symbolNode*, int> > s;
+                pair<symbolNode*, int> p(symbol, 0);
+                s.push(p);
+                while(!s.empty()) {
+                    pair<symbolNode*, int> p = s.top(); s.pop();
+                    symbolNode* parent = p.first->parentNode;
+                    if (parent && p.second + 1 < parent->children.size() && parent->children[p.second+1]->getNodeName().find("[")!=-1) {
+                        pair<symbolNode*, int> pnew(parent->children[p.second+1], p.second+1);
+                        s.push(pnew);
+                    }
+                    p.first->setNodeType(type);
+                    // cout << "symbol: " << p.first->getNodeName() << " " << p.first->children.size() << endl;
+                    if (p.first->children.size() > 0) {
+                        pair<symbolNode*, int> pnew(p.first->children.front(), 0);
+                        s.push(pnew);
+                    }
+                }
+                symbol->setNodeType("Array<"+type+">");
+            } else if (this->children.back()->detail == "pointer") {
+                Node* p=NULL;
+                for (p=this->children.back(); p->children.size()!=0; p=p->children.front());
+                if (p) {
+                    // cout << p->name << ":" << p->detail << ":" << p->value << endl;
+                    p->value->setNodeType(type + p->value->getNodeType());
+                }
+            } else if (this->children.back()->detail == "id") {
+                this->children.back()->children.front()->value->setNodeType(type);
             }
         }
     }
