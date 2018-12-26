@@ -135,8 +135,9 @@ ETC .
 	{
 		symboltable->statementNumber = 7;
 		symboltable->down();
-		string name = symboltable->now->getNodeName();
 		int time = atoi(yytext);
+		string name = symboltable->now->getNodeName();
+		symboltable->now->setNodeLength(time);
 		for(int a = 0 ;a< time ;a++ )
 		{
 				string temp = name + "["+to_string(a) + "]";
@@ -357,7 +358,7 @@ ETC .
 }
 
 {RB} {
-	if(symboltable->statementNumber == 7)
+	if(symboltable->statementNumber == 7 || symboltable->statementNumber == 6)
 	{
 		symboltable->statementNumber = 2;
 		symboltable->up();
