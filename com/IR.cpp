@@ -63,13 +63,14 @@ void dfs(Node *n)
                         l.push_back(*(new IR(to_string(seq++), "[]=", next_array->children.front()->detail, "NULL", "b[t" + to_string(tnum++) + "]")));
                     }
                     else
-                    { //如果右侧有一个元素，且这个元素是数组
-                        
+                    { //TODO: 如果右侧有一个元素，且这个元素是数组
+
                     }
                 }
                 else
                 {
-                    //如果右侧是一个式子
+                    //如果右侧是一个式子,且这个式子里面没有数组
+                    //情况相当多，建议根据老师的测试用例编写
                 }
             }
             else
