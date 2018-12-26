@@ -5,7 +5,7 @@
 #include "Node.h"
 
 Node::Node(int index, const string name, const string detail) {
-    this->value = new symbolNode();
+    this->value = NULL;
     this->identifier = index;
     this->name = name;
     this->detail = detail;
@@ -13,7 +13,7 @@ Node::Node(int index, const string name, const string detail) {
 }
 
 Node::Node(string name) {
-    this->value = new symbolNode();
+    this->value = NULL;
     this->identifier = -1;
     this->name = name;
     this->detail = name;
@@ -191,10 +191,37 @@ void Node::generateTypeInExpression() {
         symbolNode *front=this->children.front()->value, *back=this->children.back()->value;
         if (front->getNodeType() == back->getNodeType()) {
             this->value = new symbolNode("", front->getNodeType());
-            return;
         } else if (typeEquivalenceClass.at(front->getNodeType()) == typeEquivalenceClass.at(back->getNodeType())) {
-            this->value = new symbolNode("", front->getNodeType());
-            return;
+            if (typeEquivalenceClass.at(front->getNodeType()) < 4 )
+            {
+                if (front->getNodeType().back() == '*')
+                {
+                    this->value = new symbolNode("", front->getNodeType());
+                }
+                else
+                {
+                    this->value = new symbolNode("", back->getNodeType());
+                }
+            }
+            else
+            {
+                if (front->getNodeType() == "float" || back->getNodeType() == "float")
+                {
+                    this->value = new symbolNode("", "float");
+                }
+                else if (front->getNodeType() == "int" || back->getNodeType() == "int")
+                {
+                    this->value = new symbolNode("", "int");
+                }
+                else if (front->getNodeType() == "char" || back->getNodeType() == "char")
+                {
+                    this->value = new symbolNode("", "char");
+                }
+                else if (front->getNodeType() == "bool" || back->getNodeType() == "bool")
+                {
+                    this->value = new symbolNode("", "bool");
+                }
+            }
         }
     }
 }

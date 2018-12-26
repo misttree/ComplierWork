@@ -371,14 +371,14 @@ relop:
 
 additive_expression: 
 	  term {$$=$1;}
-    | additive_expression PLUS term { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "additive_expression", "+", v); }
-    | additive_expression MINUS term { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "additive_expression", "-", v); }
+    | additive_expression PLUS term { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "additive_expression", "+", v); $$->generateTypeInExpression(); }
+    | additive_expression MINUS term { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "additive_expression", "-", v); $$->generateTypeInExpression(); }
     ;
 
 term: 
 	  factor {$$=$1;}
-    | term STAR factor { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "term", "*", v); }
-    | term DIV factor { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "term", "/", v); }
+    | term STAR factor { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "term", "*", v); $$->generateTypeInExpression(); }
+    | term DIV factor { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "term", "/", v); $$->generateTypeInExpression(); }
     ;
 
 factor: 
@@ -461,10 +461,23 @@ list<string> formatOutputTree(list<Node*> children, list<string> strformat) {
 			cout << (*i);
 		}
 		if (count == num-1) {
-			cout << "└─ " << (*it)->name << ":" << (*it)->detail << endl;
+
+			cout << "└─ " << (*it)->name << ":" << (*it)->detail;
+			if ((*it)->value != NULL)
+			{
+				// cout << ":" << (*it)->value->getNodeType();
+				cout << ":" << (*it)->value;
+			}
+			cout << endl;
 			strformat.push_back("   ");
 		} else {
-			cout << "├─ " << (*it)->name << ":" << (*it)->detail << endl;
+			cout << "├─ " << (*it)->name << ":" << (*it)->detail;
+			if ((*it)->value != NULL)
+			{
+				// cout << ":" << (*it)->value->getNodeType();
+				cout << ":" << (*it)->value;
+			}
+			cout << endl;
 			strformat.push_back("│  ");
 		}
 		strformat = formatOutputTree((*it)->children, strformat);
@@ -492,6 +505,7 @@ Node* newnode(int index, const string name, Node* node) {
 	p->setValue(node->value);
 	ranged_nodes.push_back(p);
 	// outputTree(p);
+	delete node;
 	return p;
 }
 
@@ -500,6 +514,7 @@ Node* newnode(int index, Node* node, const string detail) {
 	p->setValue(node->value);
 	ranged_nodes.push_back(p);
 	// outputTree(p);
+	delete node;
 	return p;
 }
 
