@@ -54,6 +54,8 @@ public:
 
     void generateTypeInExpression();
 
+    void generateTypeInFactor();
+
     void checkType();
 };
 

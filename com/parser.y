@@ -383,9 +383,9 @@ term:
 
 factor: 
 	  LP expression RP { $$=$2; }
-    | id { $$ = newnode(mycount++, "factor", "factor", $1); }
+    | id { $$ = newnode(mycount++, "factor", "factor", $1); $$->generateTypeInFactor(); }
     | call_func { $$=$1; }
-    | number { $$ = newnode(mycount++, "factor", "factor", $1); }
+    | number { $$ = newnode(mycount++, "factor", "factor", $1); $$->generateTypeInFactor(); }
 	| array {$$ = newnode(mycount++, "factor", "factor", $1); }
 	| paddress { $$ = newnode(mycount++, "factor", "factor", $1); }
 	| pointer { $$ = newnode(mycount++, "factor", "factor", $1); }
@@ -418,7 +418,7 @@ int main(int argc,char* argv[]) {
 	initTypeEquivalenceClass();
     yyin = fopen(argv[1],"r");
     yyparse();
-	outputTable();
+	// outputTable();
 	outputSymbolTable();
 	IRCode(uroot);
 	return 0;
@@ -465,8 +465,8 @@ list<string> formatOutputTree(list<Node*> children, list<string> strformat) {
 			cout << "└─ " << (*it)->name << ":" << (*it)->detail;
 			if ((*it)->value != NULL)
 			{
-				// cout << ":" << (*it)->value->getNodeType();
-				cout << ":" << (*it)->value;
+				cout << ":" << (*it)->value->getNodeType();
+				// cout << ":" << (*it)->value;
 			}
 			cout << endl;
 			strformat.push_back("   ");
@@ -474,8 +474,8 @@ list<string> formatOutputTree(list<Node*> children, list<string> strformat) {
 			cout << "├─ " << (*it)->name << ":" << (*it)->detail;
 			if ((*it)->value != NULL)
 			{
-				// cout << ":" << (*it)->value->getNodeType();
-				cout << ":" << (*it)->value;
+				cout << ":" << (*it)->value->getNodeType();
+				// cout << ":" << (*it)->value;
 			}
 			cout << endl;
 			strformat.push_back("│  ");

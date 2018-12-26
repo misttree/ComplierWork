@@ -186,6 +186,17 @@ void Node::addAttribute() {
     }
 }
 
+void Node::generateTypeInFactor() {
+    // TODO
+    if (this->children.size() > 0) {
+        if (this->children.front()->name == "ID") {
+            this->value = new symbolNode("", this->children.front()->value->getNodeType());
+        } else if (this->children.front()->name == "INT_DEX") {
+            this->value = new symbolNode("" , this->children.front()->value->getNodeType());
+        }
+    }
+}
+
 void Node::generateTypeInExpression() {
     if (this->children.size() == 2 && this->children.front()->value && this->children.back()->value) {
         symbolNode *front=this->children.front()->value, *back=this->children.back()->value;
