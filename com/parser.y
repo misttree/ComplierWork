@@ -191,7 +191,7 @@ declarator:
     ;
 
 fun_declaration: 
-	  declaration_specifiers id declarator compound_stmt { V v;v.push_back($1);v.push_back($2);v.push_back($3);v.push_back($4);$$=newnode(mycount++, "fun_declaration", "fun_declaration", v);}
+	  declaration_specifiers id declarator compound_stmt { V v;v.push_back($1);v.push_back($2);v.push_back($3);v.push_back($4);$$=newnode(mycount++, "fun_declaration", "fun_declaration", v);$$->addAttribute();}
     ;
 
 declaration_specifiers: 
@@ -212,7 +212,7 @@ params_list:
     ;
 
 params: 
-	  declaration_specifiers var { V v;v.push_back($1);v.push_back($2); $$=newnode(mycount++, "params", "params", v); }
+	  declaration_specifiers var { V v;v.push_back($1);v.push_back($2); $$=newnode(mycount++, "params", "params", v); $$->addAttribute(); }
     ;
 
 var: 
