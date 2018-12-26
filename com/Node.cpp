@@ -88,11 +88,34 @@ void Node::addAttribute() {
             string type = this->children.front()->getDetail();
             list<Node*> var_list = this->children.back()->children;
             for (list<Node*>::iterator it=var_list.begin(); it!=var_list.end(); it++) {
-                cout << (*it)->children.front()->detail << endl;
-                (*it)->children.front()->value->setNodeType(type);
+                if ((*it)->detail == "pointer") {
+                    Node* p=NULL;
+                    for (p=(*it)->children.front(); p->children.size()!=0; p=p->children.front());
+                    if (p) {
+                        cout << p->name << ":" << p->detail << ":" << p->value << endl;
+                        p->value->setNodeType(type + p->value->getNodeType());
+                    }
+                } else if ((*it)->detail == "array") {
+                    Node *p = (*it)->children.front()->children.front();
+                    cout << p->name << ":" << p->detail << ":" << p->value << endl;
+                    p->value->setNodeType("Array<"+type+">");
+                } else {
+                    cout << (*it)->children.front()->detail << endl;
+                    (*it)->children.front()->value->setNodeType(type);
+                }
+                
             }
         }
     } else if (this->name == "assignment_expression") {
 
+    } else if (this->name == "pointer") {
+        if (this->children.size() == 1) {
+            Node* p=NULL;
+            for (p=this->children.front(); p->children.size()!=0; p=p->children.front()) {
+            }
+            if (p) {
+                p->value->setNodeType(p->value->getNodeType() + "*");
+            }
+        }
     }
 }

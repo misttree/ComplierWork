@@ -126,8 +126,8 @@ mininum:
 
 //指针的定义
 pointer: 
-	  STAR id { $$=newnode(mycount++, "pointer", "pointer", $2); }
-	| STAR pointer { $$=newnode(mycount++, "pointer", "pointer", $2); }
+	  STAR id { $$=newnode(mycount++, "pointer", "pointer", $2); $$->addAttribute(); }
+	| STAR pointer { $$=newnode(mycount++, "pointer", "pointer", $2); $$->addAttribute(); }
 	;
 
 struct_specifier:
@@ -156,7 +156,7 @@ paddress:
 
 //数组的定义
 array:
-	  id array_main {V v; v.push_back($2); $$=newnode(mycount++, "array", $1->detail, v);}
+	  id array_main {V v; v.push_back($1); v.push_back($2); $$=newnode(mycount++, "array", $1->detail, v);}
 	| NEW INT array_main { V v; v.push_back($3); $$=newnode(mycount++, "array", "array", v);}
 	| NEW CHAR array_main { V v; v.push_back($3); $$=newnode(mycount++, "array", "array", v);} 
 	;
