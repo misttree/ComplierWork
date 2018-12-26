@@ -416,6 +416,8 @@ ETC .
 }
 
 {BOOL} {
+	if(symboltable->statementNumber == 0)
+		symboltable->statementNumber = 1;
 	symbolNode * pnew = new symbolNode();
 	pnew->setNodeName("BOOL");
 	pnew->setNodeType("bool");

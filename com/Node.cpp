@@ -5,6 +5,7 @@
 #include "Node.h"
 
 Node::Node(int index, const string name, const string detail) {
+    this->value = new symbolNode();
     this->identifier = index;
     this->name = name;
     this->detail = detail;
@@ -12,6 +13,7 @@ Node::Node(int index, const string name, const string detail) {
 }
 
 Node::Node(string name) {
+    this->value = new symbolNode();
     this->identifier = -1;
     this->name = name;
     this->detail = name;

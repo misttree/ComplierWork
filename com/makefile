@@ -1,5 +1,5 @@
-parser: scanner.cpp parser.cpp Node.h symbol.h
-	g++ -std=c++11 scanner.cpp parser.cpp Node.cpp symbol.cpp -o parser 
+parser: scanner.cpp parser.cpp Node.h symbol.h innercode.h
+	g++ -std=c++11 scanner.cpp parser.cpp Node.cpp symbol.cpp  innercode.cpp -o parser 
 
 scanner:scanner.cpp
 	g++ -o scanner.cpp
