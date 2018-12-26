@@ -134,7 +134,6 @@ ETC .
 	if(symboltable->statementNumber == 6)
 	{
 		symboltable->statementNumber = 7;
-		symboltable->down();
 		int time = atoi(yytext);
 		string name = symboltable->now->getNodeName();
 		symboltable->now->setNodeLength(time);
@@ -351,6 +350,7 @@ ETC .
 	if(symboltable->statementNumber == 2)
 	{
 		symboltable->statementNumber = 6;
+		symboltable->down();
 	}
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));
@@ -604,7 +604,6 @@ ETC .
 }
 
 {INT} {
-
 	if(symboltable->statementNumber == 0)
 		symboltable->statementNumber = 1;
 	// else
