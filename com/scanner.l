@@ -416,8 +416,11 @@ ETC .
 }
 
 {BOOL} {
+	symbolNode * pnew = new symbolNode();
+	pnew->setNodeName("BOOL");
+	pnew->setNodeType("bool");
 	//cout << string(yytext) << endl;
-	yylval=new Node(string(yytext));
+	yylval=new Node(string(yytext), pnew);
 	return BOOL;
 }
 

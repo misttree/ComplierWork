@@ -33,7 +33,7 @@ static int mycount = 0;
 static Node * uroot;
 static vector<Node*> ranged_nodes;
 extern symbolTable *symboltable;
-
+extern int yylineno;
 %}
 
 // place any declarations here
