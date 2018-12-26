@@ -4,6 +4,7 @@
 #include <string>
 #include <cstring>
 #include <string.h>
+#include <map>
 #include <iostream>
 #include "Node.h"
 #include "IR.cpp"
@@ -23,6 +24,7 @@ Node* newnode(int index, const string name, Node* node);
 Node* newnode(int index, Node* node, const string detail);
 Node* newnode(int index, const string name, const string detail, Node* node);
 Node* newnode(int index, const string name, const string detail, vector<Node*> nodes);
+void initTypeEquivalenceClass();
 
 void outputTree(Node* node);
 list<string> formatOutputTree(list<Node*> children, list<string> strformat);
@@ -33,6 +35,9 @@ static int mycount = 0;
 static Node * uroot;
 static vector<Node*> ranged_nodes;
 extern symbolTable *symboltable;
+extern int yylineno;
+
+map<string, int> typeEquivalenceClass;
 
 %}
 
@@ -410,6 +415,7 @@ id:
 
 %%
 int main(int argc,char* argv[]) {
+	initTypeEquivalenceClass();
     yyin = fopen(argv[1],"r");
     yyparse();
 	outputTable();
@@ -513,3 +519,15 @@ Node* newnode(int index, const string name, const string detail, vector<Node*> n
 	return p;
 }
 
+void initTypeEquivalenceClass() {
+	typeEquivalenceClass.insert(pair<string, int>("Array<int>", 1));
+	typeEquivalenceClass.insert(pair<string, int>("int*", 1));
+	typeEquivalenceClass.insert(pair<string, int>("Array<char>", 2));
+	typeEquivalenceClass.insert(pair<string, int>("char*", 2));
+	typeEquivalenceClass.insert(pair<string, int>("Array<float>", 3));
+	typeEquivalenceClass.insert(pair<string, int>("float*", 3));
+	typeEquivalenceClass.insert(pair<string, int>("char", 4));
+	typeEquivalenceClass.insert(pair<string, int>("int", 4));
+	typeEquivalenceClass.insert(pair<string, int>("bool", 4));
+	typeEquivalenceClass.insert(pair<string, int>("float", 4));
+}

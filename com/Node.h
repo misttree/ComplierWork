@@ -6,9 +6,12 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include <map>
 #include <iomanip>
 #include "symbol.h"
 using namespace std;
+
+extern map<string, int> typeEquivalenceClass;
 
 class Node {
 
@@ -48,6 +51,10 @@ public:
     void outputNode();
 
     void addAttribute();
+
+    void generateTypeInExpression();
+
+    void checkType();
 };
 
 #endif //FORHOMEWORK_NODE_H

@@ -5,6 +5,7 @@
 #include "Node.h"
 
 Node::Node(int index, const string name, const string detail) {
+    this->value = new symbolNode();
     this->identifier = index;
     this->name = name;
     this->detail = detail;
@@ -12,6 +13,7 @@ Node::Node(int index, const string name, const string detail) {
 }
 
 Node::Node(string name) {
+    this->value = new symbolNode();
     this->identifier = -1;
     this->name = name;
     this->detail = name;
@@ -182,4 +184,21 @@ void Node::addAttribute() {
             }
         }
     }
+}
+
+void Node::generateTypeInExpression() {
+    if (this->children.size() == 2 && this->children.front()->value && this->children.back()->value) {
+        symbolNode *front=this->children.front()->value, *back=this->children.back()->value;
+        if (front->getNodeType() == back->getNodeType()) {
+            this->value = new symbolNode("", front->getNodeType());
+            return;
+        } else if (typeEquivalenceClass.at(front->getNodeType()) == typeEquivalenceClass.at(back->getNodeType())) {
+            this->value = new symbolNode("", front->getNodeType());
+            return;
+        }
+    }
+}
+
+void Node::checkType() {
+
 }

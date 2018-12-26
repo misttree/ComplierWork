@@ -131,6 +131,9 @@ ETC .
 %%
 
 {INT_DEX} {
+	symbolNode * pnew = new symbolNode();
+	pnew -> setNodeName("ditigal");
+	pnew->setNodeType("int");
 	if(symboltable->statementNumber == 6)
 	{
 		symboltable->statementNumber = 7;
@@ -145,7 +148,7 @@ ETC .
 		}
 	}
 	//cout << string(yytext) << endl;
-	yylval=new Node(string(yytext));
+	yylval=new Node(string(yytext), pnew);
 	return INT_DEX;
 }
 
@@ -162,6 +165,9 @@ ETC .
 }
 
 {FLOAT} {
+	symbolNode * pnew = new symbolNode();
+	pnew->setNodeName("FLOAT");
+	pnew->setNodeType("float");
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));
 	return FLOAT;
@@ -410,8 +416,13 @@ ETC .
 }
 
 {BOOL} {
+	if(symboltable->statementNumber == 0)
+		symboltable->statementNumber = 1;
+	symbolNode * pnew = new symbolNode();
+	pnew->setNodeName("BOOL");
+	pnew->setNodeType("bool");
 	//cout << string(yytext) << endl;
-	yylval=new Node(string(yytext));
+	yylval=new Node(string(yytext), pnew);
 	return BOOL;
 }
 
@@ -855,6 +866,7 @@ ETC .
 					break;
 				}
 			}
+			// 处理变量声明时的语句
 			// if(symboltable->findNode(symboltable->now, yytext) == NULL)
 			// cout<<"System Error: Undefined Variable "<<yytext<<endl;
 			break;
@@ -924,6 +936,9 @@ ETC .
 }
 
 {LETTER} {
+	symbolNode * pnew = new symbolNode();
+	pnew->setNodeName("LEETER");
+	pnew->setNodeType("char");
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));
 	return LETTER;
@@ -931,8 +946,11 @@ ETC .
 
 
 {STRING} {
+	symbolNode * pnew = new symbolNode();
+	pnew->setNodeName("STRING");
+	pnew->setNodeType("string");
 	// cout << string(yytext) << endl;
-	yylval=new Node(string(yytext));
+	yylval=new Node(string(yytext),pnew);
 	return STRING;
 }
 
