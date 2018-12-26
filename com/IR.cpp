@@ -2,17 +2,17 @@
 #include <string>
 #include "Node.h"
 #include <list>
-#include"innercode.h"
+#include "innercode.h"
 using namespace std;
 
 int seq = 0;
 int tnum = 1;
-string label1="0";    
-string label2="0";
-string label3="0";
+string label1 = "0";
+string label2 = "0";
+string label3 = "0";
 bool if_else = false;
-bool if_over=false;
-Innercode innercode; 
+bool if_over = false;
+Innercode innercode;
 class IR
 {
 
@@ -30,7 +30,6 @@ class IR
         this->arg2 = arg2;
         this->result = result;
     }
-    
 };
 
 list<IR> l;
@@ -50,12 +49,28 @@ void dfs(Node *n)
             string result_class = child->children.front()->name;
             if (result_class == "array")
             {
-                Node* this_array = child->children.front();
-                string index = this_array->children.back()->children.front()->detail;
-                //如果是赋值语句的左值是数组的话
-                l.push_back(*new IR(to_string(seq++),"[]=",this_array->detail,index,"t"+to_string(tnum)));
-                Node* next_array = child->children.back();
-                l.push_back(*new IR(to_string(seq++),"=",next_array->children.front()->detail,"NULL","t"+to_string(tnum++)));
+                //目前不知道数组的基地址，用数组名代替
+                Node *this_array = child->children.front(); //赋值语句左侧
+                Node *next_array = child->children.back();  //赋值语句右侧，可能是个值可能是个式子
+                string base_address = this_array->detail;   //基地址
+                if (next_array->name == "factor")
+                {
+                    //如果右侧只有一个元素,且这个元素不是数组
+                    if (next_array->children.front()->name != "array")
+                    {
+                        string factor_offset = to_string(stoi(this_array->children.back()->children.front()->detail)); //索引乘以4就是地址相对基地址的偏移量，只考虑int型
+                        l.push_back(*(new IR(to_string(seq++), "*", factor_offset, to_string(4), "t" + to_string(tnum))));
+                        l.push_back(*(new IR(to_string(seq++), "[]=", next_array->children.front()->detail, "NULL", "b[t" + to_string(tnum++) + "]")));
+                    }
+                    else
+                    { //如果右侧有一个元素，且这个元素是数组
+                    
+                    }
+                }
+                else
+                {
+                    //如果右侧是一个式子
+                }
             }
             else
             {
@@ -72,152 +87,143 @@ void dfs(Node *n)
                     l.push_back(*(new IR(to_string(seq++), "=", "t" + to_string(tnum++), "NULL", result)));
                 }
 
-		if(if_else==true)
+                if (if_else == true)
                 {
-                   
-                    l.push_back(*(new IR("Label",label2,"","","")));
-                    if_else=false;
+
+                    l.push_back(*(new IR("Label", label2, "", "", "")));
+                    if_else = false;
                 }
             }
         }
 
-	if(child->name=="if_stmt")
+        if (child->name == "if_stmt")
+        {
+            string arg1 = "";
+            string arg2 = "";
+            Node *temp;
+            Node *temp2;
+            int count = 0;
+            Node *son = child->children.front();
+            list<Node *>::iterator next_statement;
+
+            int son_num = 0;
+            for (next_statement = child->children.begin(); next_statement != child->children.end(); next_statement++)
             {
-                string arg1 = "";
-                string arg2 = "";
-                Node* temp;
-                Node* temp2;
-                int count = 0;
-                Node* son = child->children.front();
-                list<Node*>::iterator next_statement;
+                son_num++;
+                temp2 = *next_statement;
+            }
 
-                int son_num=0;
-                for(next_statement= child->children.begin();next_statement!= child->children.end(); next_statement++ )
+            list<Node *>::iterator s;
+
+            if (son_num == 2) //没有else的情况
+            {
+
+                int number = 0;
+                for (list<Node *>::iterator s = child->children.begin(); s != child->children.end(); s++)
                 {
-                    son_num++;
-                    temp2 = *next_statement;
-                }
+                    Node *c = *s;
+                    number++;
 
-                list<Node*>::iterator s;
-
-                if(son_num==2) //没有else的情况
-                {
-
-                    int number=0;
-                    for (list<Node*>::iterator s=child->children.begin(); s!= child->children.end(); s++) 
+                    if (c->name == "simple_expression")
                     {
-                        Node* c=*s;
-                        number++;
-                        
-                       if(c->name=="simple_expression")
-                       {
-                        Node* factor = c->children.front();
-                        if(factor->countOfChildren==1)
+                        Node *factor = c->children.front();
+                        if (factor->countOfChildren == 1)
                         {
-                            arg1= factor->children.front()->detail;
+                            arg1 = factor->children.front()->detail;
                         }
 
-                        list<Node*>::iterator ch;
-                        for(ch= c->children.begin();ch!= c->children.end(); ch++ )
+                        list<Node *>::iterator ch;
+                        for (ch = c->children.begin(); ch != c->children.end(); ch++)
                         {
-                            if(count==2)
+                            if (count == 2)
                             {
                                 break;
                             }
                             count++;
                             temp = *ch;
                         }
-                        
+
                         string op = temp->detail;
-                        Node* factor2 = c->children.back();
-                        if(factor2->countOfChildren==1)
+                        Node *factor2 = c->children.back();
+                        if (factor2->countOfChildren == 1)
                         {
-                            arg2= factor2->children.front()->detail;
+                            arg2 = factor2->children.front()->detail;
                         }
-                        label1=innercode.getLabelName();
-                        label2=innercode.getLabelName();
-                        
-                        l.push_back(*(new IR(to_string(seq++),op,arg1,arg2,"GOTO "+label1)));
-                        l.push_back(*(new IR("GOTO",label2,"","","")));
-                        l.push_back(*(new IR("Label",label1,"","","")));
-                        if(number==1)
+                        label1 = innercode.getLabelName();
+                        label2 = innercode.getLabelName();
+
+                        l.push_back(*(new IR(to_string(seq++), op, arg1, arg2, "GOTO " + label1)));
+                        l.push_back(*(new IR("GOTO", label2, "", "", "")));
+                        l.push_back(*(new IR("Label", label1, "", "", "")));
+                        if (number == 1)
                         {
-                            
-                            if_over=true;
+
+                            if_over = true;
                             //l.push_back(*(new IR("Label~~",label2,"","","")));
                         }
-                       }   
- 
                     }
-                    
-                
                 }
-                
+            }
 
-                if(son_num==3) //有else的情况
+            if (son_num == 3) //有else的情况
+            {
+                int number = 0;
+                for (list<Node *>::iterator s = child->children.begin(); s != child->children.end(); s++)
                 {
-                    int number=0;
-                    for (list<Node*>::iterator s=child->children.begin(); s!= child->children.end(); s++) 
+                    number++;
+
+                    Node *c = *s;
+                    if (number == 3)
                     {
-                        number++;
-                        
-                        Node* c=*s;
-                        if(number==3)
+
+                        if_else = true;
+                        if_over = true;
+                        //l.push_back(*(new IR("Label",label2,"","","")));
+                    }
+
+                    if (c->name == "simple_expression")
+                    {
+                        Node *factor = c->children.front();
+                        if (factor->countOfChildren == 1)
                         {
-                            
-                            if_else=true;
-                            if_over=true;
-                            //l.push_back(*(new IR("Label",label2,"","","")));
+                            arg1 = factor->children.front()->detail;
                         }
 
-                        if(c->name=="simple_expression")
-                       {
-                        Node* factor = c->children.front();
-                        if(factor->countOfChildren==1)
+                        list<Node *>::iterator ch;
+                        for (ch = c->children.begin(); ch != c->children.end(); ch++)
                         {
-                            arg1= factor->children.front()->detail;
-                        }
-
-                        list<Node*>::iterator ch;
-                        for(ch= c->children.begin();ch!= c->children.end(); ch++ )
-                        {
-                            if(count==2)
+                            if (count == 2)
                             {
                                 break;
                             }
                             count++;
                             temp = *ch;
                         }
-                        
+
                         string op = temp->detail;
-                        Node* factor2 = c->children.back();
-                        if(factor2->countOfChildren==1)
+                        Node *factor2 = c->children.back();
+                        if (factor2->countOfChildren == 1)
                         {
-                            arg2= factor2->children.front()->detail;
+                            arg2 = factor2->children.front()->detail;
                         }
-                        label1=innercode.getLabelName();
-                        label2=innercode.getLabelName();
-                        
-                        l.push_back(*(new IR(to_string(seq++),op,arg1,arg2,"GOTO "+label1)));
-                        l.push_back(*(new IR("GOTO",label2,"","","")));
+                        label1 = innercode.getLabelName();
+                        label2 = innercode.getLabelName();
+
+                        l.push_back(*(new IR(to_string(seq++), op, arg1, arg2, "GOTO " + label1)));
+                        l.push_back(*(new IR("GOTO", label2, "", "", "")));
                         //if(child->countOfChildren==2)
-                        l.push_back(*(new IR("Label",label1,"","","")));
-                       }   
- 
+                        l.push_back(*(new IR("Label", label1, "", "", "")));
                     }
-                    
-
                 }
-                
+            }
+        }
 
-            }
-	
         dfs(child);
-	if(child->name=="if_stmt"&&child->countOfChildren==2)
-            {
-                //label2 = innercode.getLabelName();
-                l.push_back(*(new IR("Label",label2,"","","")));
-            }
+        if (child->name == "if_stmt" && child->countOfChildren == 2)
+        {
+            //label2 = innercode.getLabelName();
+            l.push_back(*(new IR("Label", label2, "", "", "")));
+        }
     }
 }
 
