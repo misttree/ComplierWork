@@ -69,7 +69,11 @@ void dfs(Node *n)
                 }
                 else
                 {
-                    //如果右侧是一个式子,且这个式子里面没有数组
+                    //如果右侧是一个式子
+                    for (list<Node *>::iterator tit = next_array->children.begin(); it != next_array->children.end(); tit++){
+                        //如果这个tit不是数组
+                        
+                    }
                     //情况相当多，建议根据老师的测试用例编写
                 }
             }
