@@ -143,7 +143,7 @@ void symbolTable::up()
 void symbolTable::showTable(symbolNode * node, vector<string> strformat)
 {
 
-    cout << node->getNodeName() << "\t" << node->getNodeType() << "\t" << node->getNodeAttribute() << "\t" << node->getNodeLength() << endl;
+    cout << node->getNodeName() << "  " << node->getNodeType() << "  " << node->getNodeAttribute() << "  " << node->getNodeLength() << endl;
 
     for(int a = 0; a < node->children.size(); a++)
     {

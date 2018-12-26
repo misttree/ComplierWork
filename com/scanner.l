@@ -131,6 +131,19 @@ ETC .
 %%
 
 {INT_DEX} {
+	if(symboltable->statementNumber == 6)
+	{
+		symboltable->statementNumber = 7;
+		symboltable->down();
+		string name = symboltable->now->getNodeName();
+		int time = atoi(yytext);
+		for(int a = 0 ;a< time ;a++ )
+		{
+				string temp = name + "["+to_string(a) + "]";
+				symbolNode *pnew = new symbolNode(temp); 
+				symboltable->insertNode(pnew);
+		}
+	}
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));
 	return INT_DEX;
@@ -334,12 +347,21 @@ ETC .
 }
 
 {LB} {
+	if(symboltable->statementNumber == 2)
+	{
+		symboltable->statementNumber = 6;
+	}
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));
 	return LB;
 }
 
 {RB} {
+	if(symboltable->statementNumber == 7)
+	{
+		symboltable->statementNumber = 2;
+		symboltable->up();
+	}
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));
 	return RB;
