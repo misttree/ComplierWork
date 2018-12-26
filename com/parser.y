@@ -6,6 +6,7 @@
 #include <string.h>
 #include <iostream>
 #include "Node.h"
+#include "IR.cpp"
 
 #define V vector<Node*>
 using namespace std;
@@ -29,6 +30,7 @@ void outputTable();
 void outputSymbolTable();
 
 static int mycount = 0;
+static Node * uroot;
 static vector<Node*> ranged_nodes;
 extern symbolTable *symboltable;
 
@@ -69,7 +71,8 @@ extern symbolTable *symboltable;
 %%
 
 tree: 
-	  program { outputTree($1); }
+	  program { outputTree($1); 
+	  			uroot = $1;}
 	;
 
 program: 
@@ -411,6 +414,7 @@ int main(int argc,char* argv[]) {
     yyparse();
 	outputTable();
 	outputSymbolTable();
+	IRCode(uroot);
 	return 0;
 }
 
