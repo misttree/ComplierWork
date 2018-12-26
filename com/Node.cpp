@@ -88,22 +88,42 @@ void Node::addAttribute() {
             string type = this->children.front()->getDetail();
             list<Node*> var_list = this->children.back()->children;
             for (list<Node*>::iterator it=var_list.begin(); it!=var_list.end(); it++) {
+                cout << (*it)->name << ":" << (*it)->detail << endl;
                 if ((*it)->detail == "pointer") {
                     Node* p=NULL;
                     for (p=(*it)->children.front(); p->children.size()!=0; p=p->children.front());
                     if (p) {
-                        cout << p->name << ":" << p->detail << ":" << p->value << endl;
+                        // cout << p->name << ":" << p->detail << ":" << p->value << endl;
                         p->value->setNodeType(type + p->value->getNodeType());
                     }
-                } else if ((*it)->detail == "array") {
-                    Node *p = (*it)->children.front()->children.front();
-                    cout << p->name << ":" << p->detail << ":" << p->value << endl;
-                    p->value->setNodeType("Array<"+type+">");
+                } else if ((*it)->detail == "init_array_or_point_assignment" || (*it)->detail == "array") {
+                    Node *point = (*it)->children.front()->children.front();
+                    // cout << p->name << ":" << p->detail << ":" << p->value << endl; 
+
+                    symbolNode* symbol = point->value;
+                    stack<pair<symbolNode*, int> > s;
+                    pair<symbolNode*, int> p(symbol, 0);
+                    s.push(p);
+                    while(!s.empty()) {
+                        pair<symbolNode*, int> p = s.top(); s.pop();
+                        symbolNode* parent = p.first->parentNode;
+                        if (parent && p.second + 1 < parent->children.size() && parent->children[p.second+1]->getNodeName().find("[")!=-1) {
+                            pair<symbolNode*, int> pnew(parent->children[p.second+1], p.second+1);
+                            s.push(pnew);
+                        }
+                        p.first->setNodeType(type);
+                        cout << "symbol: " << p.first->getNodeName() << " " << p.first->children.size() << endl;
+                        if (p.first->children.size() > 0) {
+                            pair<symbolNode*, int> pnew(p.first->children.front(), 0);
+                            s.push(pnew);
+                        }
+                    }
+
+                    point->value->setNodeType("Array<"+type+">");
                 } else {
-                    cout << (*it)->children.front()->detail << endl;
+                    // cout << (*it)->children.front()->detail << endl;
                     (*it)->children.front()->value->setNodeType(type);
                 }
-                
             }
         }
     } else if (this->name == "assignment_expression") {

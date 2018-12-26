@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <stack>
 #include <iomanip>
 #include "symbol.h"
 using namespace std;

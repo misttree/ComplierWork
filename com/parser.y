@@ -163,7 +163,7 @@ array:
 
 //为了int[]={}成立
 array_sigle:
-	  id array_special {V v; v.push_back($2); $$=newnode(mycount++, "array_sigle", "array_sigle", v);}
+	  id array_special {V v;v.push_back($1); v.push_back($2); $$=newnode(mycount++, "array_sigle", "array_sigle", v);}
 	;
 //数组主要的几种表示方式
 array_main: 
