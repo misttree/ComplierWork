@@ -885,6 +885,10 @@ ETC .
 		}
 		case 2:
 		{
+			pnew = symboltable->findNode(symboltable->now, yytext);
+			if (pnew == NULL) {
+				cout << "Error" << endl;
+			}
 			// cout<<"System Error: Unreachable state"<<endl;
 			break;
 		}

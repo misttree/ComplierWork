@@ -25,6 +25,7 @@ Node* newnode(int index, Node* node, const string detail);
 Node* newnode(int index, const string name, const string detail, Node* node);
 Node* newnode(int index, const string name, const string detail, vector<Node*> nodes);
 void initTypeEquivalenceClass();
+void initTypeLevel();
 
 void outputTree(Node* node);
 list<string> formatOutputTree(list<Node*> children, list<string> strformat);
@@ -38,7 +39,7 @@ extern symbolTable *symboltable;
 extern int yylineno;
 
 map<string, int> typeEquivalenceClass;
-
+map<string, int> typeLevel;
 %}
 
 // place any declarations here
@@ -331,9 +332,9 @@ logical_expression:
 	;
 
 assignment_expression: 
-	  id ASSIGNOP expression { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++,"assignment_expression","assignment_expression", v); }
-	| id self_assign expression {V v;v.push_back($1);v.push_back($3); $2->addChildren(v); $$=$2;}
-	| array ASSIGNOP additive_expression{V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++,"assignment_expression","assignment_expression", v);}
+	  id ASSIGNOP expression { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++,"assignment_expression","assignment_expression", v); $$->checkType();}
+	| id self_assign expression {V v;v.push_back($1);v.push_back($3); $2->addChildren(v); $$=$2; $$->checkType();}
+	| array ASSIGNOP additive_expression{V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++,"assignment_expression","assignment_expression", v); $$->checkType();}
 	| unary_expression  { $$=$1; }
 	;
 
@@ -545,4 +546,13 @@ void initTypeEquivalenceClass() {
 	typeEquivalenceClass.insert(pair<string, int>("int", 4));
 	typeEquivalenceClass.insert(pair<string, int>("bool", 4));
 	typeEquivalenceClass.insert(pair<string, int>("float", 4));
+	typeEquivalenceClass.insert(pair<string, int>("", -1));
+}
+
+void initTypeLevel() {
+	typeLevel.insert(pair<string, int>("bool", 0));
+	typeLevel.insert(pair<string, int>("char", 1));
+	typeLevel.insert(pair<string, int>("int", 2));
+	typeLevel.insert(pair<string, int>("float", 3));
+	typeLevel.insert(pair<string, int>("", -1));
 }

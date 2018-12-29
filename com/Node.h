@@ -8,10 +8,12 @@
 #include <stack>
 #include <map>
 #include <iomanip>
-#include "symbol.h"
-using namespace std;
 
+using namespace std;
 extern map<string, int> typeEquivalenceClass;
+extern map<string, int> typeLevel;
+
+#include "symbol.h"
 
 class Node {
 
