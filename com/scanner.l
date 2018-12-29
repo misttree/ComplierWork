@@ -865,7 +865,7 @@ ETC .
 }
 
 {ID} {
-	cout << symboltable->statementNumber << "  " << yytext << endl;  // 输出状态转换信息
+	// cout << symboltable->statementNumber << "  " << yytext << endl;  // 输出状态转换信息
 	symbolNode * pnew;
 	switch(symboltable->statementNumber)
 	{

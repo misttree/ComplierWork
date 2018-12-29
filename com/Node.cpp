@@ -118,7 +118,7 @@ void Node::addAttribute() {
             string type = this->children.front()->getDetail();
             list<Node*> var_list = this->children.back()->children;
             for (list<Node*>::iterator it=var_list.begin(); it!=var_list.end(); it++) {
-                cout << (*it)->name << ":" << (*it)->detail << endl;
+                // cout << (*it)->name << ":" << (*it)->detail << endl;
                 if ((*it)->detail == "pointer") {
                     Node* p=NULL;
                     for (p=(*it)->children.front(); p->children.size()!=0; p=p->children.front());
@@ -260,7 +260,6 @@ void Node::generateTypeInExpression() {
 void Node::checkType() {
     if (this->children.size() == 2) {
         symbolNode *front=this->children.front()->value, *back=this->children.back()->value;
-        cout << "checkType:" << this->name <<" front:" << front->getNodeType() << "\tback:" << back->getNodeType() << endl;
         if (front->getNodeType() == back->getNodeType()) {
             this->value = new symbolNode("", this->children.front()->value->getNodeType());
             return;
@@ -269,7 +268,7 @@ void Node::checkType() {
             if (typeEquivalenceClass.at(front->getNodeType()) == 4) {
                 // 检查 bool char int float 之间的类型
                 if (typeLevel.at(front->getNodeType()) < typeLevel.at(back->getNodeType())) {
-                    cout << "WARNING: Losing bits from " << back->getNodeType() << " to " << front->getNodeType() << endl;
+                    cout << "WARNING(line:" << yylineno << "): Losing bits from " << back->getNodeType() << " to " << front->getNodeType() << endl;
                 } 
             }
         }

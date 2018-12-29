@@ -12,6 +12,7 @@
 using namespace std;
 extern map<string, int> typeEquivalenceClass;
 extern map<string, int> typeLevel;
+extern int yylineno;
 
 #include "symbol.h"
 
