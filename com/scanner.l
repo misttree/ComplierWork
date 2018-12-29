@@ -880,25 +880,37 @@ ETC .
 }
 
 {ID} {
-	// cout << symboltable->statementNumber << "  " << yytext << endl;  // 输出状态转换信息
+	 cout << symboltable->statementNumber << "  " << yytext << endl;  // 输出状态转换信息
 	symbolNode * pnew;
 	switch(symboltable->statementNumber)
 	{
 		case 0:
 		{
+
 			for(int i = 0; i < typedefString.size(); i++)
 			{
 				if(typedefString.at(i)->getNodeName() == yytext)
 				{
+					string temp = yytext;
+					temp.append("(STRUCT_DEF)");
+					pnew = new symbolNode(yytext, temp);
 					symboltable->statementNumber = 4;
 					matchStructName = yytext;
 					break;
 				}
 			}
-			pnew = symboltable->findNode(symboltable->now, yytext);
-			if (pnew == NULL)
+			if (symboltable->statementNumber != 4)
 			{
-				cout << "ERROR(line: " << yylineno << "): Undefine Variable " << yytext << endl;
+				pnew = symboltable->findNode(symboltable->now, yytext);
+				if (pnew == NULL)
+				{
+					cout << "ERROR(line: " << yylineno << "): Undefine Variable " << yytext << endl;
+				}
+				else
+				{
+					cout << "findNode " << pnew->getNodeName() << " " << pnew->getNodeType() <<" " << pnew->children.size() << endl;
+				}
+				
 			}
 			break;
 		}
@@ -932,7 +944,7 @@ ETC .
 			typedefString.push_back(new symbolNode(yytext));
 			string pnew_name = yytext;
 			pnew_name = pnew_name + "(struct)";
-			symbolNode * pnew = new symbolNode(pnew_name);
+			pnew = new symbolNode(pnew_name);
 			symboltable->insertNode(pnew);
 			symboltable->down();
 			symboltable->statementNumber = 0;
@@ -942,9 +954,9 @@ ETC .
 		case 4:
 		{
 			symboltable->statementNumber = 2;
-			symbolNode * pnew = new symbolNode(yytext);
+			pnew = new symbolNode(yytext);
 			symboltable->insertNode(pnew);
-			for( auto  point : typedefString)
+			for(auto point : typedefString)
 			{
 				if(point->getNodeName() == matchStructName)
 				{
@@ -953,7 +965,7 @@ ETC .
 						pnew->giveChildren(temp->getNodeName());
 					}
 				}
-			} 
+			}
 			break;
 		}
 		default:
@@ -962,7 +974,7 @@ ETC .
 			break;
 		}
 	}
-
+	
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext), pnew);
 	return ID;
