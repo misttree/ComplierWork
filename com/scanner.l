@@ -905,6 +905,10 @@ ETC .
 			if (pnew == NULL) {
 				cout << "Error" << endl;
 			}
+			if(pnew->getMessage() == "func")
+			{	
+				symboltable->up();
+			}
 			// cout<<"System Error: Unreachable state"<<endl;
 			break;
 		}
