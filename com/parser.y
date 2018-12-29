@@ -399,7 +399,7 @@ call_func:
 
 args: 
 	  expression { $$=newnode(mycount++, "args", "args", $1); }
-    | expression COMMA args { $3->addChild($1); $$=$3; }
+    | args COMMA expression { $1->addChild($3); $$=$1; }
     ;
 
 number: 

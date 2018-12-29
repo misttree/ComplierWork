@@ -217,9 +217,8 @@ void Node::addAttribute() {
                 this->children.back()->children.front()->value->setNodeType(type);
             }
         }
-    }
-    else if (this->name == "call_func") {
-        if (this->countOfChildren == 2) {
+    } else if (this->name == "call_func") {
+        if (this->countOfChildren == 2 || this->countOfChildren == 1) {
             this->value = this->children.front()->value;
         }
     }
@@ -313,19 +312,21 @@ void Node::checkType() {
             list<Node*> args = this->children.back()->children;
             int index = 0;
             bool right = true;
-            for (list<Node*>::iterator it=args.begin(); it!=args.end(); it++, index++)
-            {
-                if (index > value->children.size() - 1)
+            if (args.size() != value->children.size()) right = false;
+            else
+                for (list<Node*>::iterator it=args.begin(); it!=args.end(); it++, index++)
                 {
-                    right = false;
-                    break;
+                    if (index > value->children.size() - 1)
+                    {
+                        right = false;
+                        break;
+                    }
+                    if (value->children.at(index)->getNodeType() != (*it)->value->getNodeType())
+                    {
+                        right = false;
+                        break;
+                    }
                 }
-                if (value->children.at(index)->getNodeType() != (*it)->value->getNodeType())
-                {
-                    right = false;
-                    break;
-                }
-            }
             if (index < value->children.size()) right = false;
             if (!right)
             {
@@ -338,6 +339,14 @@ void Node::checkType() {
                     else
                         cout << (*it)->getValue()->getNodeType() << ") " << endl;
                 }
+                exit(0);
+            }
+        }
+        else if (this->countOfChildren == 1)
+        {
+            if (this->children.front()->value->children.size())
+            {
+                cout << "ERROR(line:" << yylineno << "): Cannot find function " << this->children.front()->detail << "()";
                 exit(0);
             }
         }
