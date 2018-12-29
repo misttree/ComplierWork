@@ -25,6 +25,7 @@ Node* newnode(int index, Node* node, const string detail);
 Node* newnode(int index, const string name, const string detail, Node* node);
 Node* newnode(int index, const string name, const string detail, vector<Node*> nodes);
 void initTypeEquivalenceClass();
+void initTypeLevel();
 
 void outputTree(Node* node);
 list<string> formatOutputTree(list<Node*> children, list<string> strformat);
@@ -38,7 +39,7 @@ extern symbolTable *symboltable;
 extern int yylineno;
 
 map<string, int> typeEquivalenceClass;
-
+map<string, int> typeLevel;
 %}
 
 // place any declarations here
@@ -52,7 +53,7 @@ map<string, int> typeEquivalenceClass;
 %token <node> CASE CATCH CHAR CLASS CONST CONTINUE CO_AWAIT DEFAULT
 %token <node> DELETE DO DOUBLE ELSE ENUM EXTERN FALSE FOR
 %token <node> FRIEND GOTO IF IMPORT INLINE INT LONG NAMESPACE
-%token <node> NEW NULLPTR OPERATOR PRIVATE PROTECTED PUBLIC RETURN SHORT
+%token <node> NEW NULLPTR OPERATOR PRINTF PRIVATE PROTECTED PUBLIC RETURN SCANF SHORT
 %token <node> SIGNED SIZEOF STATIC STRING_DEFINE STRUCT SWITCH SYNCHRONIZED TEMPLATE
 %token <node> THIS THROW TRUE TRY TYPEDEF UNION UNSIGNED USING
 %token <node> VIRTUAL VOID WHILE TYPE ID ERROR_ID LETTER LETTERS
@@ -331,9 +332,9 @@ logical_expression:
 	;
 
 assignment_expression: 
-	  id ASSIGNOP expression { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++,"assignment_expression","assignment_expression", v); }
-	| id self_assign expression {V v;v.push_back($1);v.push_back($3); $2->addChildren(v); $$=$2;}
-	| array ASSIGNOP additive_expression{V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++,"assignment_expression","assignment_expression", v);}
+	  id ASSIGNOP expression { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++,"assignment_expression","assignment_expression", v); $$->checkType();}
+	| id self_assign expression {V v;v.push_back($1);v.push_back($3); $2->addChildren(v); $$=$2; $$->checkType();}
+	| array ASSIGNOP additive_expression{V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++,"assignment_expression","assignment_expression", v); $$->checkType();}
 	| unary_expression  { $$=$1; }
 	;
 
@@ -371,21 +372,21 @@ relop:
 
 additive_expression: 
 	  term {$$=$1;}
-    | additive_expression PLUS term { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "additive_expression", "+", v); }
-    | additive_expression MINUS term { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "additive_expression", "-", v); }
+    | additive_expression PLUS term { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "additive_expression", "+", v); $$->generateTypeInExpression(); }
+    | additive_expression MINUS term { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "additive_expression", "-", v); $$->generateTypeInExpression(); }
     ;
 
 term: 
 	  factor {$$=$1;}
-    | term STAR factor { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "term", "*", v); }
-    | term DIV factor { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "term", "/", v); }
+    | term STAR factor { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "term", "*", v); $$->generateTypeInExpression(); }
+    | term DIV factor { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "term", "/", v); $$->generateTypeInExpression(); }
     ;
 
 factor: 
 	  LP expression RP { $$=$2; }
-    | id { $$ = newnode(mycount++, "factor", "factor", $1); }
+    | id { $$ = newnode(mycount++, "factor", "factor", $1); $$->generateTypeInFactor(); }
     | call_func { $$=$1; }
-    | number { $$ = newnode(mycount++, "factor", "factor", $1); }
+    | number { $$ = newnode(mycount++, "factor", "factor", $1); $$->generateTypeInFactor(); }
 	| array {$$ = newnode(mycount++, "factor", "factor", $1); }
 	| paddress { $$ = newnode(mycount++, "factor", "factor", $1); }
 	| pointer { $$ = newnode(mycount++, "factor", "factor", $1); }
@@ -416,9 +417,10 @@ id:
 %%
 int main(int argc,char* argv[]) {
 	initTypeEquivalenceClass();
+	initTypeLevel();
     yyin = fopen(argv[1],"r");
     yyparse();
-	outputTable();
+	// outputTable();
 	outputSymbolTable();
 	IRCode(uroot);
 	return 0;
@@ -461,10 +463,23 @@ list<string> formatOutputTree(list<Node*> children, list<string> strformat) {
 			cout << (*i);
 		}
 		if (count == num-1) {
-			cout << "└─ " << (*it)->name << ":" << (*it)->detail << endl;
+
+			cout << "└─ " << (*it)->name << ":" << (*it)->detail;
+			if ((*it)->value != NULL)
+			{
+				cout << ":" << (*it)->value->getNodeType();
+				// cout << ":" << (*it)->value;
+			}
+			cout << endl;
 			strformat.push_back("   ");
 		} else {
-			cout << "├─ " << (*it)->name << ":" << (*it)->detail << endl;
+			cout << "├─ " << (*it)->name << ":" << (*it)->detail;
+			if ((*it)->value != NULL)
+			{
+				cout << ":" << (*it)->value->getNodeType();
+				// cout << ":" << (*it)->value;
+			}
+			cout << endl;
 			strformat.push_back("│  ");
 		}
 		strformat = formatOutputTree((*it)->children, strformat);
@@ -492,6 +507,7 @@ Node* newnode(int index, const string name, Node* node) {
 	p->setValue(node->value);
 	ranged_nodes.push_back(p);
 	// outputTree(p);
+	delete node;
 	return p;
 }
 
@@ -500,6 +516,7 @@ Node* newnode(int index, Node* node, const string detail) {
 	p->setValue(node->value);
 	ranged_nodes.push_back(p);
 	// outputTree(p);
+	delete node;
 	return p;
 }
 
@@ -530,4 +547,13 @@ void initTypeEquivalenceClass() {
 	typeEquivalenceClass.insert(pair<string, int>("int", 4));
 	typeEquivalenceClass.insert(pair<string, int>("bool", 4));
 	typeEquivalenceClass.insert(pair<string, int>("float", 4));
+	typeEquivalenceClass.insert(pair<string, int>("", -1));
+}
+
+void initTypeLevel() {
+	typeLevel.insert(pair<string, int>("bool", 0));
+	typeLevel.insert(pair<string, int>("char", 1));
+	typeLevel.insert(pair<string, int>("int", 2));
+	typeLevel.insert(pair<string, int>("float", 3));
+	typeLevel.insert(pair<string, int>("", -1));
 }
