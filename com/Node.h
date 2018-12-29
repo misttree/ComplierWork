@@ -17,15 +17,15 @@ extern map<string, int> typeLevel;
 
 class Node {
 
-private:
 public:
     int identifier;
     string name;
     string detail;
     list<Node*> children;
+    Node* parent;
     int countOfChildren;
     symbolNode * value;
-public:
+
     Node(int index, const string name, const string detail);
 
     Node(string name);
@@ -39,6 +39,8 @@ public:
     string getDetail();
     
     symbolNode * getValue();
+
+    Node* searchFirstNodeByName(string name);
 
     void setValue(symbolNode * value);
 

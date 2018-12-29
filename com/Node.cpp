@@ -5,6 +5,7 @@
 #include "Node.h"
 
 Node::Node(int index, const string name, const string detail) {
+    this->parent = NULL;
     this->value = NULL;
     this->identifier = index;
     this->name = name;
@@ -13,6 +14,7 @@ Node::Node(int index, const string name, const string detail) {
 }
 
 Node::Node(string name) {
+    this->parent = NULL;
     this->value = NULL;
     this->identifier = -1;
     this->name = name;
@@ -21,6 +23,7 @@ Node::Node(string name) {
 }
 
 Node::Node(string name, symbolNode * value) {
+    this->parent = NULL;
     this->identifier = -1;
     this->name = name;
     this->detail = name;
@@ -34,12 +37,14 @@ void Node::setValue(symbolNode * value) {
 
 void Node::addChild(Node* child) {
     this->children.push_back(child);
+    child->parent = this;
     this->countOfChildren += 1;
 }
 
 void Node::addChildren(Node* newChildren[], int length) {
     for (int i = 0; i < length; ++i) {
         this->children.push_back(newChildren[i]);
+        newChildren[i]->parent = this;
         this->countOfChildren++;
     }
 }
@@ -47,6 +52,7 @@ void Node::addChildren(Node* newChildren[], int length) {
 void Node::addChildren(vector<Node*> newChildren) {
     for (vector<Node*>::iterator it=newChildren.begin(); it!=newChildren.end(); it++) {
         this->children.push_back(*it);
+        (*it)->parent = this;
         this->countOfChildren++;
     }
 }
@@ -54,6 +60,7 @@ void Node::addChildren(vector<Node*> newChildren) {
 void Node::addChildren(list<Node*> newChildren) {
     for (list<Node*>::iterator it=newChildren.begin(); it != newChildren.end(); it++) {
         this->children.push_back(*it);
+        (*it)->parent = this;
         this->countOfChildren++;
     }
 }
@@ -82,6 +89,27 @@ string Node::getDetail() {
 symbolNode* Node::getValue()
 {
     return this->value;
+}
+
+Node* Node::searchFirstNodeByName(string name) {
+    stack<pair<Node*, int> > s;
+    s.push(pair<Node*, int>(this, 0));
+    while(!s.empty()) {
+        pair<Node*, int> p = s.top(); s.pop();
+        if (p.first) {
+            Node* parent = p.first->parent;
+            if (parent && p.second + 1 < parent->children.size()) {
+                list<Node*>::iterator it=parent->children.begin();
+                for (int click=p.second+1; click > 0; click--, it++);
+                s.push(pair<Node*, int>((*it), p.second+1));
+            }
+            if (p.first->name == name) return p.first;
+            if (p.first->children.size() > 0) {
+                s.push(pair<Node*, int>(p.first->children.front(), 0));
+            }
+        }
+    }
+    return NULL;
 }
 
 void Node::addAttribute() {
@@ -123,6 +151,11 @@ void Node::addAttribute() {
                 } else {
                     // cout << (*it)->children.front()->detail << endl;
                     (*it)->children.front()->value->setNodeType(type);
+                }
+            }
+            for (list<Node*>::iterator iter=var_list.begin(); iter!=var_list.end(); iter++) {
+                if ((*iter)->name == "assignment_expression") {
+                    (*iter)->checkType();
                 }
             }
         }
@@ -227,7 +260,7 @@ void Node::generateTypeInExpression() {
 void Node::checkType() {
     if (this->children.size() == 2) {
         symbolNode *front=this->children.front()->value, *back=this->children.back()->value;
-        cout << "checkType:" << this->name <<" front:" << front->getNodeType() << "\tback" << back->getNodeType() << endl;
+        cout << "checkType:" << this->name <<" front:" << front->getNodeType() << "\tback:" << back->getNodeType() << endl;
         if (front->getNodeType() == back->getNodeType()) {
             this->value = new symbolNode("", this->children.front()->value->getNodeType());
             return;

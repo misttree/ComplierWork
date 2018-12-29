@@ -417,6 +417,7 @@ id:
 %%
 int main(int argc,char* argv[]) {
 	initTypeEquivalenceClass();
+	initTypeLevel();
     yyin = fopen(argv[1],"r");
     yyparse();
 	// outputTable();
