@@ -78,6 +78,7 @@ ELSE else
 ENUM enum
 EXTERN extern
 FALSE false
+FLOAT_S float
 FOR for
 FRIEND friend
 GOTO goto
@@ -556,6 +557,14 @@ ETC .
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));
 	return FALSE;
+}
+
+{FLOAT_S} {
+	if(symboltable->statementNumber == 0)
+		symboltable->statementNumber = 1;
+	//cout << string(yytext) << endl;
+	yylval=new Node(string(yytext));
+	return FLOAT_S;
 }
 
 {FOR} {

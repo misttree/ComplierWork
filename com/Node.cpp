@@ -249,6 +249,7 @@ void Node::generateTypeInExpression() {
                 if(typeEquivalenceClass.at(front->getNodeType()) != typeEquivalenceClass.at(back->getNodeType()))
                 {
                     cout << "ERROR : Wrong mathematical calculations" << endl;
+                    exit(0);
                 }
             }
             else 
@@ -279,11 +280,22 @@ void Node::checkType() {
     {
         if (this->children.size() == 2) 
         {
-            if (this->children.front()->getName() == "array") {
-                
-                return;
+            symbolNode* front;
+            // cout << this->children.front()->getName() << endl;
+            if (this->children.front()->getName() == "array")
+            {
+                symbolNode* value = this->children.front()->children.front()->getValue();
+                int index = atoi(this->children.back()->children.front()->detail.c_str());
+                if (index < value->children.size() && index >= 0)
+                {
+                    front = value->children.at(index);
+                }
             }
-            symbolNode *front=this->children.front()->value, *back=this->children.back()->value;
+            else
+            {
+                front = this->children.front()->value;
+            }
+            symbolNode *back=this->children.back()->value;
             if (front->getNodeType() == back->getNodeType())
             {
                 this->value = new symbolNode("", this->children.front()->value->getNodeType());
@@ -304,6 +316,7 @@ void Node::checkType() {
                 if (typeEquivalenceClass.at(front->getNodeType()) != -1 && typeEquivalenceClass.at(back->getNodeType()) != -1)
                 {
                     cout << "ERROR(line: "<< yylineno << "): The type " << back->getNodeType() << " can't be assigned to type " << front->getNodeType() << endl;
+                    exit(0);
                 }
             }
         }

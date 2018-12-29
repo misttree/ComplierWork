@@ -57,7 +57,7 @@ map<string, int> typeLevel;
 %token <node> SIGNED SIZEOF STATIC STRING_DEFINE STRUCT SWITCH SYNCHRONIZED TEMPLATE
 %token <node> THIS THROW TRUE TRY TYPEDEF UNION UNSIGNED USING
 %token <node> VIRTUAL VOID WHILE TYPE ID ERROR_ID LETTER LETTERS
-%token <node> QUETO STRING DOUBLEQUETO
+%token <node> QUETO STRING DOUBLEQUETO FLOAT_S
 %token <node> SHARP PE ME SE DE PP MM CL
 
 %type <node> tree program external_declaration var_declaration init_declarator_list pointer paddress array array_sigle declarator
@@ -203,7 +203,7 @@ fun_declaration:
 declaration_specifiers: 
 	  INT { $$=newnode(mycount++, "INT", $1); }
     | VOID { $$=newnode(mycount++, "VOID", $1); }
-    | FLOAT { $$=newnode(mycount++, "FLOAT", $1); }
+    | FLOAT_S { $$=newnode(mycount++, "FLOAT", $1); }
 	| BOOL { $$=newnode(mycount++, "BOOL", $1); }
 	| CHAR { $$=newnode(mycount++, "CHAR", $1); }
 	| DOUBLE { $$=newnode(mycount++, "DOUBLE", $1); }
@@ -553,10 +553,13 @@ void initTypeEquivalenceClass() {
 	typeEquivalenceClass.insert(pair<string, int>("char*", 2));
 	typeEquivalenceClass.insert(pair<string, int>("Array<float>", 3));
 	typeEquivalenceClass.insert(pair<string, int>("float*", 3));
+	typeEquivalenceClass.insert(pair<string, int>("Array<double>", 0));
+	typeEquivalenceClass.insert(pair<string, int>("double*", 0));
 	typeEquivalenceClass.insert(pair<string, int>("char", 4));
 	typeEquivalenceClass.insert(pair<string, int>("int", 4));
 	typeEquivalenceClass.insert(pair<string, int>("bool", 4));
 	typeEquivalenceClass.insert(pair<string, int>("float", 4));
+	typeEquivalenceClass.insert(pair<string, int>("double", 4));
 	typeEquivalenceClass.insert(pair<string, int>("", -1));
 }
 
@@ -565,5 +568,6 @@ void initTypeLevel() {
 	typeLevel.insert(pair<string, int>("char", 1));
 	typeLevel.insert(pair<string, int>("int", 2));
 	typeLevel.insert(pair<string, int>("float", 3));
+	typeLevel.insert(pair<string, int>("double", 4));
 	typeLevel.insert(pair<string, int>("", -1));
 }
