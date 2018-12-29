@@ -66,7 +66,7 @@ map<string, int> typeLevel;
 %type <node> return_stmt expression logical_expression assignment_expression simple_expression unary_expression postfix_expression
 %type <node> relop additive_expression term factor call_func args number id array_size self_assign switch_stmt case_list
 %type <node> list_struct mininum array_main array_special init_array_or_point_assignment content_of_list_struct
-%type <node> struct_specifier struct_declaration_list struct_id struct_name_specifier
+%type <node> struct_specifier struct_declaration_list struct_id struct_name_specifier printf_statement scanf_statement
 
 %locations
 
@@ -260,6 +260,8 @@ statement:
 	| CONTINUE SEMI {$$=newnode(mycount++, "CONTINUE", "continue", $1);}
     | return_stmt {$$=$1;}
 	| struct_name_specifier SEMI {$$=$1;}
+	| printf_statement SEMI {$$=$1;}
+	| scanf_statement SEMI {$$=$1;}
     ;
 
 if_stmt: 
@@ -311,6 +313,14 @@ for_condition:
 	| LP SEMI expression SEMI expression RP {V v;v.push_back(nullNode(mycount++));v.push_back($3);v.push_back($5); $$=newnode(mycount++, "for_condition", "for_condition", v); }
 	| LP SEMI SEMI expression RP {V v;v.push_back(nullNode(mycount++));v.push_back(nullNode(mycount++));v.push_back($4); $$=newnode(mycount++, "for_condition", "for_condition", v); }
 	| LP SEMI SEMI RP {V v;v.push_back(nullNode(mycount++));v.push_back(nullNode(mycount++));v.push_back(nullNode(mycount++)); $$=newnode(mycount++, "for_condition", "for_condition", v); }
+	;
+
+printf_statement:
+	  PRINTF LP additive_expression RP { $$=newnode(mycount++, "printf_statement", "printf_statement", $3); }
+	;
+
+scanf_statement:
+	  SCANF LP id RP { $$=newnode(mycount++, "scanf_statement", "scanf_statement", $3); }
 	;
 
 

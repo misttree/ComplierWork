@@ -279,6 +279,10 @@ void Node::checkType() {
     {
         if (this->children.size() == 2) 
         {
+            if (this->children.front()->getName() == "array") {
+                
+                return;
+            }
             symbolNode *front=this->children.front()->value, *back=this->children.back()->value;
             if (front->getNodeType() == back->getNodeType())
             {

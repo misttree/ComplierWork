@@ -177,7 +177,7 @@ ETC .
 
 {SEMI} {
 
-	if(symboltable->statementNumber == 2)
+	if(symboltable->statementNumber == 2 || symboltable->statementNumber == 1)
 		symboltable->statementNumber = 0;
 
 	//cout << string(yytext) << endl;
