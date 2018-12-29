@@ -156,14 +156,20 @@ ETC .
 }
 
 {INT_HEX} {
+	symbolNode * pnew = new symbolNode();
+	pnew->setNodeName("INT_HEX");
+	pnew->setNodeType("int_hex");
 	//cout << string(yytext) << endl;
-	yylval=new Node(string(yytext));
+	yylval=new Node(string(yytext), pnew);
 	return INT_HEX;
 }
 
 {INT_OCT} {
+	symbolNode * pnew = new symbolNode();
+	pnew->setNodeName("INT_OCT");
+	pnew->setNodeType("int_oct");
 	//cout << string(yytext) << endl;
-	yylval=new Node(string(yytext));
+	yylval=new Node(string(yytext), pnew);
 	return INT_OCT;
 }
 
@@ -172,7 +178,7 @@ ETC .
 	pnew->setNodeName("FLOAT");
 	pnew->setNodeType("float");
 	//cout << string(yytext) << endl;
-	yylval=new Node(string(yytext));
+	yylval=new Node(string(yytext), pnew);
 	return FLOAT;
 }
 

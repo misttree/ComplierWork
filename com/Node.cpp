@@ -228,7 +228,9 @@ void Node::generateTypeInFactor() {
     if (this->children.size() > 0) {
         if (this->children.front()->name == "ID") {
             this->value = new symbolNode("", this->children.front()->value->getNodeType());
-        } else if (this->children.front()->name == "INT_DEX") {
+        } else if (this->children.front()->name == "INT_DEX" || this->children.front()->name == "INT_HEX" || this->children.front()->name == "INT_OCT") {
+            this->value = new symbolNode("" , this->children.front()->value->getNodeType());
+        } else if (this->children.front()->name == "FLOAT") {
             this->value = new symbolNode("" , this->children.front()->value->getNodeType());
         }
     }
@@ -254,7 +256,11 @@ void Node::generateTypeInExpression() {
             }
             else 
             {
-                if (front->getNodeType() == "float" || back->getNodeType() == "float") 
+                if (front->getNodeType() == "double" || back->getNodeType() == "double")
+                {
+                    this->value = new symbolNode("", "double");
+                }
+                else if (front->getNodeType() == "float" || back->getNodeType() == "float") 
                 {
                     this->value = new symbolNode("", "float");
                 }

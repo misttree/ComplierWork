@@ -203,7 +203,7 @@ fun_declaration:
 declaration_specifiers: 
 	  INT { $$=newnode(mycount++, "INT", $1); }
     | VOID { $$=newnode(mycount++, "VOID", $1); }
-    | FLOAT_S { $$=newnode(mycount++, "FLOAT", $1); }
+    | FLOAT_S { $$=newnode(mycount++, "FLOAT_S", $1); }
 	| BOOL { $$=newnode(mycount++, "BOOL", $1); }
 	| CHAR { $$=newnode(mycount++, "CHAR", $1); }
 	| DOUBLE { $$=newnode(mycount++, "DOUBLE", $1); }
