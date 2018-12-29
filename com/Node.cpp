@@ -285,7 +285,7 @@ void Node::checkType() {
             {
                 // 检查 bool char int float 之间的类型
                 if (typeLevel.at(front->getNodeType()) < typeLevel.at(back->getNodeType())) {
-                    cout << "WARNING(line:" << yylineno << "): Losing bits from " << back->getNodeType() << " to " << front->getNodeType() << endl;
+                    cout << "WARNING(line: " << yylineno << "): Losing bits from " << back->getNodeType() << " to " << front->getNodeType() << endl;
                 } 
             }
         }
@@ -293,7 +293,7 @@ void Node::checkType() {
         {
             if (typeEquivalenceClass.at(front->getNodeType()) != -1 && typeEquivalenceClass.at(back->getNodeType()) != -1)
             {
-                cout << "ERROR "<< yylineno << ": The type " << back->getNodeType() << " can't be assigned to type " << front->getNodeType() << endl;
+                cout << "ERROR(line: "<< yylineno << "): The type " << back->getNodeType() << " can't be assigned to type " << front->getNodeType() << endl;
             }
             
         }

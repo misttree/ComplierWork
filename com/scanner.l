@@ -883,7 +883,7 @@ ETC .
 			pnew = symboltable->findNode(symboltable->now, yytext);
 			if (pnew == NULL)
 			{
-				cout << "Error" << endl;
+				cout << "ERROR(line: " << yylineno << "): Undefine Variable " << yytext << endl;
 			}
 			break;
 		}
