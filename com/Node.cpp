@@ -320,16 +320,13 @@ void Node::checkType() {
                     right = false;
                     break;
                 }
-                cout << "Index: " << index << " Size:" << value->children.size() << endl;
-                cout << "value type: " << value->children.at(index)->getNodeType() << endl;
-                cout << "*it   type: " << (*it)->name << endl;
                 if (value->children.at(index)->getNodeType() != (*it)->value->getNodeType())
                 {
                     right = false;
                     break;
                 }
             }
-            if (index < value->children.size() - 1) right = false;
+            if (index < value->children.size()) right = false;
             if (!right)
             {
                 cout << "ERROR(line:" << yylineno << "): Cannot find function " << this->children.front()->detail << "(";
