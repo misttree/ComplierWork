@@ -231,25 +231,38 @@ void Node::generateTypeInFactor() {
 }
 
 void Node::generateTypeInExpression() {
-    if (this->children.size() == 2 && this->children.front()->value && this->children.back()->value) {
+    if (this->children.size() == 2 && this->children.front()->value && this->children.back()->value) 
+    {
         symbolNode *front=this->children.front()->value, *back=this->children.back()->value;
-        if (front->getNodeType() == back->getNodeType()) {
+        if (front->getNodeType() == back->getNodeType()) 
+        {
             this->value = new symbolNode("", front->getNodeType());
-        } else if (typeEquivalenceClass.at(front->getNodeType()) == typeEquivalenceClass.at(back->getNodeType())) {
-            if (typeEquivalenceClass.at(front->getNodeType()) < 4 ) {
-                if (front->getNodeType().back() == '*')  {
-                    this->value = new symbolNode("", front->getNodeType());
-                } else {
-                    this->value = new symbolNode("", back->getNodeType());
+        }
+        else if (typeEquivalenceClass.at(front->getNodeType()) == typeEquivalenceClass.at(back->getNodeType())) 
+        {
+            if (typeEquivalenceClass.at(front->getNodeType()) < 4 ) 
+            {
+                if(typeEquivalenceClass.at(front->getNodeType()) != typeEquivalenceClass.at(back->getNodeType()))
+                {
+                    cout << "ERROR : Wrong mathematical calculations" << endl;
                 }
-            } else {
-                if (front->getNodeType() == "float" || back->getNodeType() == "float") {
+            }
+            else 
+            {
+                if (front->getNodeType() == "float" || back->getNodeType() == "float") 
+                {
                     this->value = new symbolNode("", "float");
-                } else if (front->getNodeType() == "int" || back->getNodeType() == "int") {
+                }
+                else if (front->getNodeType() == "int" || back->getNodeType() == "int") 
+                {
                     this->value = new symbolNode("", "int");
-                } else if (front->getNodeType() == "char" || back->getNodeType() == "char") {
+                }
+                else if (front->getNodeType() == "char" || back->getNodeType() == "char") 
+                {
                     this->value = new symbolNode("", "char");
-                } else if (front->getNodeType() == "bool" || back->getNodeType() == "bool") {
+                }
+                else if (front->getNodeType() == "bool" || back->getNodeType() == "bool") 
+                {
                     this->value = new symbolNode("", "bool");
                 }
             }
@@ -258,19 +271,31 @@ void Node::generateTypeInExpression() {
 }
 
 void Node::checkType() {
-    if (this->children.size() == 2) {
+    if (this->children.size() == 2) 
+    {
         symbolNode *front=this->children.front()->value, *back=this->children.back()->value;
-        if (front->getNodeType() == back->getNodeType()) {
+        if (front->getNodeType() == back->getNodeType())
+        {
             this->value = new symbolNode("", this->children.front()->value->getNodeType());
             return;
         }
-        if (typeEquivalenceClass.at(front->getNodeType()) == typeEquivalenceClass.at(back->getNodeType())) {
-            if (typeEquivalenceClass.at(front->getNodeType()) == 4) {
+        if (typeEquivalenceClass.at(front->getNodeType()) == typeEquivalenceClass.at(back->getNodeType()))
+        {
+            if (typeEquivalenceClass.at(front->getNodeType()) == 4)
+            {
                 // 检查 bool char int float 之间的类型
                 if (typeLevel.at(front->getNodeType()) < typeLevel.at(back->getNodeType())) {
                     cout << "WARNING(line:" << yylineno << "): Losing bits from " << back->getNodeType() << " to " << front->getNodeType() << endl;
                 } 
             }
+        }
+        else
+        {
+            if (typeEquivalenceClass.at(front->getNodeType()) != -1 && typeEquivalenceClass.at(back->getNodeType()) != -1)
+            {
+                cout << "ERROR "<< yylineno << ": The type " << back->getNodeType() << " can't be assigned to type " << front->getNodeType() << endl;
+            }
+            
         }
     }
 }
