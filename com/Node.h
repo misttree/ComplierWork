@@ -8,22 +8,25 @@
 #include <stack>
 #include <map>
 #include <iomanip>
-#include "symbol.h"
-using namespace std;
 
+using namespace std;
 extern map<string, int> typeEquivalenceClass;
+extern map<string, int> typeLevel;
+extern int yylineno;
+
+#include "symbol.h"
 
 class Node {
 
-private:
 public:
     int identifier;
     string name;
     string detail;
     list<Node*> children;
+    Node* parent;
     int countOfChildren;
     symbolNode * value;
-public:
+
     Node(int index, const string name, const string detail);
 
     Node(string name);
@@ -37,6 +40,8 @@ public:
     string getDetail();
     
     symbolNode * getValue();
+
+    Node* searchFirstNodeByName(string name);
 
     void setValue(symbolNode * value);
 
@@ -53,6 +58,8 @@ public:
     void addAttribute();
 
     void generateTypeInExpression();
+
+    void generateTypeInFactor();
 
     void checkType();
 };

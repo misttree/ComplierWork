@@ -90,10 +90,12 @@ NAMESPACE namespace
 NEW new
 NULLPTR nullptr
 OPERATOR operator
+PRINTF printf
 PRIVATE private
 PROTECTED protected
 PUBLIC public
 RETURN return
+SCANF scanf
 SHORT short
 SIGNED signed
 SIZEOF sizeof
@@ -661,6 +663,12 @@ ETC .
 	return OPERATOR;
 }
 
+{PRINTF} {
+	//cout << string(yytext) << endl;
+	yylval=new Node(string(yytext));
+	return PRINTF;
+}
+
 {PRIVATE} {
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));
@@ -683,6 +691,12 @@ ETC .
 	//cout << string(yytext) << endl;
 	yylval=new Node(string(yytext));
 	return RETURN;
+}
+
+{SCANF} {
+	//cout << string(yytext) << endl;
+	yylval=new Node(string(yytext));
+	return SCANF;
 }
 
 {SHORT} {
@@ -851,7 +865,7 @@ ETC .
 }
 
 {ID} {
-	// cout<<symboltable->statementNumber<<"  "<<yytext<<endl;  // 输出状态转换信息
+	// cout << symboltable->statementNumber << "  " << yytext << endl;  // 输出状态转换信息
 	symbolNode * pnew;
 	switch(symboltable->statementNumber)
 	{
@@ -866,9 +880,11 @@ ETC .
 					break;
 				}
 			}
-			// 处理变量声明时的语句
-			// if(symboltable->findNode(symboltable->now, yytext) == NULL)
-			// cout<<"System Error: Undefined Variable "<<yytext<<endl;
+			pnew = symboltable->findNode(symboltable->now, yytext);
+			if (pnew == NULL)
+			{
+				cout << "ERROR(line: " << yylineno << "): Undefine Variable " << yytext << endl;
+			}
 			break;
 		}
 		case 1:
@@ -885,6 +901,10 @@ ETC .
 		}
 		case 2:
 		{
+			pnew = symboltable->findNode(symboltable->now, yytext);
+			if (pnew == NULL) {
+				cout << "Error" << endl;
+			}
 			// cout<<"System Error: Unreachable state"<<endl;
 			break;
 		}
