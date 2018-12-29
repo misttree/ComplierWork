@@ -393,13 +393,13 @@ factor:
 	;
 
 call_func: 
-	  id LP RP {$$ = newnode(mycount++, "call_func", "call_func", $1);}
-    | id LP args RP { V v;v.push_back($1);v.push_back($3);$$ = newnode(mycount++, "call_func", "call_func", v);}
+	  id LP RP {$$ = newnode(mycount++, "call_func", "call_func", $1);$$->addAttribute();$$->checkType();}
+    | id LP args RP { V v;v.push_back($1);v.push_back($3);$$ = newnode(mycount++, "call_func", "call_func", v);$$->addAttribute();$$->checkType();}
     ;
 
 args: 
-	  expression { $$=$1; }
-    | expression COMMA args { V v;v.push_back($1);v.push_back($3); $$ = newnode(mycount++, "args", "args", v);}
+	  expression { $$=newnode(mycount++, "args", "args", $1); }
+    | expression COMMA args { $3->addChild($1); $$=$3; }
     ;
 
 number: 

@@ -175,6 +175,7 @@ void Node::addAttribute() {
             it++;
             symbolNode* value = (*it)->value;
             value->setNodeType(type);
+            value->setMessage("func");
             it++;
             if((*it)->children.size() > 0) {
                 value->setNodeLength((*it)->children.front()->children.size());
@@ -217,10 +218,14 @@ void Node::addAttribute() {
             }
         }
     }
+    else if (this->name == "call_func") {
+        if (this->countOfChildren == 2) {
+            this->value = this->children.front()->value;
+        }
+    }
 }
 
 void Node::generateTypeInFactor() {
-    // TODO
     if (this->children.size() > 0) {
         if (this->children.front()->name == "ID") {
             this->value = new symbolNode("", this->children.front()->value->getNodeType());
@@ -271,31 +276,73 @@ void Node::generateTypeInExpression() {
 }
 
 void Node::checkType() {
-    if (this->children.size() == 2) 
+    if (this->name == "assignment_expression")
     {
-        symbolNode *front=this->children.front()->value, *back=this->children.back()->value;
-        if (front->getNodeType() == back->getNodeType())
+        if (this->children.size() == 2) 
         {
-            this->value = new symbolNode("", this->children.front()->value->getNodeType());
-            return;
-        }
-        if (typeEquivalenceClass.at(front->getNodeType()) == typeEquivalenceClass.at(back->getNodeType()))
-        {
-            if (typeEquivalenceClass.at(front->getNodeType()) == 4)
+            symbolNode *front=this->children.front()->value, *back=this->children.back()->value;
+            if (front->getNodeType() == back->getNodeType())
             {
-                // 检查 bool char int float 之间的类型
-                if (typeLevel.at(front->getNodeType()) < typeLevel.at(back->getNodeType())) {
-                    cout << "WARNING(line: " << yylineno << "): Losing bits from " << back->getNodeType() << " to " << front->getNodeType() << endl;
-                } 
+                this->value = new symbolNode("", this->children.front()->value->getNodeType());
+                return;
+            }
+            if (typeEquivalenceClass.at(front->getNodeType()) == typeEquivalenceClass.at(back->getNodeType()))
+            {
+                if (typeEquivalenceClass.at(front->getNodeType()) == 4)
+                {
+                    // 检查 bool char int float 之间的类型
+                    if (typeLevel.at(front->getNodeType()) < typeLevel.at(back->getNodeType())) {
+                        cout << "WARNING(line: " << yylineno << "): Losing bits from " << back->getNodeType() << " to " << front->getNodeType() << endl;
+                    } 
+                }
+            }
+            else
+            {
+                if (typeEquivalenceClass.at(front->getNodeType()) != -1 && typeEquivalenceClass.at(back->getNodeType()) != -1)
+                {
+                    cout << "ERROR(line: "<< yylineno << "): The type " << back->getNodeType() << " can't be assigned to type " << front->getNodeType() << endl;
+                }
             }
         }
-        else
+    }
+    else if (this->name == "call_func")
+    {
+        if (this->countOfChildren == 2)
         {
-            if (typeEquivalenceClass.at(front->getNodeType()) != -1 && typeEquivalenceClass.at(back->getNodeType()) != -1)
+            symbolNode* value = this->children.front()->value;
+            list<Node*> args = this->children.back()->children;
+            int index = 0;
+            bool right = true;
+            for (list<Node*>::iterator it=args.begin(); it!=args.end(); it++, index++)
             {
-                cout << "ERROR(line: "<< yylineno << "): The type " << back->getNodeType() << " can't be assigned to type " << front->getNodeType() << endl;
+                if (index > value->children.size() - 1)
+                {
+                    right = false;
+                    break;
+                }
+                cout << "Index: " << index << " Size:" << value->children.size() << endl;
+                cout << "value type: " << value->children.at(index)->getNodeType() << endl;
+                cout << "*it   type: " << (*it)->name << endl;
+                if (value->children.at(index)->getNodeType() != (*it)->value->getNodeType())
+                {
+                    right = false;
+                    break;
+                }
             }
-            
+            if (index < value->children.size() - 1) right = false;
+            if (!right)
+            {
+                cout << "ERROR(line:" << yylineno << "): Cannot find function " << this->children.front()->detail << "(";
+                index = 0;
+                for (list<Node*>::iterator it=args.begin(); it!=args.end(); it++, index++)
+                {
+                    if (index != args.size() - 1)
+                        cout << (*it)->getValue()->getNodeType() << ", ";
+                    else
+                        cout << (*it)->getValue()->getNodeType() << ") " << endl;
+                }
+                exit(0);
+            }
         }
     }
 }

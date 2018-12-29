@@ -6,15 +6,17 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include "symbol.h"
 #include <map>
-#include <iomanip>
 
 using namespace std;
 extern map<string, int> typeEquivalenceClass;
 extern map<string, int> typeLevel;
 extern int yylineno;
+extern symbolTable *symboltable;
 
-#include "symbol.h"
+
+#include <iomanip>
 
 class Node {
 
