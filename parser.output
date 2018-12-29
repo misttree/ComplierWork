@@ -1,0 +1,5825 @@
+Terminals unused in grammar
+
+   '+'
+   '-'
+   '*'
+   '/'
+   COMMENT
+   COMMENTS
+   AUTO
+   CATCH
+   CLASS
+   CONST
+   CO_AWAIT
+   DELETE
+   ENUM
+   EXTERN
+   FALSE
+   FRIEND
+   GOTO
+   IMPORT
+   INLINE
+   NAMESPACE
+   NULLPTR
+   OPERATOR
+   PRIVATE
+   PROTECTED
+   PUBLIC
+   SIGNED
+   SIZEOF
+   STATIC
+   SYNCHRONIZED
+   TEMPLATE
+   THIS
+   THROW
+   TRUE
+   TRY
+   TYPEDEF
+   UNION
+   UNSIGNED
+   USING
+   VIRTUAL
+   TYPE
+   ERROR_ID
+   LETTERS
+   QUETO
+   DOUBLEQUETO
+   SHARP
+
+
+状态 67 conflicts: 1 shift/reduce
+状态 99 conflicts: 2 shift/reduce
+状态 114 conflicts: 2 shift/reduce
+状态 131 conflicts: 2 shift/reduce
+状态 150 conflicts: 1 reduce/reduce
+状态 166 conflicts: 21 shift/reduce
+状态 187 conflicts: 2 shift/reduce
+状态 188 conflicts: 2 shift/reduce
+状态 231 conflicts: 22 shift/reduce
+状态 244 conflicts: 1 shift/reduce
+状态 253 conflicts: 22 shift/reduce
+状态 258 conflicts: 22 shift/reduce
+状态 263 conflicts: 1 shift/reduce
+状态 279 conflicts: 21 shift/reduce
+状态 284 conflicts: 22 shift/reduce
+状态 285 conflicts: 22 shift/reduce
+状态 286 conflicts: 22 shift/reduce
+状态 288 conflicts: 22 shift/reduce
+
+
+语法
+
+    0 $accept: tree $end
+
+    1 tree: program
+
+    2 program: external_declaration
+    3        | program external_declaration
+
+    4 external_declaration: var_declaration
+    5                     | fun_declaration
+
+    6 var_declaration: declaration_specifiers init_declarator_list SEMI
+    7                | struct_specifier SEMI
+
+    8 init_declarator_list: var
+    9                     | assignment_expression
+   10                     | init_array_or_point_assignment
+   11                     | init_declarator_list COMMA assignment_expression
+   12                     | init_declarator_list COMMA var
+   13                     | init_declarator_list COMMA init_array_or_point_assignment
+
+   14 init_array_or_point_assignment: array ASSIGNOP list_struct
+   15                               | array ASSIGNOP LC RC
+   16                               | pointer ASSIGNOP array
+   17                               | array_sigle ASSIGNOP list_struct
+
+   18 list_struct: LC content_of_list_struct RC
+
+   19 content_of_list_struct: mininum
+   20                       | list_struct
+   21                       | content_of_list_struct COMMA mininum
+   22                       | content_of_list_struct COMMA list_struct
+
+   23 mininum: LETTER
+   24        | STRING
+   25        | number
+
+   26 pointer: STAR id
+   27        | STAR pointer
+
+   28 struct_specifier: STRUCT id LC struct_declaration_list RC
+   29                 | STRUCT id
+
+   30 struct_declaration_list: declaration_specifiers init_declarator_list SEMI
+   31                        | declaration_specifiers init_declarator_list SEMI struct_declaration_list
+
+   32 struct_name_specifier: id id
+   33                      | id id ASSIGNOP id
+
+   34 struct_id: id DOT id
+
+   35 paddress: ADDR id
+
+   36 array: id array_main
+   37      | NEW INT array_main
+   38      | NEW CHAR array_main
+
+   39 array_sigle: id array_special
+
+   40 array_main: LB array_size RB array_main
+   41           | LB RB array_main
+   42           | LB array_size RB
+
+   43 array_special: LB RB
+
+   44 array_size: INT_DEX
+
+   45 declarator: LP RP
+   46           | LP params_list RP
+
+   47 fun_declaration: declaration_specifiers id declarator compound_stmt
+
+   48 declaration_specifiers: INT
+   49                       | VOID
+   50                       | FLOAT
+   51                       | BOOL
+   52                       | CHAR
+   53                       | DOUBLE
+   54                       | LONG
+   55                       | SHORT
+   56                       | STRING_DEFINE
+
+   57 params_list: params
+   58            | params COMMA params_list
+
+   59 params: declaration_specifiers var
+
+   60 var: id
+   61    | array
+   62    | pointer
+   63    | paddress
+
+   64 compound_stmt: LC RC
+   65              | LC block_list RC
+
+   66 block_list: block_item
+   67           | block_list block_item
+
+   68 block_item: var_declaration
+   69           | statement_list
+
+   70 statement_list: statement_list statement
+   71               | statement
+
+   72 statement: expression SEMI
+   73          | compound_stmt
+   74          | if_stmt
+   75          | while_stmt
+   76          | for_stmt
+   77          | do_while_stmt
+   78          | switch_stmt
+   79          | BREAK SEMI
+   80          | CONTINUE SEMI
+   81          | return_stmt
+   82          | struct_name_specifier SEMI
+
+   83 if_stmt: IF LP expression RP statement ELSE statement
+   84        | IF LP expression RP LC statement_list RC ELSE statement_list
+   85        | IF LP expression RP LC statement_list RC ELSE LC statement_list RC
+   86        | IF LP expression RP statement
+   87        | IF LP expression RP LC statement_list RC
+
+   88 switch_stmt: SWITCH LP id RP LC case_list RC
+
+   89 case_list: CASE INT_DEX CL LC statement_list RC case_list
+   90          | CASE INT_DEX CL LC statement_list RC
+   91          | CASE INT_DEX CL statement_list case_list
+   92          | CASE INT_DEX CL statement_list
+   93          | CASE LETTER CL LC statement_list RC case_list
+   94          | CASE LETTER CL LC statement_list RC
+   95          | CASE LETTER CL statement_list case_list
+   96          | CASE LETTER CL statement_list
+   97          | DEFAULT CL LC statement_list RC
+   98          | DEFAULT CL statement_list
+
+   99 while_stmt: WHILE LP expression RP statement
+  100           | WHILE LP expression RP LC statement_list RC
+
+  101 do_while_stmt: DO LC statement_list RC WHILE LP expression RP SEMI
+
+  102 for_stmt: FOR for_condition for_body
+
+  103 for_body: statement
+  104         | LC statement_list RC
+
+  105 for_condition: LP expression SEMI expression SEMI expression RP
+  106              | LP var_declaration expression SEMI expression RP
+  107              | LP SEMI expression SEMI expression RP
+  108              | LP SEMI SEMI expression RP
+  109              | LP SEMI SEMI RP
+
+  110 return_stmt: RETURN SEMI
+  111            | RETURN expression SEMI
+
+  112 expression: assignment_expression
+  113           | simple_expression
+  114           | logical_expression
+
+  115 logical_expression: expression AND expression
+  116                   | expression OR expression
+  117                   | NOT expression
+
+  118 assignment_expression: id ASSIGNOP expression
+  119                      | id self_assign expression
+  120                      | array ASSIGNOP additive_expression
+  121                      | unary_expression
+
+  122 self_assign: PE
+  123            | ME
+  124            | SE
+  125            | DE
+
+  126 unary_expression: PP id
+  127                 | MM id
+  128                 | postfix_expression
+
+  129 postfix_expression: id PP
+  130                   | id MM
+
+  131 simple_expression: additive_expression
+  132                  | additive_expression relop additive_expression
+
+  133 relop: LT
+  134      | LE
+  135      | GT
+  136      | GE
+  137      | EQ
+  138      | NE
+
+  139 additive_expression: term
+  140                    | additive_expression PLUS term
+  141                    | additive_expression MINUS term
+
+  142 term: factor
+  143     | term STAR factor
+  144     | term DIV factor
+
+  145 factor: LP expression RP
+  146       | id
+  147       | call_func
+  148       | number
+  149       | array
+  150       | paddress
+  151       | pointer
+
+  152 call_func: id LP RP
+  153          | id LP args RP
+
+  154 args: expression
+  155     | expression COMMA args
+
+  156 number: INT_HEX
+  157       | INT_OCT
+  158       | INT_DEX
+  159       | FLOAT
+
+  160 id: ID
+  161   | struct_id
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'*' (42)
+'+' (43)
+'-' (45)
+'/' (47)
+error (256)
+INT_DEX (258) 44 89 90 91 92 158
+INT_HEX (259) 156
+INT_OCT (260) 157
+FLOAT (261) 50 159
+SEMI (262) 6 7 30 31 72 79 80 82 101 105 106 107 108 109 110 111
+COMMA (263) 11 12 13 21 22 58 155
+GE (264) 136
+LE (265) 134
+EQ (266) 137
+NE (267) 138
+GT (268) 135
+LT (269) 133
+ASSIGNOP (270) 14 15 16 17 33 118 120
+PLUS (271) 140
+MINUS (272) 141
+STAR (273) 26 27 143
+ADDR (274) 35
+DIV (275) 144
+AND (276) 115
+OR (277) 116
+DOT (278) 34
+NOT (279) 117
+LP (280) 45 46 83 84 85 86 87 88 99 100 101 105 106 107 108 109 145
+    152 153
+RP (281) 45 46 83 84 85 86 87 88 99 100 101 105 106 107 108 109 145
+    152 153
+LB (282) 40 41 42 43
+RB (283) 40 41 42 43
+LC (284) 15 18 28 64 65 84 85 87 88 89 90 93 94 97 100 101 104
+RC (285) 15 18 28 64 65 84 85 87 88 89 90 93 94 97 100 101 104
+COMMENT (286)
+COMMENTS (287)
+AUTO (288)
+BOOL (289) 51
+BREAK (290) 79
+CASE (291) 89 90 91 92 93 94 95 96
+CATCH (292)
+CHAR (293) 38 52
+CLASS (294)
+CONST (295)
+CONTINUE (296) 80
+CO_AWAIT (297)
+DEFAULT (298) 97 98
+DELETE (299)
+DO (300) 101
+DOUBLE (301) 53
+ELSE (302) 83 84 85
+ENUM (303)
+EXTERN (304)
+FALSE (305)
+FOR (306) 102
+FRIEND (307)
+GOTO (308)
+IF (309) 83 84 85 86 87
+IMPORT (310)
+INLINE (311)
+INT (312) 37 48
+LONG (313) 54
+NAMESPACE (314)
+NEW (315) 37 38
+NULLPTR (316)
+OPERATOR (317)
+PRIVATE (318)
+PROTECTED (319)
+PUBLIC (320)
+RETURN (321) 110 111
+SHORT (322) 55
+SIGNED (323)
+SIZEOF (324)
+STATIC (325)
+STRING_DEFINE (326) 56
+STRUCT (327) 28 29
+SWITCH (328) 88
+SYNCHRONIZED (329)
+TEMPLATE (330)
+THIS (331)
+THROW (332)
+TRUE (333)
+TRY (334)
+TYPEDEF (335)
+UNION (336)
+UNSIGNED (337)
+USING (338)
+VIRTUAL (339)
+VOID (340) 49
+WHILE (341) 99 100 101
+TYPE (342)
+ID (343) 160
+ERROR_ID (344)
+LETTER (345) 23 93 94 95 96
+LETTERS (346)
+QUETO (347)
+STRING (348) 24
+DOUBLEQUETO (349)
+SHARP (350)
+PE (351) 122
+ME (352) 123
+SE (353) 124
+DE (354) 125
+PP (355) 126 129
+MM (356) 127 130
+CL (357) 89 90 91 92 93 94 95 96 97 98
+
+
+Nonterminals, with rules where they appear
+
+$accept (107)
+    左： 0
+tree (108)
+    左： 1, 右： 0
+program (109)
+    左： 2 3, 右： 1 3
+external_declaration (110)
+    左： 4 5, 右： 2 3
+var_declaration (111)
+    左： 6 7, 右： 4 68 106
+init_declarator_list (112)
+    左： 8 9 10 11 12 13, 右： 6 11 12 13 30 31
+init_array_or_point_assignment (113)
+    左： 14 15 16 17, 右： 10 13
+list_struct (114)
+    左： 18, 右： 14 17 20 22
+content_of_list_struct (115)
+    左： 19 20 21 22, 右： 18 21 22
+mininum (116)
+    左： 23 24 25, 右： 19 21
+pointer (117)
+    左： 26 27, 右： 16 27 62 151
+struct_specifier (118)
+    左： 28 29, 右： 7
+struct_declaration_list (119)
+    左： 30 31, 右： 28 31
+struct_name_specifier (120)
+    左： 32 33, 右： 82
+struct_id (121)
+    左： 34, 右： 161
+paddress (122)
+    左： 35, 右： 63 150
+array (123)
+    左： 36 37 38, 右： 14 15 16 61 120 149
+array_sigle (124)
+    左： 39, 右： 17
+array_main (125)
+    左： 40 41 42, 右： 36 37 38 40 41
+array_special (126)
+    左： 43, 右： 39
+array_size (127)
+    左： 44, 右： 40 42
+declarator (128)
+    左： 45 46, 右： 47
+fun_declaration (129)
+    左： 47, 右： 5
+declaration_specifiers (130)
+    左： 48 49 50 51 52 53 54 55 56, 右： 6 30 31 47 59
+params_list (131)
+    左： 57 58, 右： 46 58
+params (132)
+    左： 59, 右： 57 58
+var (133)
+    左： 60 61 62 63, 右： 8 12 59
+compound_stmt (134)
+    左： 64 65, 右： 47 73
+block_list (135)
+    左： 66 67, 右： 65 67
+block_item (136)
+    左： 68 69, 右： 66 67
+statement_list (137)
+    左： 70 71, 右： 69 70 84 85 87 89 90 91 92 93 94 95 96 97
+    98 100 101 104
+statement (138)
+    左： 72 73 74 75 76 77 78 79 80 81 82, 右： 70 71 83 86 99
+    103
+if_stmt (139)
+    左： 83 84 85 86 87, 右： 74
+switch_stmt (140)
+    左： 88, 右： 78
+case_list (141)
+    左： 89 90 91 92 93 94 95 96 97 98, 右： 88 89 91 93 95
+while_stmt (142)
+    左： 99 100, 右： 75
+do_while_stmt (143)
+    左： 101, 右： 77
+for_stmt (144)
+    左： 102, 右： 76
+for_body (145)
+    左： 103 104, 右： 102
+for_condition (146)
+    左： 105 106 107 108 109, 右： 102
+return_stmt (147)
+    左： 110 111, 右： 81
+expression (148)
+    左： 112 113 114, 右： 72 83 84 85 86 87 99 100 101 105 106
+    107 108 111 115 116 117 118 119 145 154 155
+logical_expression (149)
+    左： 115 116 117, 右： 114
+assignment_expression (150)
+    左： 118 119 120 121, 右： 9 11 112
+self_assign (151)
+    左： 122 123 124 125, 右： 119
+unary_expression (152)
+    左： 126 127 128, 右： 121
+postfix_expression (153)
+    左： 129 130, 右： 128
+simple_expression (154)
+    左： 131 132, 右： 113
+relop (155)
+    左： 133 134 135 136 137 138, 右： 132
+additive_expression (156)
+    左： 139 140 141, 右： 120 131 132 140 141
+term (157)
+    左： 142 143 144, 右： 139 140 141 143 144
+factor (158)
+    左： 145 146 147 148 149 150 151, 右： 142 143 144
+call_func (159)
+    左： 152 153, 右： 147
+args (160)
+    左： 154 155, 右： 153 155
+number (161)
+    左： 156 157 158 159, 右： 25 148
+id (162)
+    左： 160 161, 右： 26 28 29 32 33 34 35 36 39 47 60 88 118
+    119 126 127 129 130 146 152 153
+
+
+State 0
+
+    0 $accept: . tree $end
+
+    FLOAT          shift, and go to state 1
+    BOOL           shift, and go to state 2
+    CHAR           shift, and go to state 3
+    DOUBLE         shift, and go to state 4
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    STRUCT         shift, and go to state 9
+    VOID           shift, and go to state 10
+
+    tree                    转到状态 11
+    program                 转到状态 12
+    external_declaration    转到状态 13
+    var_declaration         转到状态 14
+    struct_specifier        转到状态 15
+    fun_declaration         转到状态 16
+    declaration_specifiers  转到状态 17
+
+
+State 1
+
+   50 declaration_specifiers: FLOAT .
+
+    $default  reduce using rule 50 (declaration_specifiers)
+
+
+State 2
+
+   51 declaration_specifiers: BOOL .
+
+    $default  reduce using rule 51 (declaration_specifiers)
+
+
+State 3
+
+   52 declaration_specifiers: CHAR .
+
+    $default  reduce using rule 52 (declaration_specifiers)
+
+
+State 4
+
+   53 declaration_specifiers: DOUBLE .
+
+    $default  reduce using rule 53 (declaration_specifiers)
+
+
+State 5
+
+   48 declaration_specifiers: INT .
+
+    $default  reduce using rule 48 (declaration_specifiers)
+
+
+State 6
+
+   54 declaration_specifiers: LONG .
+
+    $default  reduce using rule 54 (declaration_specifiers)
+
+
+State 7
+
+   55 declaration_specifiers: SHORT .
+
+    $default  reduce using rule 55 (declaration_specifiers)
+
+
+State 8
+
+   56 declaration_specifiers: STRING_DEFINE .
+
+    $default  reduce using rule 56 (declaration_specifiers)
+
+
+State 9
+
+   28 struct_specifier: STRUCT . id LC struct_declaration_list RC
+   29                 | STRUCT . id
+
+    ID  shift, and go to state 18
+
+    struct_id  转到状态 19
+    id         转到状态 20
+
+
+State 10
+
+   49 declaration_specifiers: VOID .
+
+    $default  reduce using rule 49 (declaration_specifiers)
+
+
+State 11
+
+    0 $accept: tree . $end
+
+    $end  shift, and go to state 21
+
+
+State 12
+
+    1 tree: program .
+    3 program: program . external_declaration
+
+    FLOAT          shift, and go to state 1
+    BOOL           shift, and go to state 2
+    CHAR           shift, and go to state 3
+    DOUBLE         shift, and go to state 4
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    STRUCT         shift, and go to state 9
+    VOID           shift, and go to state 10
+
+    $default  reduce using rule 1 (tree)
+
+    external_declaration    转到状态 22
+    var_declaration         转到状态 14
+    struct_specifier        转到状态 15
+    fun_declaration         转到状态 16
+    declaration_specifiers  转到状态 17
+
+
+State 13
+
+    2 program: external_declaration .
+
+    $default  reduce using rule 2 (program)
+
+
+State 14
+
+    4 external_declaration: var_declaration .
+
+    $default  reduce using rule 4 (external_declaration)
+
+
+State 15
+
+    7 var_declaration: struct_specifier . SEMI
+
+    SEMI  shift, and go to state 23
+
+
+State 16
+
+    5 external_declaration: fun_declaration .
+
+    $default  reduce using rule 5 (external_declaration)
+
+
+State 17
+
+    6 var_declaration: declaration_specifiers . init_declarator_list SEMI
+   47 fun_declaration: declaration_specifiers . id declarator compound_stmt
+
+    STAR  shift, and go to state 24
+    ADDR  shift, and go to state 25
+    NEW   shift, and go to state 26
+    ID    shift, and go to state 18
+    PP    shift, and go to state 27
+    MM    shift, and go to state 28
+
+    init_declarator_list            转到状态 29
+    init_array_or_point_assignment  转到状态 30
+    pointer                         转到状态 31
+    struct_id                       转到状态 19
+    paddress                        转到状态 32
+    array                           转到状态 33
+    array_sigle                     转到状态 34
+    var                             转到状态 35
+    assignment_expression           转到状态 36
+    unary_expression                转到状态 37
+    postfix_expression              转到状态 38
+    id                              转到状态 39
+
+
+State 18
+
+  160 id: ID .
+
+    $default  reduce using rule 160 (id)
+
+
+State 19
+
+  161 id: struct_id .
+
+    $default  reduce using rule 161 (id)
+
+
+State 20
+
+   28 struct_specifier: STRUCT id . LC struct_declaration_list RC
+   29                 | STRUCT id .
+   34 struct_id: id . DOT id
+
+    DOT  shift, and go to state 40
+    LC   shift, and go to state 41
+
+    $default  reduce using rule 29 (struct_specifier)
+
+
+State 21
+
+    0 $accept: tree $end .
+
+    $default  接受
+
+
+State 22
+
+    3 program: program external_declaration .
+
+    $default  reduce using rule 3 (program)
+
+
+State 23
+
+    7 var_declaration: struct_specifier SEMI .
+
+    $default  reduce using rule 7 (var_declaration)
+
+
+State 24
+
+   26 pointer: STAR . id
+   27        | STAR . pointer
+
+    STAR  shift, and go to state 24
+    ID    shift, and go to state 18
+
+    pointer    转到状态 42
+    struct_id  转到状态 19
+    id         转到状态 43
+
+
+State 25
+
+   35 paddress: ADDR . id
+
+    ID  shift, and go to state 18
+
+    struct_id  转到状态 19
+    id         转到状态 44
+
+
+State 26
+
+   37 array: NEW . INT array_main
+   38      | NEW . CHAR array_main
+
+    CHAR  shift, and go to state 45
+    INT   shift, and go to state 46
+
+
+State 27
+
+  126 unary_expression: PP . id
+
+    ID  shift, and go to state 18
+
+    struct_id  转到状态 19
+    id         转到状态 47
+
+
+State 28
+
+  127 unary_expression: MM . id
+
+    ID  shift, and go to state 18
+
+    struct_id  转到状态 19
+    id         转到状态 48
+
+
+State 29
+
+    6 var_declaration: declaration_specifiers init_declarator_list . SEMI
+   11 init_declarator_list: init_declarator_list . COMMA assignment_expression
+   12                     | init_declarator_list . COMMA var
+   13                     | init_declarator_list . COMMA init_array_or_point_assignment
+
+    SEMI   shift, and go to state 49
+    COMMA  shift, and go to state 50
+
+
+State 30
+
+   10 init_declarator_list: init_array_or_point_assignment .
+
+    $default  reduce using rule 10 (init_declarator_list)
+
+
+State 31
+
+   16 init_array_or_point_assignment: pointer . ASSIGNOP array
+   62 var: pointer .
+
+    ASSIGNOP  shift, and go to state 51
+
+    $default  reduce using rule 62 (var)
+
+
+State 32
+
+   63 var: paddress .
+
+    $default  reduce using rule 63 (var)
+
+
+State 33
+
+   14 init_array_or_point_assignment: array . ASSIGNOP list_struct
+   15                               | array . ASSIGNOP LC RC
+   61 var: array .
+  120 assignment_expression: array . ASSIGNOP additive_expression
+
+    ASSIGNOP  shift, and go to state 52
+
+    $default  reduce using rule 61 (var)
+
+
+State 34
+
+   17 init_array_or_point_assignment: array_sigle . ASSIGNOP list_struct
+
+    ASSIGNOP  shift, and go to state 53
+
+
+State 35
+
+    8 init_declarator_list: var .
+
+    $default  reduce using rule 8 (init_declarator_list)
+
+
+State 36
+
+    9 init_declarator_list: assignment_expression .
+
+    $default  reduce using rule 9 (init_declarator_list)
+
+
+State 37
+
+  121 assignment_expression: unary_expression .
+
+    $default  reduce using rule 121 (assignment_expression)
+
+
+State 38
+
+  128 unary_expression: postfix_expression .
+
+    $default  reduce using rule 128 (unary_expression)
+
+
+State 39
+
+   34 struct_id: id . DOT id
+   36 array: id . array_main
+   39 array_sigle: id . array_special
+   47 fun_declaration: declaration_specifiers id . declarator compound_stmt
+   60 var: id .
+  118 assignment_expression: id . ASSIGNOP expression
+  119                      | id . self_assign expression
+  129 postfix_expression: id . PP
+  130                   | id . MM
+
+    ASSIGNOP  shift, and go to state 54
+    DOT       shift, and go to state 40
+    LP        shift, and go to state 55
+    LB        shift, and go to state 56
+    PE        shift, and go to state 57
+    ME        shift, and go to state 58
+    SE        shift, and go to state 59
+    DE        shift, and go to state 60
+    PP        shift, and go to state 61
+    MM        shift, and go to state 62
+
+    $default  reduce using rule 60 (var)
+
+    array_main     转到状态 63
+    array_special  转到状态 64
+    declarator     转到状态 65
+    self_assign    转到状态 66
+
+
+State 40
+
+   34 struct_id: id DOT . id
+
+    ID  shift, and go to state 18
+
+    struct_id  转到状态 19
+    id         转到状态 67
+
+
+State 41
+
+   28 struct_specifier: STRUCT id LC . struct_declaration_list RC
+
+    FLOAT          shift, and go to state 1
+    BOOL           shift, and go to state 2
+    CHAR           shift, and go to state 3
+    DOUBLE         shift, and go to state 4
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    VOID           shift, and go to state 10
+
+    struct_declaration_list  转到状态 68
+    declaration_specifiers   转到状态 69
+
+
+State 42
+
+   27 pointer: STAR pointer .
+
+    $default  reduce using rule 27 (pointer)
+
+
+State 43
+
+   26 pointer: STAR id .
+   34 struct_id: id . DOT id
+
+    DOT  shift, and go to state 40
+
+    $default  reduce using rule 26 (pointer)
+
+
+State 44
+
+   34 struct_id: id . DOT id
+   35 paddress: ADDR id .
+
+    DOT  shift, and go to state 40
+
+    $default  reduce using rule 35 (paddress)
+
+
+State 45
+
+   38 array: NEW CHAR . array_main
+
+    LB  shift, and go to state 70
+
+    array_main  转到状态 71
+
+
+State 46
+
+   37 array: NEW INT . array_main
+
+    LB  shift, and go to state 70
+
+    array_main  转到状态 72
+
+
+State 47
+
+   34 struct_id: id . DOT id
+  126 unary_expression: PP id .
+
+    DOT  shift, and go to state 40
+
+    $default  reduce using rule 126 (unary_expression)
+
+
+State 48
+
+   34 struct_id: id . DOT id
+  127 unary_expression: MM id .
+
+    DOT  shift, and go to state 40
+
+    $default  reduce using rule 127 (unary_expression)
+
+
+State 49
+
+    6 var_declaration: declaration_specifiers init_declarator_list SEMI .
+
+    $default  reduce using rule 6 (var_declaration)
+
+
+State 50
+
+   11 init_declarator_list: init_declarator_list COMMA . assignment_expression
+   12                     | init_declarator_list COMMA . var
+   13                     | init_declarator_list COMMA . init_array_or_point_assignment
+
+    STAR  shift, and go to state 24
+    ADDR  shift, and go to state 25
+    NEW   shift, and go to state 26
+    ID    shift, and go to state 18
+    PP    shift, and go to state 27
+    MM    shift, and go to state 28
+
+    init_array_or_point_assignment  转到状态 73
+    pointer                         转到状态 31
+    struct_id                       转到状态 19
+    paddress                        转到状态 32
+    array                           转到状态 33
+    array_sigle                     转到状态 34
+    var                             转到状态 74
+    assignment_expression           转到状态 75
+    unary_expression                转到状态 37
+    postfix_expression              转到状态 38
+    id                              转到状态 76
+
+
+State 51
+
+   16 init_array_or_point_assignment: pointer ASSIGNOP . array
+
+    NEW  shift, and go to state 26
+    ID   shift, and go to state 18
+
+    struct_id  转到状态 19
+    array      转到状态 77
+    id         转到状态 78
+
+
+State 52
+
+   14 init_array_or_point_assignment: array ASSIGNOP . list_struct
+   15                               | array ASSIGNOP . LC RC
+  120 assignment_expression: array ASSIGNOP . additive_expression
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    LP       shift, and go to state 83
+    LC       shift, and go to state 84
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+
+    list_struct          转到状态 85
+    pointer              转到状态 86
+    struct_id            转到状态 19
+    paddress             转到状态 87
+    array                转到状态 88
+    additive_expression  转到状态 89
+    term                 转到状态 90
+    factor               转到状态 91
+    call_func            转到状态 92
+    number               转到状态 93
+    id                   转到状态 94
+
+
+State 53
+
+   17 init_array_or_point_assignment: array_sigle ASSIGNOP . list_struct
+
+    LC  shift, and go to state 95
+
+    list_struct  转到状态 96
+
+
+State 54
+
+  118 assignment_expression: id ASSIGNOP . expression
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 99
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 55
+
+   45 declarator: LP . RP
+   46           | LP . params_list RP
+
+    FLOAT          shift, and go to state 1
+    RP             shift, and go to state 105
+    BOOL           shift, and go to state 2
+    CHAR           shift, and go to state 3
+    DOUBLE         shift, and go to state 4
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    VOID           shift, and go to state 10
+
+    declaration_specifiers  转到状态 106
+    params_list             转到状态 107
+    params                  转到状态 108
+
+
+State 56
+
+   40 array_main: LB . array_size RB array_main
+   41           | LB . RB array_main
+   42           | LB . array_size RB
+   43 array_special: LB . RB
+
+    INT_DEX  shift, and go to state 109
+    RB       shift, and go to state 110
+
+    array_size  转到状态 111
+
+
+State 57
+
+  122 self_assign: PE .
+
+    $default  reduce using rule 122 (self_assign)
+
+
+State 58
+
+  123 self_assign: ME .
+
+    $default  reduce using rule 123 (self_assign)
+
+
+State 59
+
+  124 self_assign: SE .
+
+    $default  reduce using rule 124 (self_assign)
+
+
+State 60
+
+  125 self_assign: DE .
+
+    $default  reduce using rule 125 (self_assign)
+
+
+State 61
+
+  129 postfix_expression: id PP .
+
+    $default  reduce using rule 129 (postfix_expression)
+
+
+State 62
+
+  130 postfix_expression: id MM .
+
+    $default  reduce using rule 130 (postfix_expression)
+
+
+State 63
+
+   36 array: id array_main .
+
+    $default  reduce using rule 36 (array)
+
+
+State 64
+
+   39 array_sigle: id array_special .
+
+    $default  reduce using rule 39 (array_sigle)
+
+
+State 65
+
+   47 fun_declaration: declaration_specifiers id declarator . compound_stmt
+
+    LC  shift, and go to state 112
+
+    compound_stmt  转到状态 113
+
+
+State 66
+
+  119 assignment_expression: id self_assign . expression
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 114
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 67
+
+   34 struct_id: id . DOT id
+   34          | id DOT id .
+
+    DOT  shift, and go to state 40
+
+    DOT       [reduce using rule 34 (struct_id)]
+    $default  reduce using rule 34 (struct_id)
+
+
+State 68
+
+   28 struct_specifier: STRUCT id LC struct_declaration_list . RC
+
+    RC  shift, and go to state 115
+
+
+State 69
+
+   30 struct_declaration_list: declaration_specifiers . init_declarator_list SEMI
+   31                        | declaration_specifiers . init_declarator_list SEMI struct_declaration_list
+
+    STAR  shift, and go to state 24
+    ADDR  shift, and go to state 25
+    NEW   shift, and go to state 26
+    ID    shift, and go to state 18
+    PP    shift, and go to state 27
+    MM    shift, and go to state 28
+
+    init_declarator_list            转到状态 116
+    init_array_or_point_assignment  转到状态 30
+    pointer                         转到状态 31
+    struct_id                       转到状态 19
+    paddress                        转到状态 32
+    array                           转到状态 33
+    array_sigle                     转到状态 34
+    var                             转到状态 35
+    assignment_expression           转到状态 36
+    unary_expression                转到状态 37
+    postfix_expression              转到状态 38
+    id                              转到状态 76
+
+
+State 70
+
+   40 array_main: LB . array_size RB array_main
+   41           | LB . RB array_main
+   42           | LB . array_size RB
+
+    INT_DEX  shift, and go to state 109
+    RB       shift, and go to state 117
+
+    array_size  转到状态 111
+
+
+State 71
+
+   38 array: NEW CHAR array_main .
+
+    $default  reduce using rule 38 (array)
+
+
+State 72
+
+   37 array: NEW INT array_main .
+
+    $default  reduce using rule 37 (array)
+
+
+State 73
+
+   13 init_declarator_list: init_declarator_list COMMA init_array_or_point_assignment .
+
+    $default  reduce using rule 13 (init_declarator_list)
+
+
+State 74
+
+   12 init_declarator_list: init_declarator_list COMMA var .
+
+    $default  reduce using rule 12 (init_declarator_list)
+
+
+State 75
+
+   11 init_declarator_list: init_declarator_list COMMA assignment_expression .
+
+    $default  reduce using rule 11 (init_declarator_list)
+
+
+State 76
+
+   34 struct_id: id . DOT id
+   36 array: id . array_main
+   39 array_sigle: id . array_special
+   60 var: id .
+  118 assignment_expression: id . ASSIGNOP expression
+  119                      | id . self_assign expression
+  129 postfix_expression: id . PP
+  130                   | id . MM
+
+    ASSIGNOP  shift, and go to state 54
+    DOT       shift, and go to state 40
+    LB        shift, and go to state 56
+    PE        shift, and go to state 57
+    ME        shift, and go to state 58
+    SE        shift, and go to state 59
+    DE        shift, and go to state 60
+    PP        shift, and go to state 61
+    MM        shift, and go to state 62
+
+    $default  reduce using rule 60 (var)
+
+    array_main     转到状态 63
+    array_special  转到状态 64
+    self_assign    转到状态 66
+
+
+State 77
+
+   16 init_array_or_point_assignment: pointer ASSIGNOP array .
+
+    $default  reduce using rule 16 (init_array_or_point_assignment)
+
+
+State 78
+
+   34 struct_id: id . DOT id
+   36 array: id . array_main
+
+    DOT  shift, and go to state 40
+    LB   shift, and go to state 70
+
+    array_main  转到状态 63
+
+
+State 79
+
+  158 number: INT_DEX .
+
+    $default  reduce using rule 158 (number)
+
+
+State 80
+
+  156 number: INT_HEX .
+
+    $default  reduce using rule 156 (number)
+
+
+State 81
+
+  157 number: INT_OCT .
+
+    $default  reduce using rule 157 (number)
+
+
+State 82
+
+  159 number: FLOAT .
+
+    $default  reduce using rule 159 (number)
+
+
+State 83
+
+  145 factor: LP . expression RP
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 118
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 84
+
+   15 init_array_or_point_assignment: array ASSIGNOP LC . RC
+   18 list_struct: LC . content_of_list_struct RC
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    LC       shift, and go to state 95
+    RC       shift, and go to state 119
+    LETTER   shift, and go to state 120
+    STRING   shift, and go to state 121
+
+    list_struct             转到状态 122
+    content_of_list_struct  转到状态 123
+    mininum                 转到状态 124
+    number                  转到状态 125
+
+
+State 85
+
+   14 init_array_or_point_assignment: array ASSIGNOP list_struct .
+
+    $default  reduce using rule 14 (init_array_or_point_assignment)
+
+
+State 86
+
+  151 factor: pointer .
+
+    $default  reduce using rule 151 (factor)
+
+
+State 87
+
+  150 factor: paddress .
+
+    $default  reduce using rule 150 (factor)
+
+
+State 88
+
+  149 factor: array .
+
+    $default  reduce using rule 149 (factor)
+
+
+State 89
+
+  120 assignment_expression: array ASSIGNOP additive_expression .
+  140 additive_expression: additive_expression . PLUS term
+  141                    | additive_expression . MINUS term
+
+    PLUS   shift, and go to state 126
+    MINUS  shift, and go to state 127
+
+    $default  reduce using rule 120 (assignment_expression)
+
+
+State 90
+
+  139 additive_expression: term .
+  143 term: term . STAR factor
+  144     | term . DIV factor
+
+    STAR  shift, and go to state 128
+    DIV   shift, and go to state 129
+
+    $default  reduce using rule 139 (additive_expression)
+
+
+State 91
+
+  142 term: factor .
+
+    $default  reduce using rule 142 (term)
+
+
+State 92
+
+  147 factor: call_func .
+
+    $default  reduce using rule 147 (factor)
+
+
+State 93
+
+  148 factor: number .
+
+    $default  reduce using rule 148 (factor)
+
+
+State 94
+
+   34 struct_id: id . DOT id
+   36 array: id . array_main
+  146 factor: id .
+  152 call_func: id . LP RP
+  153          | id . LP args RP
+
+    DOT  shift, and go to state 40
+    LP   shift, and go to state 130
+    LB   shift, and go to state 70
+
+    $default  reduce using rule 146 (factor)
+
+    array_main  转到状态 63
+
+
+State 95
+
+   18 list_struct: LC . content_of_list_struct RC
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    LC       shift, and go to state 95
+    LETTER   shift, and go to state 120
+    STRING   shift, and go to state 121
+
+    list_struct             转到状态 122
+    content_of_list_struct  转到状态 123
+    mininum                 转到状态 124
+    number                  转到状态 125
+
+
+State 96
+
+   17 init_array_or_point_assignment: array_sigle ASSIGNOP list_struct .
+
+    $default  reduce using rule 17 (init_array_or_point_assignment)
+
+
+State 97
+
+  117 logical_expression: NOT . expression
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 131
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 98
+
+  120 assignment_expression: array . ASSIGNOP additive_expression
+  149 factor: array .
+
+    ASSIGNOP  shift, and go to state 132
+
+    $default  reduce using rule 149 (factor)
+
+
+State 99
+
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+  118 assignment_expression: id ASSIGNOP expression .
+
+    AND  shift, and go to state 133
+    OR   shift, and go to state 134
+
+    AND       [reduce using rule 118 (assignment_expression)]
+    OR        [reduce using rule 118 (assignment_expression)]
+    $default  reduce using rule 118 (assignment_expression)
+
+
+State 100
+
+  114 expression: logical_expression .
+
+    $default  reduce using rule 114 (expression)
+
+
+State 101
+
+  112 expression: assignment_expression .
+
+    $default  reduce using rule 112 (expression)
+
+
+State 102
+
+  113 expression: simple_expression .
+
+    $default  reduce using rule 113 (expression)
+
+
+State 103
+
+  131 simple_expression: additive_expression .
+  132                  | additive_expression . relop additive_expression
+  140 additive_expression: additive_expression . PLUS term
+  141                    | additive_expression . MINUS term
+
+    GE     shift, and go to state 135
+    LE     shift, and go to state 136
+    EQ     shift, and go to state 137
+    NE     shift, and go to state 138
+    GT     shift, and go to state 139
+    LT     shift, and go to state 140
+    PLUS   shift, and go to state 126
+    MINUS  shift, and go to state 127
+
+    $default  reduce using rule 131 (simple_expression)
+
+    relop  转到状态 141
+
+
+State 104
+
+   34 struct_id: id . DOT id
+   36 array: id . array_main
+  118 assignment_expression: id . ASSIGNOP expression
+  119                      | id . self_assign expression
+  129 postfix_expression: id . PP
+  130                   | id . MM
+  146 factor: id .
+  152 call_func: id . LP RP
+  153          | id . LP args RP
+
+    ASSIGNOP  shift, and go to state 54
+    DOT       shift, and go to state 40
+    LP        shift, and go to state 130
+    LB        shift, and go to state 70
+    PE        shift, and go to state 57
+    ME        shift, and go to state 58
+    SE        shift, and go to state 59
+    DE        shift, and go to state 60
+    PP        shift, and go to state 61
+    MM        shift, and go to state 62
+
+    $default  reduce using rule 146 (factor)
+
+    array_main   转到状态 63
+    self_assign  转到状态 66
+
+
+State 105
+
+   45 declarator: LP RP .
+
+    $default  reduce using rule 45 (declarator)
+
+
+State 106
+
+   59 params: declaration_specifiers . var
+
+    STAR  shift, and go to state 24
+    ADDR  shift, and go to state 25
+    NEW   shift, and go to state 26
+    ID    shift, and go to state 18
+
+    pointer    转到状态 142
+    struct_id  转到状态 19
+    paddress   转到状态 32
+    array      转到状态 143
+    var        转到状态 144
+    id         转到状态 145
+
+
+State 107
+
+   46 declarator: LP params_list . RP
+
+    RP  shift, and go to state 146
+
+
+State 108
+
+   57 params_list: params .
+   58            | params . COMMA params_list
+
+    COMMA  shift, and go to state 147
+
+    $default  reduce using rule 57 (params_list)
+
+
+State 109
+
+   44 array_size: INT_DEX .
+
+    $default  reduce using rule 44 (array_size)
+
+
+State 110
+
+   41 array_main: LB RB . array_main
+   43 array_special: LB RB .
+
+    LB  shift, and go to state 70
+
+    $default  reduce using rule 43 (array_special)
+
+    array_main  转到状态 148
+
+
+State 111
+
+   40 array_main: LB array_size . RB array_main
+   42           | LB array_size . RB
+
+    RB  shift, and go to state 149
+
+
+State 112
+
+   64 compound_stmt: LC . RC
+   65              | LC . block_list RC
+
+    INT_DEX        shift, and go to state 79
+    INT_HEX        shift, and go to state 80
+    INT_OCT        shift, and go to state 81
+    FLOAT          shift, and go to state 150
+    STAR           shift, and go to state 24
+    ADDR           shift, and go to state 25
+    NOT            shift, and go to state 97
+    LP             shift, and go to state 83
+    LC             shift, and go to state 112
+    RC             shift, and go to state 151
+    BOOL           shift, and go to state 2
+    BREAK          shift, and go to state 152
+    CHAR           shift, and go to state 3
+    CONTINUE       shift, and go to state 153
+    DO             shift, and go to state 154
+    DOUBLE         shift, and go to state 4
+    FOR            shift, and go to state 155
+    IF             shift, and go to state 156
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    NEW            shift, and go to state 26
+    RETURN         shift, and go to state 157
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    STRUCT         shift, and go to state 9
+    SWITCH         shift, and go to state 158
+    VOID           shift, and go to state 10
+    WHILE          shift, and go to state 159
+    ID             shift, and go to state 18
+    PP             shift, and go to state 27
+    MM             shift, and go to state 28
+
+    var_declaration         转到状态 160
+    pointer                 转到状态 86
+    struct_specifier        转到状态 15
+    struct_name_specifier   转到状态 161
+    struct_id               转到状态 19
+    paddress                转到状态 87
+    array                   转到状态 98
+    declaration_specifiers  转到状态 162
+    compound_stmt           转到状态 163
+    block_list              转到状态 164
+    block_item              转到状态 165
+    statement_list          转到状态 166
+    statement               转到状态 167
+    if_stmt                 转到状态 168
+    switch_stmt             转到状态 169
+    while_stmt              转到状态 170
+    do_while_stmt           转到状态 171
+    for_stmt                转到状态 172
+    return_stmt             转到状态 173
+    expression              转到状态 174
+    logical_expression      转到状态 100
+    assignment_expression   转到状态 101
+    unary_expression        转到状态 37
+    postfix_expression      转到状态 38
+    simple_expression       转到状态 102
+    additive_expression     转到状态 103
+    term                    转到状态 90
+    factor                  转到状态 91
+    call_func               转到状态 92
+    number                  转到状态 93
+    id                      转到状态 175
+
+
+State 113
+
+   47 fun_declaration: declaration_specifiers id declarator compound_stmt .
+
+    $default  reduce using rule 47 (fun_declaration)
+
+
+State 114
+
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+  119 assignment_expression: id self_assign expression .
+
+    AND  shift, and go to state 133
+    OR   shift, and go to state 134
+
+    AND       [reduce using rule 119 (assignment_expression)]
+    OR        [reduce using rule 119 (assignment_expression)]
+    $default  reduce using rule 119 (assignment_expression)
+
+
+State 115
+
+   28 struct_specifier: STRUCT id LC struct_declaration_list RC .
+
+    $default  reduce using rule 28 (struct_specifier)
+
+
+State 116
+
+   11 init_declarator_list: init_declarator_list . COMMA assignment_expression
+   12                     | init_declarator_list . COMMA var
+   13                     | init_declarator_list . COMMA init_array_or_point_assignment
+   30 struct_declaration_list: declaration_specifiers init_declarator_list . SEMI
+   31                        | declaration_specifiers init_declarator_list . SEMI struct_declaration_list
+
+    SEMI   shift, and go to state 176
+    COMMA  shift, and go to state 50
+
+
+State 117
+
+   41 array_main: LB RB . array_main
+
+    LB  shift, and go to state 70
+
+    array_main  转到状态 148
+
+
+State 118
+
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+  145 factor: LP expression . RP
+
+    AND  shift, and go to state 133
+    OR   shift, and go to state 134
+    RP   shift, and go to state 177
+
+
+State 119
+
+   15 init_array_or_point_assignment: array ASSIGNOP LC RC .
+
+    $default  reduce using rule 15 (init_array_or_point_assignment)
+
+
+State 120
+
+   23 mininum: LETTER .
+
+    $default  reduce using rule 23 (mininum)
+
+
+State 121
+
+   24 mininum: STRING .
+
+    $default  reduce using rule 24 (mininum)
+
+
+State 122
+
+   20 content_of_list_struct: list_struct .
+
+    $default  reduce using rule 20 (content_of_list_struct)
+
+
+State 123
+
+   18 list_struct: LC content_of_list_struct . RC
+   21 content_of_list_struct: content_of_list_struct . COMMA mininum
+   22                       | content_of_list_struct . COMMA list_struct
+
+    COMMA  shift, and go to state 178
+    RC     shift, and go to state 179
+
+
+State 124
+
+   19 content_of_list_struct: mininum .
+
+    $default  reduce using rule 19 (content_of_list_struct)
+
+
+State 125
+
+   25 mininum: number .
+
+    $default  reduce using rule 25 (mininum)
+
+
+State 126
+
+  140 additive_expression: additive_expression PLUS . term
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+
+    pointer    转到状态 86
+    struct_id  转到状态 19
+    paddress   转到状态 87
+    array      转到状态 88
+    term       转到状态 180
+    factor     转到状态 91
+    call_func  转到状态 92
+    number     转到状态 93
+    id         转到状态 94
+
+
+State 127
+
+  141 additive_expression: additive_expression MINUS . term
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+
+    pointer    转到状态 86
+    struct_id  转到状态 19
+    paddress   转到状态 87
+    array      转到状态 88
+    term       转到状态 181
+    factor     转到状态 91
+    call_func  转到状态 92
+    number     转到状态 93
+    id         转到状态 94
+
+
+State 128
+
+  143 term: term STAR . factor
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+
+    pointer    转到状态 86
+    struct_id  转到状态 19
+    paddress   转到状态 87
+    array      转到状态 88
+    factor     转到状态 182
+    call_func  转到状态 92
+    number     转到状态 93
+    id         转到状态 94
+
+
+State 129
+
+  144 term: term DIV . factor
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+
+    pointer    转到状态 86
+    struct_id  转到状态 19
+    paddress   转到状态 87
+    array      转到状态 88
+    factor     转到状态 183
+    call_func  转到状态 92
+    number     转到状态 93
+    id         转到状态 94
+
+
+State 130
+
+  152 call_func: id LP . RP
+  153          | id LP . args RP
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    RP       shift, and go to state 184
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 185
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    args                   转到状态 186
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 131
+
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+  117                   | NOT expression .
+
+    AND  shift, and go to state 133
+    OR   shift, and go to state 134
+
+    AND       [reduce using rule 117 (logical_expression)]
+    OR        [reduce using rule 117 (logical_expression)]
+    $default  reduce using rule 117 (logical_expression)
+
+
+State 132
+
+  120 assignment_expression: array ASSIGNOP . additive_expression
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+
+    pointer              转到状态 86
+    struct_id            转到状态 19
+    paddress             转到状态 87
+    array                转到状态 88
+    additive_expression  转到状态 89
+    term                 转到状态 90
+    factor               转到状态 91
+    call_func            转到状态 92
+    number               转到状态 93
+    id                   转到状态 94
+
+
+State 133
+
+  115 logical_expression: expression AND . expression
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 187
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 134
+
+  116 logical_expression: expression OR . expression
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 188
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 135
+
+  136 relop: GE .
+
+    $default  reduce using rule 136 (relop)
+
+
+State 136
+
+  134 relop: LE .
+
+    $default  reduce using rule 134 (relop)
+
+
+State 137
+
+  137 relop: EQ .
+
+    $default  reduce using rule 137 (relop)
+
+
+State 138
+
+  138 relop: NE .
+
+    $default  reduce using rule 138 (relop)
+
+
+State 139
+
+  135 relop: GT .
+
+    $default  reduce using rule 135 (relop)
+
+
+State 140
+
+  133 relop: LT .
+
+    $default  reduce using rule 133 (relop)
+
+
+State 141
+
+  132 simple_expression: additive_expression relop . additive_expression
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+
+    pointer              转到状态 86
+    struct_id            转到状态 19
+    paddress             转到状态 87
+    array                转到状态 88
+    additive_expression  转到状态 189
+    term                 转到状态 90
+    factor               转到状态 91
+    call_func            转到状态 92
+    number               转到状态 93
+    id                   转到状态 94
+
+
+State 142
+
+   62 var: pointer .
+
+    $default  reduce using rule 62 (var)
+
+
+State 143
+
+   61 var: array .
+
+    $default  reduce using rule 61 (var)
+
+
+State 144
+
+   59 params: declaration_specifiers var .
+
+    $default  reduce using rule 59 (params)
+
+
+State 145
+
+   34 struct_id: id . DOT id
+   36 array: id . array_main
+   60 var: id .
+
+    DOT  shift, and go to state 40
+    LB   shift, and go to state 70
+
+    $default  reduce using rule 60 (var)
+
+    array_main  转到状态 63
+
+
+State 146
+
+   46 declarator: LP params_list RP .
+
+    $default  reduce using rule 46 (declarator)
+
+
+State 147
+
+   58 params_list: params COMMA . params_list
+
+    FLOAT          shift, and go to state 1
+    BOOL           shift, and go to state 2
+    CHAR           shift, and go to state 3
+    DOUBLE         shift, and go to state 4
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    VOID           shift, and go to state 10
+
+    declaration_specifiers  转到状态 106
+    params_list             转到状态 190
+    params                  转到状态 108
+
+
+State 148
+
+   41 array_main: LB RB array_main .
+
+    $default  reduce using rule 41 (array_main)
+
+
+State 149
+
+   40 array_main: LB array_size RB . array_main
+   42           | LB array_size RB .
+
+    LB  shift, and go to state 70
+
+    $default  reduce using rule 42 (array_main)
+
+    array_main  转到状态 191
+
+
+State 150
+
+   50 declaration_specifiers: FLOAT .
+  159 number: FLOAT .
+
+    STAR      reduce using rule 50 (declaration_specifiers)
+    STAR      [reduce using rule 159 (number)]
+    ADDR      reduce using rule 50 (declaration_specifiers)
+    NEW       reduce using rule 50 (declaration_specifiers)
+    ID        reduce using rule 50 (declaration_specifiers)
+    PP        reduce using rule 50 (declaration_specifiers)
+    MM        reduce using rule 50 (declaration_specifiers)
+    $default  reduce using rule 159 (number)
+
+
+State 151
+
+   64 compound_stmt: LC RC .
+
+    $default  reduce using rule 64 (compound_stmt)
+
+
+State 152
+
+   79 statement: BREAK . SEMI
+
+    SEMI  shift, and go to state 192
+
+
+State 153
+
+   80 statement: CONTINUE . SEMI
+
+    SEMI  shift, and go to state 193
+
+
+State 154
+
+  101 do_while_stmt: DO . LC statement_list RC WHILE LP expression RP SEMI
+
+    LC  shift, and go to state 194
+
+
+State 155
+
+  102 for_stmt: FOR . for_condition for_body
+
+    LP  shift, and go to state 195
+
+    for_condition  转到状态 196
+
+
+State 156
+
+   83 if_stmt: IF . LP expression RP statement ELSE statement
+   84        | IF . LP expression RP LC statement_list RC ELSE statement_list
+   85        | IF . LP expression RP LC statement_list RC ELSE LC statement_list RC
+   86        | IF . LP expression RP statement
+   87        | IF . LP expression RP LC statement_list RC
+
+    LP  shift, and go to state 197
+
+
+State 157
+
+  110 return_stmt: RETURN . SEMI
+  111            | RETURN . expression SEMI
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    SEMI     shift, and go to state 198
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 199
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 158
+
+   88 switch_stmt: SWITCH . LP id RP LC case_list RC
+
+    LP  shift, and go to state 200
+
+
+State 159
+
+   99 while_stmt: WHILE . LP expression RP statement
+  100           | WHILE . LP expression RP LC statement_list RC
+
+    LP  shift, and go to state 201
+
+
+State 160
+
+   68 block_item: var_declaration .
+
+    $default  reduce using rule 68 (block_item)
+
+
+State 161
+
+   82 statement: struct_name_specifier . SEMI
+
+    SEMI  shift, and go to state 202
+
+
+State 162
+
+    6 var_declaration: declaration_specifiers . init_declarator_list SEMI
+
+    STAR  shift, and go to state 24
+    ADDR  shift, and go to state 25
+    NEW   shift, and go to state 26
+    ID    shift, and go to state 18
+    PP    shift, and go to state 27
+    MM    shift, and go to state 28
+
+    init_declarator_list            转到状态 29
+    init_array_or_point_assignment  转到状态 30
+    pointer                         转到状态 31
+    struct_id                       转到状态 19
+    paddress                        转到状态 32
+    array                           转到状态 33
+    array_sigle                     转到状态 34
+    var                             转到状态 35
+    assignment_expression           转到状态 36
+    unary_expression                转到状态 37
+    postfix_expression              转到状态 38
+    id                              转到状态 76
+
+
+State 163
+
+   73 statement: compound_stmt .
+
+    $default  reduce using rule 73 (statement)
+
+
+State 164
+
+   65 compound_stmt: LC block_list . RC
+   67 block_list: block_list . block_item
+
+    INT_DEX        shift, and go to state 79
+    INT_HEX        shift, and go to state 80
+    INT_OCT        shift, and go to state 81
+    FLOAT          shift, and go to state 150
+    STAR           shift, and go to state 24
+    ADDR           shift, and go to state 25
+    NOT            shift, and go to state 97
+    LP             shift, and go to state 83
+    LC             shift, and go to state 112
+    RC             shift, and go to state 203
+    BOOL           shift, and go to state 2
+    BREAK          shift, and go to state 152
+    CHAR           shift, and go to state 3
+    CONTINUE       shift, and go to state 153
+    DO             shift, and go to state 154
+    DOUBLE         shift, and go to state 4
+    FOR            shift, and go to state 155
+    IF             shift, and go to state 156
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    NEW            shift, and go to state 26
+    RETURN         shift, and go to state 157
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    STRUCT         shift, and go to state 9
+    SWITCH         shift, and go to state 158
+    VOID           shift, and go to state 10
+    WHILE          shift, and go to state 159
+    ID             shift, and go to state 18
+    PP             shift, and go to state 27
+    MM             shift, and go to state 28
+
+    var_declaration         转到状态 160
+    pointer                 转到状态 86
+    struct_specifier        转到状态 15
+    struct_name_specifier   转到状态 161
+    struct_id               转到状态 19
+    paddress                转到状态 87
+    array                   转到状态 98
+    declaration_specifiers  转到状态 162
+    compound_stmt           转到状态 163
+    block_item              转到状态 204
+    statement_list          转到状态 166
+    statement               转到状态 167
+    if_stmt                 转到状态 168
+    switch_stmt             转到状态 169
+    while_stmt              转到状态 170
+    do_while_stmt           转到状态 171
+    for_stmt                转到状态 172
+    return_stmt             转到状态 173
+    expression              转到状态 174
+    logical_expression      转到状态 100
+    assignment_expression   转到状态 101
+    unary_expression        转到状态 37
+    postfix_expression      转到状态 38
+    simple_expression       转到状态 102
+    additive_expression     转到状态 103
+    term                    转到状态 90
+    factor                  转到状态 91
+    call_func               转到状态 92
+    number                  转到状态 93
+    id                      转到状态 175
+
+
+State 165
+
+   66 block_list: block_item .
+
+    $default  reduce using rule 66 (block_list)
+
+
+State 166
+
+   69 block_item: statement_list .
+   70 statement_list: statement_list . statement
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    INT_DEX   [reduce using rule 69 (block_item)]
+    INT_HEX   [reduce using rule 69 (block_item)]
+    INT_OCT   [reduce using rule 69 (block_item)]
+    FLOAT     [reduce using rule 69 (block_item)]
+    STAR      [reduce using rule 69 (block_item)]
+    ADDR      [reduce using rule 69 (block_item)]
+    NOT       [reduce using rule 69 (block_item)]
+    LP        [reduce using rule 69 (block_item)]
+    LC        [reduce using rule 69 (block_item)]
+    BREAK     [reduce using rule 69 (block_item)]
+    CONTINUE  [reduce using rule 69 (block_item)]
+    DO        [reduce using rule 69 (block_item)]
+    FOR       [reduce using rule 69 (block_item)]
+    IF        [reduce using rule 69 (block_item)]
+    NEW       [reduce using rule 69 (block_item)]
+    RETURN    [reduce using rule 69 (block_item)]
+    SWITCH    [reduce using rule 69 (block_item)]
+    WHILE     [reduce using rule 69 (block_item)]
+    ID        [reduce using rule 69 (block_item)]
+    PP        [reduce using rule 69 (block_item)]
+    MM        [reduce using rule 69 (block_item)]
+    $default  reduce using rule 69 (block_item)
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 205
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 167
+
+   71 statement_list: statement .
+
+    $default  reduce using rule 71 (statement_list)
+
+
+State 168
+
+   74 statement: if_stmt .
+
+    $default  reduce using rule 74 (statement)
+
+
+State 169
+
+   78 statement: switch_stmt .
+
+    $default  reduce using rule 78 (statement)
+
+
+State 170
+
+   75 statement: while_stmt .
+
+    $default  reduce using rule 75 (statement)
+
+
+State 171
+
+   77 statement: do_while_stmt .
+
+    $default  reduce using rule 77 (statement)
+
+
+State 172
+
+   76 statement: for_stmt .
+
+    $default  reduce using rule 76 (statement)
+
+
+State 173
+
+   81 statement: return_stmt .
+
+    $default  reduce using rule 81 (statement)
+
+
+State 174
+
+   72 statement: expression . SEMI
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+
+    SEMI  shift, and go to state 206
+    AND   shift, and go to state 133
+    OR    shift, and go to state 134
+
+
+State 175
+
+   32 struct_name_specifier: id . id
+   33                      | id . id ASSIGNOP id
+   34 struct_id: id . DOT id
+   36 array: id . array_main
+  118 assignment_expression: id . ASSIGNOP expression
+  119                      | id . self_assign expression
+  129 postfix_expression: id . PP
+  130                   | id . MM
+  146 factor: id .
+  152 call_func: id . LP RP
+  153          | id . LP args RP
+
+    ASSIGNOP  shift, and go to state 54
+    DOT       shift, and go to state 40
+    LP        shift, and go to state 130
+    LB        shift, and go to state 70
+    ID        shift, and go to state 18
+    PE        shift, and go to state 57
+    ME        shift, and go to state 58
+    SE        shift, and go to state 59
+    DE        shift, and go to state 60
+    PP        shift, and go to state 61
+    MM        shift, and go to state 62
+
+    $default  reduce using rule 146 (factor)
+
+    struct_id    转到状态 19
+    array_main   转到状态 63
+    self_assign  转到状态 66
+    id           转到状态 207
+
+
+State 176
+
+   30 struct_declaration_list: declaration_specifiers init_declarator_list SEMI .
+   31                        | declaration_specifiers init_declarator_list SEMI . struct_declaration_list
+
+    FLOAT          shift, and go to state 1
+    BOOL           shift, and go to state 2
+    CHAR           shift, and go to state 3
+    DOUBLE         shift, and go to state 4
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    VOID           shift, and go to state 10
+
+    $default  reduce using rule 30 (struct_declaration_list)
+
+    struct_declaration_list  转到状态 208
+    declaration_specifiers   转到状态 69
+
+
+State 177
+
+  145 factor: LP expression RP .
+
+    $default  reduce using rule 145 (factor)
+
+
+State 178
+
+   21 content_of_list_struct: content_of_list_struct COMMA . mininum
+   22                       | content_of_list_struct COMMA . list_struct
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    LC       shift, and go to state 95
+    LETTER   shift, and go to state 120
+    STRING   shift, and go to state 121
+
+    list_struct  转到状态 209
+    mininum      转到状态 210
+    number       转到状态 125
+
+
+State 179
+
+   18 list_struct: LC content_of_list_struct RC .
+
+    $default  reduce using rule 18 (list_struct)
+
+
+State 180
+
+  140 additive_expression: additive_expression PLUS term .
+  143 term: term . STAR factor
+  144     | term . DIV factor
+
+    STAR  shift, and go to state 128
+    DIV   shift, and go to state 129
+
+    $default  reduce using rule 140 (additive_expression)
+
+
+State 181
+
+  141 additive_expression: additive_expression MINUS term .
+  143 term: term . STAR factor
+  144     | term . DIV factor
+
+    STAR  shift, and go to state 128
+    DIV   shift, and go to state 129
+
+    $default  reduce using rule 141 (additive_expression)
+
+
+State 182
+
+  143 term: term STAR factor .
+
+    $default  reduce using rule 143 (term)
+
+
+State 183
+
+  144 term: term DIV factor .
+
+    $default  reduce using rule 144 (term)
+
+
+State 184
+
+  152 call_func: id LP RP .
+
+    $default  reduce using rule 152 (call_func)
+
+
+State 185
+
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+  154 args: expression .
+  155     | expression . COMMA args
+
+    COMMA  shift, and go to state 211
+    AND    shift, and go to state 133
+    OR     shift, and go to state 134
+
+    $default  reduce using rule 154 (args)
+
+
+State 186
+
+  153 call_func: id LP args . RP
+
+    RP  shift, and go to state 212
+
+
+State 187
+
+  115 logical_expression: expression . AND expression
+  115                   | expression AND expression .
+  116                   | expression . OR expression
+
+    AND  shift, and go to state 133
+    OR   shift, and go to state 134
+
+    AND       [reduce using rule 115 (logical_expression)]
+    OR        [reduce using rule 115 (logical_expression)]
+    $default  reduce using rule 115 (logical_expression)
+
+
+State 188
+
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+  116                   | expression OR expression .
+
+    AND  shift, and go to state 133
+    OR   shift, and go to state 134
+
+    AND       [reduce using rule 116 (logical_expression)]
+    OR        [reduce using rule 116 (logical_expression)]
+    $default  reduce using rule 116 (logical_expression)
+
+
+State 189
+
+  132 simple_expression: additive_expression relop additive_expression .
+  140 additive_expression: additive_expression . PLUS term
+  141                    | additive_expression . MINUS term
+
+    PLUS   shift, and go to state 126
+    MINUS  shift, and go to state 127
+
+    $default  reduce using rule 132 (simple_expression)
+
+
+State 190
+
+   58 params_list: params COMMA params_list .
+
+    $default  reduce using rule 58 (params_list)
+
+
+State 191
+
+   40 array_main: LB array_size RB array_main .
+
+    $default  reduce using rule 40 (array_main)
+
+
+State 192
+
+   79 statement: BREAK SEMI .
+
+    $default  reduce using rule 79 (statement)
+
+
+State 193
+
+   80 statement: CONTINUE SEMI .
+
+    $default  reduce using rule 80 (statement)
+
+
+State 194
+
+  101 do_while_stmt: DO LC . statement_list RC WHILE LP expression RP SEMI
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement_list         转到状态 213
+    statement              转到状态 167
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 195
+
+  105 for_condition: LP . expression SEMI expression SEMI expression RP
+  106              | LP . var_declaration expression SEMI expression RP
+  107              | LP . SEMI expression SEMI expression RP
+  108              | LP . SEMI SEMI expression RP
+  109              | LP . SEMI SEMI RP
+
+    INT_DEX        shift, and go to state 79
+    INT_HEX        shift, and go to state 80
+    INT_OCT        shift, and go to state 81
+    FLOAT          shift, and go to state 150
+    SEMI           shift, and go to state 214
+    STAR           shift, and go to state 24
+    ADDR           shift, and go to state 25
+    NOT            shift, and go to state 97
+    LP             shift, and go to state 83
+    BOOL           shift, and go to state 2
+    CHAR           shift, and go to state 3
+    DOUBLE         shift, and go to state 4
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    NEW            shift, and go to state 26
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    STRUCT         shift, and go to state 9
+    VOID           shift, and go to state 10
+    ID             shift, and go to state 18
+    PP             shift, and go to state 27
+    MM             shift, and go to state 28
+
+    var_declaration         转到状态 215
+    pointer                 转到状态 86
+    struct_specifier        转到状态 15
+    struct_id               转到状态 19
+    paddress                转到状态 87
+    array                   转到状态 98
+    declaration_specifiers  转到状态 162
+    expression              转到状态 216
+    logical_expression      转到状态 100
+    assignment_expression   转到状态 101
+    unary_expression        转到状态 37
+    postfix_expression      转到状态 38
+    simple_expression       转到状态 102
+    additive_expression     转到状态 103
+    term                    转到状态 90
+    factor                  转到状态 91
+    call_func               转到状态 92
+    number                  转到状态 93
+    id                      转到状态 104
+
+
+State 196
+
+  102 for_stmt: FOR for_condition . for_body
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 217
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 218
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    for_body               转到状态 219
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 197
+
+   83 if_stmt: IF LP . expression RP statement ELSE statement
+   84        | IF LP . expression RP LC statement_list RC ELSE statement_list
+   85        | IF LP . expression RP LC statement_list RC ELSE LC statement_list RC
+   86        | IF LP . expression RP statement
+   87        | IF LP . expression RP LC statement_list RC
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 220
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 198
+
+  110 return_stmt: RETURN SEMI .
+
+    $default  reduce using rule 110 (return_stmt)
+
+
+State 199
+
+  111 return_stmt: RETURN expression . SEMI
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+
+    SEMI  shift, and go to state 221
+    AND   shift, and go to state 133
+    OR    shift, and go to state 134
+
+
+State 200
+
+   88 switch_stmt: SWITCH LP . id RP LC case_list RC
+
+    ID  shift, and go to state 18
+
+    struct_id  转到状态 19
+    id         转到状态 222
+
+
+State 201
+
+   99 while_stmt: WHILE LP . expression RP statement
+  100           | WHILE LP . expression RP LC statement_list RC
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 223
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 202
+
+   82 statement: struct_name_specifier SEMI .
+
+    $default  reduce using rule 82 (statement)
+
+
+State 203
+
+   65 compound_stmt: LC block_list RC .
+
+    $default  reduce using rule 65 (compound_stmt)
+
+
+State 204
+
+   67 block_list: block_list block_item .
+
+    $default  reduce using rule 67 (block_list)
+
+
+State 205
+
+   70 statement_list: statement_list statement .
+
+    $default  reduce using rule 70 (statement_list)
+
+
+State 206
+
+   72 statement: expression SEMI .
+
+    $default  reduce using rule 72 (statement)
+
+
+State 207
+
+   32 struct_name_specifier: id id .
+   33                      | id id . ASSIGNOP id
+   34 struct_id: id . DOT id
+
+    ASSIGNOP  shift, and go to state 224
+    DOT       shift, and go to state 40
+
+    $default  reduce using rule 32 (struct_name_specifier)
+
+
+State 208
+
+   31 struct_declaration_list: declaration_specifiers init_declarator_list SEMI struct_declaration_list .
+
+    $default  reduce using rule 31 (struct_declaration_list)
+
+
+State 209
+
+   22 content_of_list_struct: content_of_list_struct COMMA list_struct .
+
+    $default  reduce using rule 22 (content_of_list_struct)
+
+
+State 210
+
+   21 content_of_list_struct: content_of_list_struct COMMA mininum .
+
+    $default  reduce using rule 21 (content_of_list_struct)
+
+
+State 211
+
+  155 args: expression COMMA . args
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 185
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    args                   转到状态 225
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 212
+
+  153 call_func: id LP args RP .
+
+    $default  reduce using rule 153 (call_func)
+
+
+State 213
+
+   70 statement_list: statement_list . statement
+  101 do_while_stmt: DO LC statement_list . RC WHILE LP expression RP SEMI
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    RC        shift, and go to state 226
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 205
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 214
+
+  107 for_condition: LP SEMI . expression SEMI expression RP
+  108              | LP SEMI . SEMI expression RP
+  109              | LP SEMI . SEMI RP
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    SEMI     shift, and go to state 227
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 228
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 215
+
+  106 for_condition: LP var_declaration . expression SEMI expression RP
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 229
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 216
+
+  105 for_condition: LP expression . SEMI expression SEMI expression RP
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+
+    SEMI  shift, and go to state 230
+    AND   shift, and go to state 133
+    OR    shift, and go to state 134
+
+
+State 217
+
+   64 compound_stmt: LC . RC
+   65              | LC . block_list RC
+  104 for_body: LC . statement_list RC
+
+    INT_DEX        shift, and go to state 79
+    INT_HEX        shift, and go to state 80
+    INT_OCT        shift, and go to state 81
+    FLOAT          shift, and go to state 150
+    STAR           shift, and go to state 24
+    ADDR           shift, and go to state 25
+    NOT            shift, and go to state 97
+    LP             shift, and go to state 83
+    LC             shift, and go to state 112
+    RC             shift, and go to state 151
+    BOOL           shift, and go to state 2
+    BREAK          shift, and go to state 152
+    CHAR           shift, and go to state 3
+    CONTINUE       shift, and go to state 153
+    DO             shift, and go to state 154
+    DOUBLE         shift, and go to state 4
+    FOR            shift, and go to state 155
+    IF             shift, and go to state 156
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    NEW            shift, and go to state 26
+    RETURN         shift, and go to state 157
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    STRUCT         shift, and go to state 9
+    SWITCH         shift, and go to state 158
+    VOID           shift, and go to state 10
+    WHILE          shift, and go to state 159
+    ID             shift, and go to state 18
+    PP             shift, and go to state 27
+    MM             shift, and go to state 28
+
+    var_declaration         转到状态 160
+    pointer                 转到状态 86
+    struct_specifier        转到状态 15
+    struct_name_specifier   转到状态 161
+    struct_id               转到状态 19
+    paddress                转到状态 87
+    array                   转到状态 98
+    declaration_specifiers  转到状态 162
+    compound_stmt           转到状态 163
+    block_list              转到状态 164
+    block_item              转到状态 165
+    statement_list          转到状态 231
+    statement               转到状态 167
+    if_stmt                 转到状态 168
+    switch_stmt             转到状态 169
+    while_stmt              转到状态 170
+    do_while_stmt           转到状态 171
+    for_stmt                转到状态 172
+    return_stmt             转到状态 173
+    expression              转到状态 174
+    logical_expression      转到状态 100
+    assignment_expression   转到状态 101
+    unary_expression        转到状态 37
+    postfix_expression      转到状态 38
+    simple_expression       转到状态 102
+    additive_expression     转到状态 103
+    term                    转到状态 90
+    factor                  转到状态 91
+    call_func               转到状态 92
+    number                  转到状态 93
+    id                      转到状态 175
+
+
+State 218
+
+  103 for_body: statement .
+
+    $default  reduce using rule 103 (for_body)
+
+
+State 219
+
+  102 for_stmt: FOR for_condition for_body .
+
+    $default  reduce using rule 102 (for_stmt)
+
+
+State 220
+
+   83 if_stmt: IF LP expression . RP statement ELSE statement
+   84        | IF LP expression . RP LC statement_list RC ELSE statement_list
+   85        | IF LP expression . RP LC statement_list RC ELSE LC statement_list RC
+   86        | IF LP expression . RP statement
+   87        | IF LP expression . RP LC statement_list RC
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+
+    AND  shift, and go to state 133
+    OR   shift, and go to state 134
+    RP   shift, and go to state 232
+
+
+State 221
+
+  111 return_stmt: RETURN expression SEMI .
+
+    $default  reduce using rule 111 (return_stmt)
+
+
+State 222
+
+   34 struct_id: id . DOT id
+   88 switch_stmt: SWITCH LP id . RP LC case_list RC
+
+    DOT  shift, and go to state 40
+    RP   shift, and go to state 233
+
+
+State 223
+
+   99 while_stmt: WHILE LP expression . RP statement
+  100           | WHILE LP expression . RP LC statement_list RC
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+
+    AND  shift, and go to state 133
+    OR   shift, and go to state 134
+    RP   shift, and go to state 234
+
+
+State 224
+
+   33 struct_name_specifier: id id ASSIGNOP . id
+
+    ID  shift, and go to state 18
+
+    struct_id  转到状态 19
+    id         转到状态 235
+
+
+State 225
+
+  155 args: expression COMMA args .
+
+    $default  reduce using rule 155 (args)
+
+
+State 226
+
+  101 do_while_stmt: DO LC statement_list RC . WHILE LP expression RP SEMI
+
+    WHILE  shift, and go to state 236
+
+
+State 227
+
+  108 for_condition: LP SEMI SEMI . expression RP
+  109              | LP SEMI SEMI . RP
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    RP       shift, and go to state 237
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 238
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 228
+
+  107 for_condition: LP SEMI expression . SEMI expression RP
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+
+    SEMI  shift, and go to state 239
+    AND   shift, and go to state 133
+    OR    shift, and go to state 134
+
+
+State 229
+
+  106 for_condition: LP var_declaration expression . SEMI expression RP
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+
+    SEMI  shift, and go to state 240
+    AND   shift, and go to state 133
+    OR    shift, and go to state 134
+
+
+State 230
+
+  105 for_condition: LP expression SEMI . expression SEMI expression RP
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 241
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 231
+
+   69 block_item: statement_list .
+   70 statement_list: statement_list . statement
+  104 for_body: LC statement_list . RC
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    RC        shift, and go to state 242
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    INT_DEX   [reduce using rule 69 (block_item)]
+    INT_HEX   [reduce using rule 69 (block_item)]
+    INT_OCT   [reduce using rule 69 (block_item)]
+    FLOAT     [reduce using rule 69 (block_item)]
+    STAR      [reduce using rule 69 (block_item)]
+    ADDR      [reduce using rule 69 (block_item)]
+    NOT       [reduce using rule 69 (block_item)]
+    LP        [reduce using rule 69 (block_item)]
+    LC        [reduce using rule 69 (block_item)]
+    RC        [reduce using rule 69 (block_item)]
+    BREAK     [reduce using rule 69 (block_item)]
+    CONTINUE  [reduce using rule 69 (block_item)]
+    DO        [reduce using rule 69 (block_item)]
+    FOR       [reduce using rule 69 (block_item)]
+    IF        [reduce using rule 69 (block_item)]
+    NEW       [reduce using rule 69 (block_item)]
+    RETURN    [reduce using rule 69 (block_item)]
+    SWITCH    [reduce using rule 69 (block_item)]
+    WHILE     [reduce using rule 69 (block_item)]
+    ID        [reduce using rule 69 (block_item)]
+    PP        [reduce using rule 69 (block_item)]
+    MM        [reduce using rule 69 (block_item)]
+    $default  reduce using rule 69 (block_item)
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 205
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 232
+
+   83 if_stmt: IF LP expression RP . statement ELSE statement
+   84        | IF LP expression RP . LC statement_list RC ELSE statement_list
+   85        | IF LP expression RP . LC statement_list RC ELSE LC statement_list RC
+   86        | IF LP expression RP . statement
+   87        | IF LP expression RP . LC statement_list RC
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 243
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 244
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 233
+
+   88 switch_stmt: SWITCH LP id RP . LC case_list RC
+
+    LC  shift, and go to state 245
+
+
+State 234
+
+   99 while_stmt: WHILE LP expression RP . statement
+  100           | WHILE LP expression RP . LC statement_list RC
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 246
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 247
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 235
+
+   33 struct_name_specifier: id id ASSIGNOP id .
+   34 struct_id: id . DOT id
+
+    DOT  shift, and go to state 40
+
+    $default  reduce using rule 33 (struct_name_specifier)
+
+
+State 236
+
+  101 do_while_stmt: DO LC statement_list RC WHILE . LP expression RP SEMI
+
+    LP  shift, and go to state 248
+
+
+State 237
+
+  109 for_condition: LP SEMI SEMI RP .
+
+    $default  reduce using rule 109 (for_condition)
+
+
+State 238
+
+  108 for_condition: LP SEMI SEMI expression . RP
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+
+    AND  shift, and go to state 133
+    OR   shift, and go to state 134
+    RP   shift, and go to state 249
+
+
+State 239
+
+  107 for_condition: LP SEMI expression SEMI . expression RP
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 250
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 240
+
+  106 for_condition: LP var_declaration expression SEMI . expression RP
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 251
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 241
+
+  105 for_condition: LP expression SEMI expression . SEMI expression RP
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+
+    SEMI  shift, and go to state 252
+    AND   shift, and go to state 133
+    OR    shift, and go to state 134
+
+
+State 242
+
+  104 for_body: LC statement_list RC .
+
+    $default  reduce using rule 104 (for_body)
+
+
+State 243
+
+   64 compound_stmt: LC . RC
+   65              | LC . block_list RC
+   84 if_stmt: IF LP expression RP LC . statement_list RC ELSE statement_list
+   85        | IF LP expression RP LC . statement_list RC ELSE LC statement_list RC
+   87        | IF LP expression RP LC . statement_list RC
+
+    INT_DEX        shift, and go to state 79
+    INT_HEX        shift, and go to state 80
+    INT_OCT        shift, and go to state 81
+    FLOAT          shift, and go to state 150
+    STAR           shift, and go to state 24
+    ADDR           shift, and go to state 25
+    NOT            shift, and go to state 97
+    LP             shift, and go to state 83
+    LC             shift, and go to state 112
+    RC             shift, and go to state 151
+    BOOL           shift, and go to state 2
+    BREAK          shift, and go to state 152
+    CHAR           shift, and go to state 3
+    CONTINUE       shift, and go to state 153
+    DO             shift, and go to state 154
+    DOUBLE         shift, and go to state 4
+    FOR            shift, and go to state 155
+    IF             shift, and go to state 156
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    NEW            shift, and go to state 26
+    RETURN         shift, and go to state 157
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    STRUCT         shift, and go to state 9
+    SWITCH         shift, and go to state 158
+    VOID           shift, and go to state 10
+    WHILE          shift, and go to state 159
+    ID             shift, and go to state 18
+    PP             shift, and go to state 27
+    MM             shift, and go to state 28
+
+    var_declaration         转到状态 160
+    pointer                 转到状态 86
+    struct_specifier        转到状态 15
+    struct_name_specifier   转到状态 161
+    struct_id               转到状态 19
+    paddress                转到状态 87
+    array                   转到状态 98
+    declaration_specifiers  转到状态 162
+    compound_stmt           转到状态 163
+    block_list              转到状态 164
+    block_item              转到状态 165
+    statement_list          转到状态 253
+    statement               转到状态 167
+    if_stmt                 转到状态 168
+    switch_stmt             转到状态 169
+    while_stmt              转到状态 170
+    do_while_stmt           转到状态 171
+    for_stmt                转到状态 172
+    return_stmt             转到状态 173
+    expression              转到状态 174
+    logical_expression      转到状态 100
+    assignment_expression   转到状态 101
+    unary_expression        转到状态 37
+    postfix_expression      转到状态 38
+    simple_expression       转到状态 102
+    additive_expression     转到状态 103
+    term                    转到状态 90
+    factor                  转到状态 91
+    call_func               转到状态 92
+    number                  转到状态 93
+    id                      转到状态 175
+
+
+State 244
+
+   83 if_stmt: IF LP expression RP statement . ELSE statement
+   86        | IF LP expression RP statement .
+
+    ELSE  shift, and go to state 254
+
+    ELSE      [reduce using rule 86 (if_stmt)]
+    $default  reduce using rule 86 (if_stmt)
+
+
+State 245
+
+   88 switch_stmt: SWITCH LP id RP LC . case_list RC
+
+    CASE     shift, and go to state 255
+    DEFAULT  shift, and go to state 256
+
+    case_list  转到状态 257
+
+
+State 246
+
+   64 compound_stmt: LC . RC
+   65              | LC . block_list RC
+  100 while_stmt: WHILE LP expression RP LC . statement_list RC
+
+    INT_DEX        shift, and go to state 79
+    INT_HEX        shift, and go to state 80
+    INT_OCT        shift, and go to state 81
+    FLOAT          shift, and go to state 150
+    STAR           shift, and go to state 24
+    ADDR           shift, and go to state 25
+    NOT            shift, and go to state 97
+    LP             shift, and go to state 83
+    LC             shift, and go to state 112
+    RC             shift, and go to state 151
+    BOOL           shift, and go to state 2
+    BREAK          shift, and go to state 152
+    CHAR           shift, and go to state 3
+    CONTINUE       shift, and go to state 153
+    DO             shift, and go to state 154
+    DOUBLE         shift, and go to state 4
+    FOR            shift, and go to state 155
+    IF             shift, and go to state 156
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    NEW            shift, and go to state 26
+    RETURN         shift, and go to state 157
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    STRUCT         shift, and go to state 9
+    SWITCH         shift, and go to state 158
+    VOID           shift, and go to state 10
+    WHILE          shift, and go to state 159
+    ID             shift, and go to state 18
+    PP             shift, and go to state 27
+    MM             shift, and go to state 28
+
+    var_declaration         转到状态 160
+    pointer                 转到状态 86
+    struct_specifier        转到状态 15
+    struct_name_specifier   转到状态 161
+    struct_id               转到状态 19
+    paddress                转到状态 87
+    array                   转到状态 98
+    declaration_specifiers  转到状态 162
+    compound_stmt           转到状态 163
+    block_list              转到状态 164
+    block_item              转到状态 165
+    statement_list          转到状态 258
+    statement               转到状态 167
+    if_stmt                 转到状态 168
+    switch_stmt             转到状态 169
+    while_stmt              转到状态 170
+    do_while_stmt           转到状态 171
+    for_stmt                转到状态 172
+    return_stmt             转到状态 173
+    expression              转到状态 174
+    logical_expression      转到状态 100
+    assignment_expression   转到状态 101
+    unary_expression        转到状态 37
+    postfix_expression      转到状态 38
+    simple_expression       转到状态 102
+    additive_expression     转到状态 103
+    term                    转到状态 90
+    factor                  转到状态 91
+    call_func               转到状态 92
+    number                  转到状态 93
+    id                      转到状态 175
+
+
+State 247
+
+   99 while_stmt: WHILE LP expression RP statement .
+
+    $default  reduce using rule 99 (while_stmt)
+
+
+State 248
+
+  101 do_while_stmt: DO LC statement_list RC WHILE LP . expression RP SEMI
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 259
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 249
+
+  108 for_condition: LP SEMI SEMI expression RP .
+
+    $default  reduce using rule 108 (for_condition)
+
+
+State 250
+
+  107 for_condition: LP SEMI expression SEMI expression . RP
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+
+    AND  shift, and go to state 133
+    OR   shift, and go to state 134
+    RP   shift, and go to state 260
+
+
+State 251
+
+  106 for_condition: LP var_declaration expression SEMI expression . RP
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+
+    AND  shift, and go to state 133
+    OR   shift, and go to state 134
+    RP   shift, and go to state 261
+
+
+State 252
+
+  105 for_condition: LP expression SEMI expression SEMI . expression RP
+
+    INT_DEX  shift, and go to state 79
+    INT_HEX  shift, and go to state 80
+    INT_OCT  shift, and go to state 81
+    FLOAT    shift, and go to state 82
+    STAR     shift, and go to state 24
+    ADDR     shift, and go to state 25
+    NOT      shift, and go to state 97
+    LP       shift, and go to state 83
+    NEW      shift, and go to state 26
+    ID       shift, and go to state 18
+    PP       shift, and go to state 27
+    MM       shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    expression             转到状态 262
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 104
+
+
+State 253
+
+   69 block_item: statement_list .
+   70 statement_list: statement_list . statement
+   84 if_stmt: IF LP expression RP LC statement_list . RC ELSE statement_list
+   85        | IF LP expression RP LC statement_list . RC ELSE LC statement_list RC
+   87        | IF LP expression RP LC statement_list . RC
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    RC        shift, and go to state 263
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    INT_DEX   [reduce using rule 69 (block_item)]
+    INT_HEX   [reduce using rule 69 (block_item)]
+    INT_OCT   [reduce using rule 69 (block_item)]
+    FLOAT     [reduce using rule 69 (block_item)]
+    STAR      [reduce using rule 69 (block_item)]
+    ADDR      [reduce using rule 69 (block_item)]
+    NOT       [reduce using rule 69 (block_item)]
+    LP        [reduce using rule 69 (block_item)]
+    LC        [reduce using rule 69 (block_item)]
+    RC        [reduce using rule 69 (block_item)]
+    BREAK     [reduce using rule 69 (block_item)]
+    CONTINUE  [reduce using rule 69 (block_item)]
+    DO        [reduce using rule 69 (block_item)]
+    FOR       [reduce using rule 69 (block_item)]
+    IF        [reduce using rule 69 (block_item)]
+    NEW       [reduce using rule 69 (block_item)]
+    RETURN    [reduce using rule 69 (block_item)]
+    SWITCH    [reduce using rule 69 (block_item)]
+    WHILE     [reduce using rule 69 (block_item)]
+    ID        [reduce using rule 69 (block_item)]
+    PP        [reduce using rule 69 (block_item)]
+    MM        [reduce using rule 69 (block_item)]
+    $default  reduce using rule 69 (block_item)
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 205
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 254
+
+   83 if_stmt: IF LP expression RP statement ELSE . statement
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 264
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 255
+
+   89 case_list: CASE . INT_DEX CL LC statement_list RC case_list
+   90          | CASE . INT_DEX CL LC statement_list RC
+   91          | CASE . INT_DEX CL statement_list case_list
+   92          | CASE . INT_DEX CL statement_list
+   93          | CASE . LETTER CL LC statement_list RC case_list
+   94          | CASE . LETTER CL LC statement_list RC
+   95          | CASE . LETTER CL statement_list case_list
+   96          | CASE . LETTER CL statement_list
+
+    INT_DEX  shift, and go to state 265
+    LETTER   shift, and go to state 266
+
+
+State 256
+
+   97 case_list: DEFAULT . CL LC statement_list RC
+   98          | DEFAULT . CL statement_list
+
+    CL  shift, and go to state 267
+
+
+State 257
+
+   88 switch_stmt: SWITCH LP id RP LC case_list . RC
+
+    RC  shift, and go to state 268
+
+
+State 258
+
+   69 block_item: statement_list .
+   70 statement_list: statement_list . statement
+  100 while_stmt: WHILE LP expression RP LC statement_list . RC
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    RC        shift, and go to state 269
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    INT_DEX   [reduce using rule 69 (block_item)]
+    INT_HEX   [reduce using rule 69 (block_item)]
+    INT_OCT   [reduce using rule 69 (block_item)]
+    FLOAT     [reduce using rule 69 (block_item)]
+    STAR      [reduce using rule 69 (block_item)]
+    ADDR      [reduce using rule 69 (block_item)]
+    NOT       [reduce using rule 69 (block_item)]
+    LP        [reduce using rule 69 (block_item)]
+    LC        [reduce using rule 69 (block_item)]
+    RC        [reduce using rule 69 (block_item)]
+    BREAK     [reduce using rule 69 (block_item)]
+    CONTINUE  [reduce using rule 69 (block_item)]
+    DO        [reduce using rule 69 (block_item)]
+    FOR       [reduce using rule 69 (block_item)]
+    IF        [reduce using rule 69 (block_item)]
+    NEW       [reduce using rule 69 (block_item)]
+    RETURN    [reduce using rule 69 (block_item)]
+    SWITCH    [reduce using rule 69 (block_item)]
+    WHILE     [reduce using rule 69 (block_item)]
+    ID        [reduce using rule 69 (block_item)]
+    PP        [reduce using rule 69 (block_item)]
+    MM        [reduce using rule 69 (block_item)]
+    $default  reduce using rule 69 (block_item)
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 205
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 259
+
+  101 do_while_stmt: DO LC statement_list RC WHILE LP expression . RP SEMI
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+
+    AND  shift, and go to state 133
+    OR   shift, and go to state 134
+    RP   shift, and go to state 270
+
+
+State 260
+
+  107 for_condition: LP SEMI expression SEMI expression RP .
+
+    $default  reduce using rule 107 (for_condition)
+
+
+State 261
+
+  106 for_condition: LP var_declaration expression SEMI expression RP .
+
+    $default  reduce using rule 106 (for_condition)
+
+
+State 262
+
+  105 for_condition: LP expression SEMI expression SEMI expression . RP
+  115 logical_expression: expression . AND expression
+  116                   | expression . OR expression
+
+    AND  shift, and go to state 133
+    OR   shift, and go to state 134
+    RP   shift, and go to state 271
+
+
+State 263
+
+   84 if_stmt: IF LP expression RP LC statement_list RC . ELSE statement_list
+   85        | IF LP expression RP LC statement_list RC . ELSE LC statement_list RC
+   87        | IF LP expression RP LC statement_list RC .
+
+    ELSE  shift, and go to state 272
+
+    ELSE      [reduce using rule 87 (if_stmt)]
+    $default  reduce using rule 87 (if_stmt)
+
+
+State 264
+
+   83 if_stmt: IF LP expression RP statement ELSE statement .
+
+    $default  reduce using rule 83 (if_stmt)
+
+
+State 265
+
+   89 case_list: CASE INT_DEX . CL LC statement_list RC case_list
+   90          | CASE INT_DEX . CL LC statement_list RC
+   91          | CASE INT_DEX . CL statement_list case_list
+   92          | CASE INT_DEX . CL statement_list
+
+    CL  shift, and go to state 273
+
+
+State 266
+
+   93 case_list: CASE LETTER . CL LC statement_list RC case_list
+   94          | CASE LETTER . CL LC statement_list RC
+   95          | CASE LETTER . CL statement_list case_list
+   96          | CASE LETTER . CL statement_list
+
+    CL  shift, and go to state 274
+
+
+State 267
+
+   97 case_list: DEFAULT CL . LC statement_list RC
+   98          | DEFAULT CL . statement_list
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 275
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement_list         转到状态 276
+    statement              转到状态 167
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 268
+
+   88 switch_stmt: SWITCH LP id RP LC case_list RC .
+
+    $default  reduce using rule 88 (switch_stmt)
+
+
+State 269
+
+  100 while_stmt: WHILE LP expression RP LC statement_list RC .
+
+    $default  reduce using rule 100 (while_stmt)
+
+
+State 270
+
+  101 do_while_stmt: DO LC statement_list RC WHILE LP expression RP . SEMI
+
+    SEMI  shift, and go to state 277
+
+
+State 271
+
+  105 for_condition: LP expression SEMI expression SEMI expression RP .
+
+    $default  reduce using rule 105 (for_condition)
+
+
+State 272
+
+   84 if_stmt: IF LP expression RP LC statement_list RC ELSE . statement_list
+   85        | IF LP expression RP LC statement_list RC ELSE . LC statement_list RC
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 278
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement_list         转到状态 279
+    statement              转到状态 167
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 273
+
+   89 case_list: CASE INT_DEX CL . LC statement_list RC case_list
+   90          | CASE INT_DEX CL . LC statement_list RC
+   91          | CASE INT_DEX CL . statement_list case_list
+   92          | CASE INT_DEX CL . statement_list
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 280
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement_list         转到状态 281
+    statement              转到状态 167
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 274
+
+   93 case_list: CASE LETTER CL . LC statement_list RC case_list
+   94          | CASE LETTER CL . LC statement_list RC
+   95          | CASE LETTER CL . statement_list case_list
+   96          | CASE LETTER CL . statement_list
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 282
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement_list         转到状态 283
+    statement              转到状态 167
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 275
+
+   64 compound_stmt: LC . RC
+   65              | LC . block_list RC
+   97 case_list: DEFAULT CL LC . statement_list RC
+
+    INT_DEX        shift, and go to state 79
+    INT_HEX        shift, and go to state 80
+    INT_OCT        shift, and go to state 81
+    FLOAT          shift, and go to state 150
+    STAR           shift, and go to state 24
+    ADDR           shift, and go to state 25
+    NOT            shift, and go to state 97
+    LP             shift, and go to state 83
+    LC             shift, and go to state 112
+    RC             shift, and go to state 151
+    BOOL           shift, and go to state 2
+    BREAK          shift, and go to state 152
+    CHAR           shift, and go to state 3
+    CONTINUE       shift, and go to state 153
+    DO             shift, and go to state 154
+    DOUBLE         shift, and go to state 4
+    FOR            shift, and go to state 155
+    IF             shift, and go to state 156
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    NEW            shift, and go to state 26
+    RETURN         shift, and go to state 157
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    STRUCT         shift, and go to state 9
+    SWITCH         shift, and go to state 158
+    VOID           shift, and go to state 10
+    WHILE          shift, and go to state 159
+    ID             shift, and go to state 18
+    PP             shift, and go to state 27
+    MM             shift, and go to state 28
+
+    var_declaration         转到状态 160
+    pointer                 转到状态 86
+    struct_specifier        转到状态 15
+    struct_name_specifier   转到状态 161
+    struct_id               转到状态 19
+    paddress                转到状态 87
+    array                   转到状态 98
+    declaration_specifiers  转到状态 162
+    compound_stmt           转到状态 163
+    block_list              转到状态 164
+    block_item              转到状态 165
+    statement_list          转到状态 284
+    statement               转到状态 167
+    if_stmt                 转到状态 168
+    switch_stmt             转到状态 169
+    while_stmt              转到状态 170
+    do_while_stmt           转到状态 171
+    for_stmt                转到状态 172
+    return_stmt             转到状态 173
+    expression              转到状态 174
+    logical_expression      转到状态 100
+    assignment_expression   转到状态 101
+    unary_expression        转到状态 37
+    postfix_expression      转到状态 38
+    simple_expression       转到状态 102
+    additive_expression     转到状态 103
+    term                    转到状态 90
+    factor                  转到状态 91
+    call_func               转到状态 92
+    number                  转到状态 93
+    id                      转到状态 175
+
+
+State 276
+
+   70 statement_list: statement_list . statement
+   98 case_list: DEFAULT CL statement_list .
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    $default  reduce using rule 98 (case_list)
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 205
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 277
+
+  101 do_while_stmt: DO LC statement_list RC WHILE LP expression RP SEMI .
+
+    $default  reduce using rule 101 (do_while_stmt)
+
+
+State 278
+
+   64 compound_stmt: LC . RC
+   65              | LC . block_list RC
+   85 if_stmt: IF LP expression RP LC statement_list RC ELSE LC . statement_list RC
+
+    INT_DEX        shift, and go to state 79
+    INT_HEX        shift, and go to state 80
+    INT_OCT        shift, and go to state 81
+    FLOAT          shift, and go to state 150
+    STAR           shift, and go to state 24
+    ADDR           shift, and go to state 25
+    NOT            shift, and go to state 97
+    LP             shift, and go to state 83
+    LC             shift, and go to state 112
+    RC             shift, and go to state 151
+    BOOL           shift, and go to state 2
+    BREAK          shift, and go to state 152
+    CHAR           shift, and go to state 3
+    CONTINUE       shift, and go to state 153
+    DO             shift, and go to state 154
+    DOUBLE         shift, and go to state 4
+    FOR            shift, and go to state 155
+    IF             shift, and go to state 156
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    NEW            shift, and go to state 26
+    RETURN         shift, and go to state 157
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    STRUCT         shift, and go to state 9
+    SWITCH         shift, and go to state 158
+    VOID           shift, and go to state 10
+    WHILE          shift, and go to state 159
+    ID             shift, and go to state 18
+    PP             shift, and go to state 27
+    MM             shift, and go to state 28
+
+    var_declaration         转到状态 160
+    pointer                 转到状态 86
+    struct_specifier        转到状态 15
+    struct_name_specifier   转到状态 161
+    struct_id               转到状态 19
+    paddress                转到状态 87
+    array                   转到状态 98
+    declaration_specifiers  转到状态 162
+    compound_stmt           转到状态 163
+    block_list              转到状态 164
+    block_item              转到状态 165
+    statement_list          转到状态 285
+    statement               转到状态 167
+    if_stmt                 转到状态 168
+    switch_stmt             转到状态 169
+    while_stmt              转到状态 170
+    do_while_stmt           转到状态 171
+    for_stmt                转到状态 172
+    return_stmt             转到状态 173
+    expression              转到状态 174
+    logical_expression      转到状态 100
+    assignment_expression   转到状态 101
+    unary_expression        转到状态 37
+    postfix_expression      转到状态 38
+    simple_expression       转到状态 102
+    additive_expression     转到状态 103
+    term                    转到状态 90
+    factor                  转到状态 91
+    call_func               转到状态 92
+    number                  转到状态 93
+    id                      转到状态 175
+
+
+State 279
+
+   70 statement_list: statement_list . statement
+   84 if_stmt: IF LP expression RP LC statement_list RC ELSE statement_list .
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    INT_DEX   [reduce using rule 84 (if_stmt)]
+    INT_HEX   [reduce using rule 84 (if_stmt)]
+    INT_OCT   [reduce using rule 84 (if_stmt)]
+    FLOAT     [reduce using rule 84 (if_stmt)]
+    STAR      [reduce using rule 84 (if_stmt)]
+    ADDR      [reduce using rule 84 (if_stmt)]
+    NOT       [reduce using rule 84 (if_stmt)]
+    LP        [reduce using rule 84 (if_stmt)]
+    LC        [reduce using rule 84 (if_stmt)]
+    BREAK     [reduce using rule 84 (if_stmt)]
+    CONTINUE  [reduce using rule 84 (if_stmt)]
+    DO        [reduce using rule 84 (if_stmt)]
+    FOR       [reduce using rule 84 (if_stmt)]
+    IF        [reduce using rule 84 (if_stmt)]
+    NEW       [reduce using rule 84 (if_stmt)]
+    RETURN    [reduce using rule 84 (if_stmt)]
+    SWITCH    [reduce using rule 84 (if_stmt)]
+    WHILE     [reduce using rule 84 (if_stmt)]
+    ID        [reduce using rule 84 (if_stmt)]
+    PP        [reduce using rule 84 (if_stmt)]
+    MM        [reduce using rule 84 (if_stmt)]
+    $default  reduce using rule 84 (if_stmt)
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 205
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 280
+
+   64 compound_stmt: LC . RC
+   65              | LC . block_list RC
+   89 case_list: CASE INT_DEX CL LC . statement_list RC case_list
+   90          | CASE INT_DEX CL LC . statement_list RC
+
+    INT_DEX        shift, and go to state 79
+    INT_HEX        shift, and go to state 80
+    INT_OCT        shift, and go to state 81
+    FLOAT          shift, and go to state 150
+    STAR           shift, and go to state 24
+    ADDR           shift, and go to state 25
+    NOT            shift, and go to state 97
+    LP             shift, and go to state 83
+    LC             shift, and go to state 112
+    RC             shift, and go to state 151
+    BOOL           shift, and go to state 2
+    BREAK          shift, and go to state 152
+    CHAR           shift, and go to state 3
+    CONTINUE       shift, and go to state 153
+    DO             shift, and go to state 154
+    DOUBLE         shift, and go to state 4
+    FOR            shift, and go to state 155
+    IF             shift, and go to state 156
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    NEW            shift, and go to state 26
+    RETURN         shift, and go to state 157
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    STRUCT         shift, and go to state 9
+    SWITCH         shift, and go to state 158
+    VOID           shift, and go to state 10
+    WHILE          shift, and go to state 159
+    ID             shift, and go to state 18
+    PP             shift, and go to state 27
+    MM             shift, and go to state 28
+
+    var_declaration         转到状态 160
+    pointer                 转到状态 86
+    struct_specifier        转到状态 15
+    struct_name_specifier   转到状态 161
+    struct_id               转到状态 19
+    paddress                转到状态 87
+    array                   转到状态 98
+    declaration_specifiers  转到状态 162
+    compound_stmt           转到状态 163
+    block_list              转到状态 164
+    block_item              转到状态 165
+    statement_list          转到状态 286
+    statement               转到状态 167
+    if_stmt                 转到状态 168
+    switch_stmt             转到状态 169
+    while_stmt              转到状态 170
+    do_while_stmt           转到状态 171
+    for_stmt                转到状态 172
+    return_stmt             转到状态 173
+    expression              转到状态 174
+    logical_expression      转到状态 100
+    assignment_expression   转到状态 101
+    unary_expression        转到状态 37
+    postfix_expression      转到状态 38
+    simple_expression       转到状态 102
+    additive_expression     转到状态 103
+    term                    转到状态 90
+    factor                  转到状态 91
+    call_func               转到状态 92
+    number                  转到状态 93
+    id                      转到状态 175
+
+
+State 281
+
+   70 statement_list: statement_list . statement
+   91 case_list: CASE INT_DEX CL statement_list . case_list
+   92          | CASE INT_DEX CL statement_list .
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    BREAK     shift, and go to state 152
+    CASE      shift, and go to state 255
+    CONTINUE  shift, and go to state 153
+    DEFAULT   shift, and go to state 256
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    $default  reduce using rule 92 (case_list)
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 205
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    case_list              转到状态 287
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 282
+
+   64 compound_stmt: LC . RC
+   65              | LC . block_list RC
+   93 case_list: CASE LETTER CL LC . statement_list RC case_list
+   94          | CASE LETTER CL LC . statement_list RC
+
+    INT_DEX        shift, and go to state 79
+    INT_HEX        shift, and go to state 80
+    INT_OCT        shift, and go to state 81
+    FLOAT          shift, and go to state 150
+    STAR           shift, and go to state 24
+    ADDR           shift, and go to state 25
+    NOT            shift, and go to state 97
+    LP             shift, and go to state 83
+    LC             shift, and go to state 112
+    RC             shift, and go to state 151
+    BOOL           shift, and go to state 2
+    BREAK          shift, and go to state 152
+    CHAR           shift, and go to state 3
+    CONTINUE       shift, and go to state 153
+    DO             shift, and go to state 154
+    DOUBLE         shift, and go to state 4
+    FOR            shift, and go to state 155
+    IF             shift, and go to state 156
+    INT            shift, and go to state 5
+    LONG           shift, and go to state 6
+    NEW            shift, and go to state 26
+    RETURN         shift, and go to state 157
+    SHORT          shift, and go to state 7
+    STRING_DEFINE  shift, and go to state 8
+    STRUCT         shift, and go to state 9
+    SWITCH         shift, and go to state 158
+    VOID           shift, and go to state 10
+    WHILE          shift, and go to state 159
+    ID             shift, and go to state 18
+    PP             shift, and go to state 27
+    MM             shift, and go to state 28
+
+    var_declaration         转到状态 160
+    pointer                 转到状态 86
+    struct_specifier        转到状态 15
+    struct_name_specifier   转到状态 161
+    struct_id               转到状态 19
+    paddress                转到状态 87
+    array                   转到状态 98
+    declaration_specifiers  转到状态 162
+    compound_stmt           转到状态 163
+    block_list              转到状态 164
+    block_item              转到状态 165
+    statement_list          转到状态 288
+    statement               转到状态 167
+    if_stmt                 转到状态 168
+    switch_stmt             转到状态 169
+    while_stmt              转到状态 170
+    do_while_stmt           转到状态 171
+    for_stmt                转到状态 172
+    return_stmt             转到状态 173
+    expression              转到状态 174
+    logical_expression      转到状态 100
+    assignment_expression   转到状态 101
+    unary_expression        转到状态 37
+    postfix_expression      转到状态 38
+    simple_expression       转到状态 102
+    additive_expression     转到状态 103
+    term                    转到状态 90
+    factor                  转到状态 91
+    call_func               转到状态 92
+    number                  转到状态 93
+    id                      转到状态 175
+
+
+State 283
+
+   70 statement_list: statement_list . statement
+   95 case_list: CASE LETTER CL statement_list . case_list
+   96          | CASE LETTER CL statement_list .
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    BREAK     shift, and go to state 152
+    CASE      shift, and go to state 255
+    CONTINUE  shift, and go to state 153
+    DEFAULT   shift, and go to state 256
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    $default  reduce using rule 96 (case_list)
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 205
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    case_list              转到状态 289
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 284
+
+   69 block_item: statement_list .
+   70 statement_list: statement_list . statement
+   97 case_list: DEFAULT CL LC statement_list . RC
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    RC        shift, and go to state 290
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    INT_DEX   [reduce using rule 69 (block_item)]
+    INT_HEX   [reduce using rule 69 (block_item)]
+    INT_OCT   [reduce using rule 69 (block_item)]
+    FLOAT     [reduce using rule 69 (block_item)]
+    STAR      [reduce using rule 69 (block_item)]
+    ADDR      [reduce using rule 69 (block_item)]
+    NOT       [reduce using rule 69 (block_item)]
+    LP        [reduce using rule 69 (block_item)]
+    LC        [reduce using rule 69 (block_item)]
+    RC        [reduce using rule 69 (block_item)]
+    BREAK     [reduce using rule 69 (block_item)]
+    CONTINUE  [reduce using rule 69 (block_item)]
+    DO        [reduce using rule 69 (block_item)]
+    FOR       [reduce using rule 69 (block_item)]
+    IF        [reduce using rule 69 (block_item)]
+    NEW       [reduce using rule 69 (block_item)]
+    RETURN    [reduce using rule 69 (block_item)]
+    SWITCH    [reduce using rule 69 (block_item)]
+    WHILE     [reduce using rule 69 (block_item)]
+    ID        [reduce using rule 69 (block_item)]
+    PP        [reduce using rule 69 (block_item)]
+    MM        [reduce using rule 69 (block_item)]
+    $default  reduce using rule 69 (block_item)
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 205
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 285
+
+   69 block_item: statement_list .
+   70 statement_list: statement_list . statement
+   85 if_stmt: IF LP expression RP LC statement_list RC ELSE LC statement_list . RC
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    RC        shift, and go to state 291
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    INT_DEX   [reduce using rule 69 (block_item)]
+    INT_HEX   [reduce using rule 69 (block_item)]
+    INT_OCT   [reduce using rule 69 (block_item)]
+    FLOAT     [reduce using rule 69 (block_item)]
+    STAR      [reduce using rule 69 (block_item)]
+    ADDR      [reduce using rule 69 (block_item)]
+    NOT       [reduce using rule 69 (block_item)]
+    LP        [reduce using rule 69 (block_item)]
+    LC        [reduce using rule 69 (block_item)]
+    RC        [reduce using rule 69 (block_item)]
+    BREAK     [reduce using rule 69 (block_item)]
+    CONTINUE  [reduce using rule 69 (block_item)]
+    DO        [reduce using rule 69 (block_item)]
+    FOR       [reduce using rule 69 (block_item)]
+    IF        [reduce using rule 69 (block_item)]
+    NEW       [reduce using rule 69 (block_item)]
+    RETURN    [reduce using rule 69 (block_item)]
+    SWITCH    [reduce using rule 69 (block_item)]
+    WHILE     [reduce using rule 69 (block_item)]
+    ID        [reduce using rule 69 (block_item)]
+    PP        [reduce using rule 69 (block_item)]
+    MM        [reduce using rule 69 (block_item)]
+    $default  reduce using rule 69 (block_item)
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 205
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 286
+
+   69 block_item: statement_list .
+   70 statement_list: statement_list . statement
+   89 case_list: CASE INT_DEX CL LC statement_list . RC case_list
+   90          | CASE INT_DEX CL LC statement_list . RC
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    RC        shift, and go to state 292
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    INT_DEX   [reduce using rule 69 (block_item)]
+    INT_HEX   [reduce using rule 69 (block_item)]
+    INT_OCT   [reduce using rule 69 (block_item)]
+    FLOAT     [reduce using rule 69 (block_item)]
+    STAR      [reduce using rule 69 (block_item)]
+    ADDR      [reduce using rule 69 (block_item)]
+    NOT       [reduce using rule 69 (block_item)]
+    LP        [reduce using rule 69 (block_item)]
+    LC        [reduce using rule 69 (block_item)]
+    RC        [reduce using rule 69 (block_item)]
+    BREAK     [reduce using rule 69 (block_item)]
+    CONTINUE  [reduce using rule 69 (block_item)]
+    DO        [reduce using rule 69 (block_item)]
+    FOR       [reduce using rule 69 (block_item)]
+    IF        [reduce using rule 69 (block_item)]
+    NEW       [reduce using rule 69 (block_item)]
+    RETURN    [reduce using rule 69 (block_item)]
+    SWITCH    [reduce using rule 69 (block_item)]
+    WHILE     [reduce using rule 69 (block_item)]
+    ID        [reduce using rule 69 (block_item)]
+    PP        [reduce using rule 69 (block_item)]
+    MM        [reduce using rule 69 (block_item)]
+    $default  reduce using rule 69 (block_item)
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 205
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 287
+
+   91 case_list: CASE INT_DEX CL statement_list case_list .
+
+    $default  reduce using rule 91 (case_list)
+
+
+State 288
+
+   69 block_item: statement_list .
+   70 statement_list: statement_list . statement
+   93 case_list: CASE LETTER CL LC statement_list . RC case_list
+   94          | CASE LETTER CL LC statement_list . RC
+
+    INT_DEX   shift, and go to state 79
+    INT_HEX   shift, and go to state 80
+    INT_OCT   shift, and go to state 81
+    FLOAT     shift, and go to state 82
+    STAR      shift, and go to state 24
+    ADDR      shift, and go to state 25
+    NOT       shift, and go to state 97
+    LP        shift, and go to state 83
+    LC        shift, and go to state 112
+    RC        shift, and go to state 293
+    BREAK     shift, and go to state 152
+    CONTINUE  shift, and go to state 153
+    DO        shift, and go to state 154
+    FOR       shift, and go to state 155
+    IF        shift, and go to state 156
+    NEW       shift, and go to state 26
+    RETURN    shift, and go to state 157
+    SWITCH    shift, and go to state 158
+    WHILE     shift, and go to state 159
+    ID        shift, and go to state 18
+    PP        shift, and go to state 27
+    MM        shift, and go to state 28
+
+    INT_DEX   [reduce using rule 69 (block_item)]
+    INT_HEX   [reduce using rule 69 (block_item)]
+    INT_OCT   [reduce using rule 69 (block_item)]
+    FLOAT     [reduce using rule 69 (block_item)]
+    STAR      [reduce using rule 69 (block_item)]
+    ADDR      [reduce using rule 69 (block_item)]
+    NOT       [reduce using rule 69 (block_item)]
+    LP        [reduce using rule 69 (block_item)]
+    LC        [reduce using rule 69 (block_item)]
+    RC        [reduce using rule 69 (block_item)]
+    BREAK     [reduce using rule 69 (block_item)]
+    CONTINUE  [reduce using rule 69 (block_item)]
+    DO        [reduce using rule 69 (block_item)]
+    FOR       [reduce using rule 69 (block_item)]
+    IF        [reduce using rule 69 (block_item)]
+    NEW       [reduce using rule 69 (block_item)]
+    RETURN    [reduce using rule 69 (block_item)]
+    SWITCH    [reduce using rule 69 (block_item)]
+    WHILE     [reduce using rule 69 (block_item)]
+    ID        [reduce using rule 69 (block_item)]
+    PP        [reduce using rule 69 (block_item)]
+    MM        [reduce using rule 69 (block_item)]
+    $default  reduce using rule 69 (block_item)
+
+    pointer                转到状态 86
+    struct_name_specifier  转到状态 161
+    struct_id              转到状态 19
+    paddress               转到状态 87
+    array                  转到状态 98
+    compound_stmt          转到状态 163
+    statement              转到状态 205
+    if_stmt                转到状态 168
+    switch_stmt            转到状态 169
+    while_stmt             转到状态 170
+    do_while_stmt          转到状态 171
+    for_stmt               转到状态 172
+    return_stmt            转到状态 173
+    expression             转到状态 174
+    logical_expression     转到状态 100
+    assignment_expression  转到状态 101
+    unary_expression       转到状态 37
+    postfix_expression     转到状态 38
+    simple_expression      转到状态 102
+    additive_expression    转到状态 103
+    term                   转到状态 90
+    factor                 转到状态 91
+    call_func              转到状态 92
+    number                 转到状态 93
+    id                     转到状态 175
+
+
+State 289
+
+   95 case_list: CASE LETTER CL statement_list case_list .
+
+    $default  reduce using rule 95 (case_list)
+
+
+State 290
+
+   97 case_list: DEFAULT CL LC statement_list RC .
+
+    $default  reduce using rule 97 (case_list)
+
+
+State 291
+
+   85 if_stmt: IF LP expression RP LC statement_list RC ELSE LC statement_list RC .
+
+    $default  reduce using rule 85 (if_stmt)
+
+
+State 292
+
+   89 case_list: CASE INT_DEX CL LC statement_list RC . case_list
+   90          | CASE INT_DEX CL LC statement_list RC .
+
+    CASE     shift, and go to state 255
+    DEFAULT  shift, and go to state 256
+
+    $default  reduce using rule 90 (case_list)
+
+    case_list  转到状态 294
+
+
+State 293
+
+   93 case_list: CASE LETTER CL LC statement_list RC . case_list
+   94          | CASE LETTER CL LC statement_list RC .
+
+    CASE     shift, and go to state 255
+    DEFAULT  shift, and go to state 256
+
+    $default  reduce using rule 94 (case_list)
+
+    case_list  转到状态 295
+
+
+State 294
+
+   89 case_list: CASE INT_DEX CL LC statement_list RC case_list .
+
+    $default  reduce using rule 89 (case_list)
+
+
+State 295
+
+   93 case_list: CASE LETTER CL LC statement_list RC case_list .
+
+    $default  reduce using rule 93 (case_list)
