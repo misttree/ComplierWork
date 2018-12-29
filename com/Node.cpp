@@ -304,7 +304,7 @@ void Node::checkType() {
             symbolNode *back=this->children.back()->value;
             if (front->getNodeType() == back->getNodeType())
             {
-                this->value = new symbolNode("", this->children.front()->value->getNodeType());
+                this->value = new symbolNode("", front->getNodeType());
                 return;
             }
             if (typeEquivalenceClass.at(front->getNodeType()) == typeEquivalenceClass.at(back->getNodeType()))
@@ -325,6 +325,7 @@ void Node::checkType() {
                     exit(0);
                 }
             }
+
         }
     }
     else if (this->name == "call_func")
