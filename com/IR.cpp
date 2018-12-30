@@ -49,32 +49,30 @@ void dfs(Node *n)
             string result_class = child->children.front()->name;
             if (result_class == "array")
             {
+                //如果是数组的赋值语句
                 //目前不知道数组的基地址，用数组名代替
                 Node *this_array = child->children.front(); //赋值语句左侧
                 Node *next_array = child->children.back();  //赋值语句右侧，可能是个值可能是个式子
                 string base_address = this_array->detail;   //基地址
-                if (next_array->name == "factor")
+                if (next_array->countOfChildren==1)
                 {
-                    //如果右侧只有一个元素,且这个元素不是数组
-                    if (next_array->children.front()->name != "array")
-                    {
-                        string factor_offset = to_string(stoi(this_array->children.back()->children.front()->detail)); //索引乘以4就是地址相对基地址的偏移量，只考虑int型
-                        l.push_back(*(new IR(to_string(seq++), "*", factor_offset, to_string(4), "t" + to_string(tnum))));
-                        l.push_back(*(new IR(to_string(seq++), "[]=", next_array->children.front()->detail, "NULL", "b[t" + to_string(tnum++) + "]")));
-                    }
-                    else
-                    { //TODO: 如果右侧有一个元素，且这个元素是数组
-
-                    }
+                    //如果右侧只有一个元素,目前只考虑右边不是数组的情况
+                    string factor_offset = this_array->children.back()->children.front()->detail; //索引乘以4就是地址相对基地址的偏移量，只考虑int型
+                    l.push_back(*(new IR(to_string(seq++), "*", factor_offset, to_string(4), "t" + to_string(tnum))));
+                    l.push_back(*(new IR(to_string(seq++), "[]=", next_array->children.front()->detail, "NULL", "b[t" + to_string(tnum++) + "]")));
                 }
                 else
                 {
-                    //如果右侧是一个式子
-                    for (list<Node *>::iterator tit = next_array->children.begin(); it != next_array->children.end(); tit++){
-                        //如果这个tit不是数组
-                        
-                    }
-                    //情况相当多，建议根据老师的测试用例编写
+                    //如果右侧是一个式子，目前只考虑右边不是数组的情况
+                    string t_arg1 = next_array->children.front()->children.front()->detail;
+                    string t_arg2 = next_array->children.back()->children.front()->detail;
+                    string t_op = next_array->detail;
+
+                    int t_tnum = tnum;
+                    l.push_back(*(new IR(to_string(seq++), t_op, t_arg1, t_arg2, "t" + to_string(tnum++))));
+                    string factor_offset = this_array->children.back()->children.front()->detail; //索引乘以4就是地址相对基地址的偏移量，只考虑int型
+                    l.push_back(*(new IR(to_string(seq++), "*", factor_offset, to_string(4), "t" + to_string(tnum))));
+                    l.push_back(*(new IR(to_string(seq++), "[]=", "t" + to_string(t_tnum), "NULL", "b[t" + to_string(tnum++) + "]")));
                 }
             }
             else
