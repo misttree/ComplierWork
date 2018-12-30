@@ -3,12 +3,14 @@
 seq	op	arg1	arg2	result
 0	[]=	y	0	t1
 1	=	1	NULL	t1
-2	>	x	1	GOTO label0
+2	[]=	y	0	t2
+3	=	factor	NULL	t2
+4	<	x	1	GOTO label0
 GOTO	label1			
 Label	label0			
-3	+	x	1	t2
-4	=	t2	NULL	x
-Label	label1			
-5	-	x	1	t3
+5	+	x	1	t3
 6	=	t3	NULL	x
+Label	label1			
+7	-	x	1	t4
+8	=	t4	NULL	x
 Label	label2			
