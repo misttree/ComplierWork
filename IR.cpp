@@ -1,7 +1,9 @@
 #include<iostream>
 #include<string>
 #include"Node.h"
+#include"func.h"
 #include<list>
+#include<map>
 #include"innercode.h"
 using namespace std;
 
@@ -40,6 +42,60 @@ public:
 };
 
 list<IR> l;
+
+
+// void Node::function_definition(Node* funcN)
+// {
+//     bool isdeclared = false;
+//     funcNode declareFunc;
+//     if(funcPool.find(funcName)!=funcPool.end())
+//     {
+//         if(funcPool[funcName].isdefinied)
+//         {
+//             cout<<"错误：函数重复定义"<<endl;
+//         }
+//         else
+//         {
+//             isdeclared = true;
+//             //先删除掉函数池中的函数的声明
+//             declareFunc = funcPool[funcName];
+//             funcPool.erase(funcPool.find(funcName));
+//         }
+//     }
+//     Block funBlock;
+//     funBlock.isFunc = true;
+//     funBlock.func.name = funcName;
+//     funBlock.func.rtype = funcType;
+// 	funBlock.func.isdefinied = true;
+//     funcPool.insert({funcName, funBlock.func});
+//     l.push_back(*(new IR("Function", funcName, ":", "","")));   
+
+//     funcNode func = funcPool[funcName];
+//     if(isdeclared)
+//     {
+//         if (func.rtype != declareFunc.rtype) {
+// 			cout<<"错误：函数参数和返回类型不一致"<<endl;
+//         }
+// 		cout << funBlock.func.paralist.size() << endl;
+// 		if (func.paralist.size() != declareFunc.paralist.size()) {
+// 			cout<<"错误：函数参数个数不一致"<<endl;
+// 		}
+// 		for (int i = 0; i < funBlock.func.paralist.size(); i++) {
+// 			if (func.paralist[i].type != declareFunc.paralist[i].type)
+// 			cout<<"错误：函数定义时的参数和声明时不一致"<<endl;
+// 		}
+//     }
+
+//     funBlock.func = func;
+
+
+// }
+
+
+// void Node::get_function_parameter(Node* node, string funcName,bool definite)
+// {
+
+// }
 
 void dfs(Node* n){
     
@@ -126,90 +182,6 @@ void dfs(Node* n){
                 
             }
         }
-
-
-        // if(child->name=="for_stmt")
-        // {
-        //     string arg1 = "";
-        //     string arg2 = "";
-        //     Node* temp;
-        //     int co = 0;
-        //     list<Node*>::iterator s;
-        //     list<Node*>::iterator inner;
-        //     for (list<Node*>::iterator s=child->children.begin(); s!= child->children.end(); s++)
-        //     {
-        //         Node* c = *s;
-        //         if(c->name=="for_condition")
-        //         {
-                    
-        //             for (list<Node*>::iterator inner=c->children.begin(); inner!= c->children.end(); inner++)
-        //             {
-        //                 Node* cinner=*inner;
-        //                  if(cinner->name=="assignment_expression")
-        //                  {
-                            
-        //                     string result=cinner->children.front()->detail;
-        //                     Node* factors2=cinner->children.back();
-                            
-        //                     if(factors2->countOfChildren==1){
-        //                         l.push_back(*(new IR(to_string(seq++),"=",factors2->children.front()->detail,"NULL",result)));
-        //                     }
-        //                     else if(factors2->countOfChildren==2){
-                                
-        //                         l.push_back(*(new IR(to_string(seq++),factors2->detail,factors2->children.front()->children.front()->detail,factors2->children.back()->children.front()->detail,"t"+to_string(tnum))));
-        //                         l.push_back(*(new IR(to_string(seq++),"=","t"+to_string(tnum++),"NULL",result)));
-        //                     }
-                            
-        //                  }
-
-        //                 if(cinner->name=="simple_expression")
-        //                 {
-        //                     //expression
-        //                     Node* factor = cinner->children.front();
-        //                     if(factor->countOfChildren==1)
-        //                     {
-        //                         arg1= factor->children.front()->detail;
-        //                     }
-        //                     list<Node*>::iterator ch;
-        //                     for(ch= cinner->children.begin();ch!= cinner->children.end(); ch++ )
-        //                     {
-        //                         if(co==2)
-        //                         {
-        //                             break;
-        //                         }
-        //                         co++;
-        //                         temp = *ch;
-        //                     }
-        //                     string op = temp->detail;
-                            
-        //                     Node* factor2 = cinner->children.back();
-        //                     if(factor2->countOfChildren==1)
-        //                     {
-        //                         arg2= factor2->children.front()->detail;
-        //                     }
-                            
-        //                     label1=innercode.getLabelName();
-        //                     label2=innercode.getLabelName();
-        //                     label3=innercode.getLabelName();
-                            
-        //                     l.push_back(*(new IR("Label",label1,"","","")));
-        //                     l.push_back(*(new IR(to_string(seq++),op,arg1,arg2,"GOTO "+label2)));
-        //                     l.push_back(*(new IR("GOTO",label3,"","","")));
-        //                     l.push_back(*(new IR("Label",label2,"","","")));
-                            
-        //                 }
-                    
-                    
-        //             }
-                    
-        //         }
-        //         if(c->name=="for_body")
-        //         {
-        //             for_over=true;
-        //         }
-                
-        //     }
-        // }
         
 
         if(child->name=="for_condition")
@@ -416,6 +388,50 @@ void dfs(Node* n){
         
         }
 
+
+        // if(child->name=="fun_declaration")
+        // {
+        //     Node* fu_temp;
+        //     int son_num=0;
+        //     list<Node*>::iterator next_statement;
+        //     Node* last;
+        //     Node* last2;
+        //     Node* last3;
+        //     string funcType = child->children.front()->name;
+        //     for(next_statement= child->children.begin();next_statement!= child->children.end(); next_statement++ )
+        //     {
+        //         son_num++;
+                
+        //         if(son_num==2)
+        //         {
+        //             fu_temp = *next_statement;
+        //             break;
+        //         }
+        //     }
+
+        //     son_num=0;
+        //     for(next_statement= child->children.begin();next_statement!= child->children.end(); next_statement++ )
+        //     {
+        //         son_num++;
+        //         if(son_num==3)
+        //         {
+        //             last = *next_statement;
+        //             break;
+        //         }
+
+        //     }
+
+        //     string funcName = fu_temp->detail;
+        //     list<Node*>::iterator next_next_statement;
+        
+        //     son_num=0;     
+        //     last2 = last->children.front();
+        //     last3 = last2->children.back();
+
+        //     fun = last3->children.back();
+
+           
+        // }
 
         
         

@@ -18,6 +18,8 @@ public:
     list<Node*> children;
     int countOfChildren;
     symbolNode * value;
+    // map<string, funcNode> funcPool;
+
 public:
     Node(int index, const string name, const string detail);
 
@@ -41,6 +43,11 @@ public:
     void addChildren(list<Node*> newChildren);
 
     void outputNode();
+
+    // void get_function_parameter(Node*, string, bool);
+
+    // void  function_definition(Node*);
+
 };
 
 #endif //FORHOMEWORK_NODE_H
