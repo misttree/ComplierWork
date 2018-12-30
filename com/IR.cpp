@@ -11,13 +11,13 @@ int tnum = 1;
 string label1 = "0";
 string label2 = "0";
 string label3 = "0";
-int number=0;
-int count1=0;
-int if_else=0;
-bool if_over=false;
-bool while_over=true;
-bool for_true=false;
-bool for_over=true;
+int number = 0;
+int count1 = 0;
+int if_else = 0;
+bool if_over = false;
+bool while_over = true;
+bool for_true = false;
+bool for_over = true;
 Innercode innercode;
 class IR
 {
@@ -88,7 +88,19 @@ void dfs(Node *n)
                 Node *factors = child->children.back();
                 if (factors->countOfChildren == 1)
                 {
-                    l.push_back(*(new IR(to_string(seq++), "=", factors->children.front()->detail, "NULL", result)));
+                    Node *t_child = factors->children.front();
+                    if (t_child->name == "array")
+                    {
+                        Node *fst_child = t_child->children.front(); //name
+                        Node *snd_child = t_child->children.back();  //offset
+                        string factor_offset = snd_child->children.front()->detail; 
+                        l.push_back(*(new IR(to_string(seq++), "*", factor_offset, to_string(4), "t" + to_string(tnum))));
+                        l.push_back(*(new IR(to_string(seq++), "=[]", fst_child->detail + "[t" + to_string(tnum++) + "]", "NULL", result)));
+                    }
+                    else
+                    {
+                        l.push_back(*(new IR(to_string(seq++), "=", factors->children.front()->detail, "NULL", result)));
+                    }
                 }
                 else if (factors->countOfChildren == 2)
                 {
@@ -105,8 +117,8 @@ void dfs(Node *n)
             }
             if (number == 3)
             {
-                
-                if(count1==(if_else-1))
+
+                if (count1 == (if_else - 1))
                 {
                     l.push_back(*(new IR("GOTO", label3, "", "", "")));
                     l.push_back(*(new IR("Label", label2, "", "", "")));
@@ -136,11 +148,11 @@ void dfs(Node *n)
         {
             string arg1 = "";
             string arg2 = "";
-            Node* temp;
+            Node *temp;
             int count1 = 0;
-            Node* while_exp = child->children.front();
-            list<Node*>::iterator s;
-            for (list<Node*>::iterator s=child->children.begin(); s!= child->children.end(); s++)
+            Node *while_exp = child->children.front();
+            list<Node *>::iterator s;
+            for (list<Node *>::iterator s = child->children.begin(); s != child->children.end(); s++)
             {
                 Node *c = *s;
                 if (c->name == "simple_expression")
@@ -154,7 +166,7 @@ void dfs(Node *n)
                     list<Node *>::iterator ch;
                     for (ch = c->children.begin(); ch != c->children.end(); ch++)
                     {
-                        if(count1==2)
+                        if (count1 == 2)
                         {
                             break;
                         }
@@ -304,7 +316,7 @@ void dfs(Node *n)
                         list<Node *>::iterator ch;
                         for (ch = c->children.begin(); ch != c->children.end(); ch++)
                         {
-                            if(count1==2)
+                            if (count1 == 2)
                             {
                                 break;
                             }
