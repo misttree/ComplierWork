@@ -1,5 +1,6 @@
 ************************************
 四元式
+<<<<<<< Updated upstream
        seq	        op	      arg1	      arg2	    result
          0	         *	         0	         4	        t1
          1	       []=	         1	      NULL	     y[t1]
@@ -21,3 +22,55 @@
         14	         -	         x	         1	        t8
         15	         =	        t8	      NULL	         x
      Label	    label2	          	          	          
+=======
+seq	op	arg1	arg2	result
+Funtion	p			
+PARAM	x			
+0	=	1	NULL	x
+1	+	x	2	t1
+2	=	t1	NULL	x
+Return	x			
+Funtion	main			
+3	=	0	NULL	a
+4	=	0	NULL	b
+5	=	0	NULL	c
+6	<	a	1	GOTO label0
+GOTO	label1			
+Label	label0			
+7	+	a	2	t2
+8	=	t2	NULL	a
+9	=	3	NULL	b
+GOTO	label2			
+Label	label1			
+10	=	2	NULL	b
+11	=	3	NULL	a
+Label	label2			
+12	=	0	NULL	i
+13	=	0	NULL	i
+Label	label3			
+14	<	i	3	GOTO label4
+GOTO	label5			
+Label	label4			
+15	+	i	1	i
+16	+	a	i	t3
+17	=	t3	NULL	a
+GOTO	label3			
+Label	label5			
+Label	label6			
+18	<	b	3	GOTO label7
+GOTO	label8			
+Label	label7			
+19	+	b	1	t4
+20	=	t4	NULL	a
+21	-	b	1	t5
+22	=	t5	NULL	b
+GOTO	label6			
+Label	label8			
+ARG	c			
+=	Call(p)			a
+ARG	b			
+Call	p			
+ARG	c			
+=	Call(p)			b
+Return	0			
+>>>>>>> Stashed changes
