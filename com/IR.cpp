@@ -272,25 +272,25 @@ void dfs(Node *n)
                         Node* factor = c->children.front();
                         if(factor->countOfChildren==1)
                         {
-                            arg1= factor->children.front()->detail;
+                            arg1 = factor->children.front()->detail;
                         }
                         
                         list<Node*>::iterator ch;
                         for(ch= c->children.begin();ch!= c->children.end(); ch++ )
                         {
-                            if(count==2)
+                            if (count == 2)
                             {
                                 break;
                             }
                             count++;
                             temp = *ch;
                         }
-                        
+
                         string op = temp->detail;
-                        Node* factor2 = c->children.back();
-                        if(factor2->countOfChildren==1)
+                        Node *factor2 = c->children.back();
+                        if (factor2->countOfChildren == 1)
                         {
-                            arg2= factor2->children.front()->detail;
+                            arg2 = factor2->children.front()->detail;
                         }
                         label1=innercode.getLabelName();
                         label2=innercode.getLabelName();
@@ -320,7 +320,7 @@ void dfs(Node *n)
                         Node* factor = c->children.front();
                         if(factor->countOfChildren==1)
                         {
-                            arg1= factor->children.front()->detail;
+                            arg1 = factor->children.front()->detail;
                         }
                         
                         list<Node*>::iterator ch;
@@ -333,12 +333,12 @@ void dfs(Node *n)
                             count2++;
                             temp = *ch;
                         }
-                        
+
                         string op = temp->detail;
-                        Node* factor2 = c->children.back();
-                        if(factor2->countOfChildren==1)
+                        Node *factor2 = c->children.back();
+                        if (factor2->countOfChildren == 1)
                         {
-                            arg2= factor2->children.front()->detail;
+                            arg2 = factor2->children.front()->detail;
                         }
                         label1=innercode.getLabelName();
                         label2=innercode.getLabelName();
