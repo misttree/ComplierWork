@@ -239,6 +239,12 @@ void Node::generateTypeInFactor() {
             string s = "";
             for(; level; level--) s += "*";
             this->value = new symbolNode("", p->value->getNodeType() + s);
+        } else if (this->children.front()->name == "array") {
+            if (this->children.front()->countOfChildren == 2) {
+                Node* array = this->children.front();
+                this->value = new symbolNode("", array->children.back()->children.front()->value->getNodeType());
+            }
+            
         }
     }
 }

@@ -11,13 +11,15 @@ int tnum = 1;
 string label1 = "0";
 string label2 = "0";
 string label3 = "0";
-int number = 0;
-int count1 = 0;
-int if_else = 0;
-bool if_over = false;
-bool while_over = true;
-bool for_true = false;
-bool for_over = true;
+string call_func = "";
+int number=0;
+int count1=0;
+int if_else=0;
+bool if_over=false;
+bool while_over=true;
+bool for_true=false;
+bool for_over=true;
+bool for_func=true;
 Innercode innercode;
 class IR
 {
@@ -52,6 +54,7 @@ void dfs(Node *n)
         Node *child = *it;
         if ((child->name == "assignment_expression") && (for_true == false))
         {
+
             string result_class = child->children.front()->name;
             if (result_class == "array")
             {
@@ -80,6 +83,24 @@ void dfs(Node *n)
                     l.push_back(*(new IR(to_string(seq++), "*", factor_offset, to_string(4), "t" + to_string(tnum))));
                     l.push_back(*(new IR(to_string(seq++), "[]=", "t" + to_string(t_tnum), "NULL", this_array->detail + "[t" + to_string(tnum++) + "]")));
                 }
+            }
+            else if(child->children.back()->name=="call_func")
+            {
+
+                string arg1 = child->children.front()->detail;
+                Node *son2 ;
+                son2 = child->children.back();
+                string s = son2->children.front()->detail;
+                call_func = "Call("+s+")";
+                if(son2->children.back()->name!="ID")
+                {
+                    string arg2 = son2->children.back()->children.back()->children.back()->detail;
+                    l.push_back(*(new IR("ARG",arg2,"","","")));
+                }
+                
+                l.push_back(*(new IR("=",call_func,"","",arg1)));
+                
+                continue ;
             }
             else
             {
@@ -388,6 +409,72 @@ void dfs(Node *n)
                 }
             }
         }
+
+
+        if(child->name=="fun_declaration")
+        {
+            int many = 0;
+            list<Node*>::iterator ch;
+            Node* s;
+            for(ch= child->children.begin();ch!= child->children.end(); ch++ )
+            {
+                if(many==2)
+                {
+                    break;
+                }
+                many++;
+                s = *ch;
+            }
+
+            string func_name = s->detail;
+            l.push_back(*(new IR("Funtion",func_name,"","","")));
+
+            many = 0;
+            for(ch= child->children.begin();ch!= child->children.end(); ch++ )
+            {
+                if(many==3)
+                {
+                    break;
+                }
+                many++;
+                s = *ch;
+            }
+
+            string parameter = "";
+            if(s->countOfChildren!=0)
+            {
+                parameter = s->children.front()->children.back()->children.back()->children.back()->detail;
+                l.push_back(*(new IR("PARAM",parameter,"","","")));
+            }
+
+            s = child->children.back();
+
+        
+        }
+
+        
+
+        if(child->name=="call_func")
+        {
+            if(child->children.back()->name!="ID")
+            {
+                string arg2 = child->children.back()->children.back()->children.back()->detail;
+                l.push_back(*(new IR("ARG",arg2,"","","")));
+            }
+            
+            string s = child->children.front()->detail; 
+            l.push_back(*(new IR("Call",s,"","","")));
+            call_func = "Call"+s;
+            
+        }
+        
+
+        if(child->name=="return_stmt")
+        {
+            string return_elem = child->children.front()->children.front()->detail;
+            l.push_back(*(new IR("Return",return_elem,"","","")));
+        }
+
         dfs(child);
         if (child->name == "if_stmt")
         {

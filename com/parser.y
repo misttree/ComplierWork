@@ -397,7 +397,7 @@ factor:
     | id { $$ = newnode(mycount++, "factor", "factor", $1); $$->generateTypeInFactor(); }
     | call_func { $$=$1; }
     | number { $$ = newnode(mycount++, "factor", "factor", $1); $$->generateTypeInFactor(); }
-	| array {$$ = newnode(mycount++, "factor", "factor", $1); }
+	| array {$$ = newnode(mycount++, "factor", "factor", $1); $$->generateTypeInFactor(); }
 	| paddress { $$ = newnode(mycount++, "factor", "factor", $1); $$->generateTypeInFactor(); }
 	| pointer { $$ = newnode(mycount++, "factor", "factor", $1); }
 	;
