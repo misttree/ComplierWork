@@ -908,7 +908,7 @@ ETC .
 				}
 				else
 				{
-					cout << "findNode " << pnew->getNodeName() << " " << pnew->getNodeType() <<" " << pnew->children.size() << endl;
+					// cout << "findNode " << pnew->getNodeName() << " " << pnew->getNodeType() <<" " << pnew->children.size() << endl;
 				}
 				
 			}

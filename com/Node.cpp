@@ -232,6 +232,13 @@ void Node::generateTypeInFactor() {
             this->value = new symbolNode("" , this->children.front()->value->getNodeType());
         } else if (this->children.front()->name == "FLOAT") {
             this->value = new symbolNode("" , this->children.front()->value->getNodeType());
+        } else if (this->children.front()->name == "address") {
+            int level = 0;
+            Node* p=NULL;
+            for(p=this->children.front(); p->countOfChildren; p=p->children.front(), level++);
+            string s = "";
+            for(; level; level--) s += "*";
+            this->value = new symbolNode("", p->value->getNodeType() + s);
         }
     }
 }

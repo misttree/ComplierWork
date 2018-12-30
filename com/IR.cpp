@@ -12,7 +12,7 @@ string label1 = "0";
 string label2 = "0";
 string label3 = "0";
 int number=0;
-int count=0;
+int count1=0;
 int if_else=0;
 bool if_over=false;
 bool while_over=true;
@@ -87,12 +87,12 @@ void dfs(Node *n)
              if(number==3)
             {
                 
-                if(count==(if_else-1))
+                if(count1==(if_else-1))
                 {
                     l.push_back(*(new IR("GOTO",label3,"","","")));
                     l.push_back(*(new IR("Label",label2,"","","")));
                 }
-                count++;
+                count1++;
             }
 
         }
@@ -102,7 +102,7 @@ void dfs(Node *n)
             string arg1 = "";
             string arg2 = "";
             Node* temp;
-            int count = 0;
+            int count1 = 0;
             Node* while_exp = child->children.front();
             list<Node*>::iterator s;
             for (list<Node*>::iterator s=child->children.begin(); s!= child->children.end(); s++)
@@ -119,11 +119,11 @@ void dfs(Node *n)
                     list<Node*>::iterator ch;
                     for(ch= c->children.begin();ch!= c->children.end(); ch++ )
                     {
-                        if(count==2)
+                        if(count1==2)
                         {
                             break;
                         }
-                        count++;
+                        count1++;
                         temp = *ch;
                     }
                     string op = temp->detail;
@@ -278,11 +278,11 @@ void dfs(Node *n)
                         list<Node*>::iterator ch;
                         for(ch= c->children.begin();ch!= c->children.end(); ch++ )
                         {
-                            if (count == 2)
+                            if(count1==2)
                             {
                                 break;
                             }
-                            count++;
+                            count1++;
                             temp = *ch;
                         }
 
