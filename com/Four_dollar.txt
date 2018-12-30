@@ -1,16 +1,23 @@
 ************************************
 四元式
-seq	op	arg1	arg2	result
-0	[]=	y	0	t1
-1	=	1	NULL	t1
-2	[]=	y	0	t2
-3	=	factor	NULL	t2
-4	<	x	1	GOTO label0
-GOTO	label1			
-Label	label0			
-5	+	x	1	t3
-6	=	t3	NULL	x
-Label	label1			
-7	-	x	1	t4
-8	=	t4	NULL	x
-Label	label2			
+       seq	        op	      arg1	      arg2	    result
+         0	         *	         0	         4	        t1
+         1	       []=	         1	      NULL	     y[t1]
+         2	         *	         1	         4	        t2
+         3	       []=	         2	      NULL	     y[t2]
+         4	         *	         2	         4	        t3
+         5	       []=	         3	      NULL	     y[t3]
+         6	         *	         0	         4	        t4
+         7	       []=	         1	      NULL	     y[t4]
+         8	         +	         x	         1	        t5
+         9	         *	         0	         4	        t6
+        10	       []=	        t5	      NULL	     y[t6]
+        11	         <	         x	         1	GOTO label0
+      GOTO	    label1	          	          	          
+     Label	    label0	          	          	          
+        12	         +	         x	         1	        t7
+        13	         =	        t7	      NULL	         x
+     Label	    label1	          	          	          
+        14	         -	         x	         1	        t8
+        15	         =	        t8	      NULL	         x
+     Label	    label2	          	          	          
