@@ -881,12 +881,11 @@ ETC .
 
 {ID} {
 	// cout << symboltable->statementNumber << "  " << yytext << endl;  // 输出状态转换信息
-	symbolNode * pnew;
+	symbolNode * pnew = NULL;
 	switch(symboltable->statementNumber)
 	{
 		case 0:
 		{
-
 			for(int i = 0; i < typedefString.size(); i++)
 			{
 				if(typedefString.at(i)->getNodeName() == yytext)
@@ -901,7 +900,7 @@ ETC .
 			}
 			if (symboltable->statementNumber != 4)
 			{
-				pnew = symboltable->findNode(symboltable->now, yytext);
+				pnew = symboltable->findNode(symboltable->now, yytext);  // 向上查找对应的变量是否存在
 				if (pnew == NULL)
 				{
 					cout << "ERROR(line: " << yylineno << "): Undefine Variable " << yytext << endl;
@@ -910,7 +909,6 @@ ETC .
 				{
 					// cout << "findNode " << pnew->getNodeName() << " " << pnew->getNodeType() <<" " << pnew->children.size() << endl;
 				}
-				
 			}
 			break;
 		}
@@ -955,6 +953,7 @@ ETC .
 		{
 			symboltable->statementNumber = 2;
 			pnew = new symbolNode(yytext);
+			pnew->setNodeLength(-1);
 			symboltable->insertNode(pnew);
 			for(auto point : typedefString)
 			{
