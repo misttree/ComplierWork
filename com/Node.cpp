@@ -353,6 +353,10 @@ void Node::checkType() {
                 front = this->children.front()->value;
             }
             symbolNode *back=this->children.back()->value;
+            if (back->getNodeType() == "void") {
+                cout << "ERROR(line: " << yylineno << "): The type void can't be assigned to type " << front->getNodeType() << endl;
+                exit(0);
+            }
             if (front->getNodeType() == back->getNodeType())
             {
                 this->value = new symbolNode("", front->getNodeType());
