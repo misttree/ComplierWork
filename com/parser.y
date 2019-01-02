@@ -140,8 +140,8 @@ pointer:
 	;
 
 struct_specifier:
-      STRUCT id LC struct_declaration_list RC {V v;v.push_back($2);v.push_back($4);$$=newnode(mycount++,"struct_specifier","struct_specifier",v);}
-    | STRUCT id {$$=newnode(mycount++,"struct_specifier","struct_specifier",$2);}
+      STRUCT id LC struct_declaration_list RC {$4->addAttribute();V v;v.push_back($2);v.push_back($4);$$=newnode(mycount++,"struct_specifier","struct_specifier",v);$$->addAttribute();}
+    | STRUCT id {$$=newnode(mycount++,"struct_specifier","struct_specifier",$2);$$->addAttribute();}
     ;
 
 struct_declaration_list:
@@ -150,12 +150,12 @@ struct_declaration_list:
     ;
 
 struct_name_specifier:
-      id id { V v;v.push_back($1);v.push_back($2);$$=newnode(mycount++,"struct_name_specifier","struct_name_specifier",v); }
-	| id id ASSIGNOP id { V v;v.push_back($1);v.push_back($2);v.push_back($4);$$=newnode(mycount++,"struct_name_specifier_and_assignop","struct_name_specifier_and_assignop",v); }
+      id id { V v;v.push_back($1);v.push_back($2);$$=newnode(mycount++,"struct_name_specifier","struct_name_specifier",v); $$->addAttribute(); }
+	| id id ASSIGNOP id { V v;v.push_back($1);v.push_back($2);v.push_back($4);$$=newnode(mycount++,"struct_name_specifier_and_assignop","struct_name_specifier_and_assignop",v);$$->addAttribute(); }
     ;
 
 struct_id:
-      id DOT id { V v;v.push_back($1);v.push_back($3);$$=newnode(mycount++,"struct_id","struct_id",v); }
+      id DOT id { V v;v.push_back($1);v.push_back($3);$$=newnode(mycount++,"struct_id","struct_id",v);$$->addAttribute(); }
     ;
 
 //definetion of address

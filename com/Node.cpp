@@ -221,6 +221,44 @@ void Node::addAttribute() {
         if (this->countOfChildren == 2 || this->countOfChildren == 1) {
             this->value = this->children.front()->value;
         }
+    } else if (this->name == "struct_declaration_list") {
+        if (this->countOfChildren >= 2) {
+            list<Node*> children = this->children;
+            for(list<Node*>::iterator it=children.begin(); it!=children.end(); it++) {
+                if ((*it)->name != "init_declarator_list") {
+                    string type = (*it)->detail;
+                    it++;
+                    // cout << "Node name: " << (*it)->children.front()->children.front()->name << endl;
+                    (*it)->children.front()->children.front()->value->setNodeType(type);
+                }
+            }
+        }
+    } else if (this->name == "struct_specifier") {
+        this->children.front()->value->setNodeType(this->children.front()->detail);
+        vector<string> childrenTypes;
+        for (list<Node*>::iterator it=this->children.back()->children.begin();it!=this->children.back()->children.end(); it++,it++) {
+            childrenTypes.push_back((*it)->detail);
+        }
+        vector<symbolNode*> children = this->children.front()->value->children;
+        int index = 0;
+        for(vector<symbolNode*>::iterator it=children.begin(); it!=children.end(); it++, index++) {
+            (*it)->setNodeType(childrenTypes.at(index));
+        }
+    } else if (this->name == "struct_name_specifier") {
+        // cout << "struct: " << this->children.front()->value->children.size() << " : " << this->children.back()->value->children.size() << endl;
+        if (this->children.front()->value && this->children.back()->value && this->children.front()->value->children.size() == this->children.back()->value->children.size()) {
+            // cout << "struct name sp: " << this->children.front()->detail << endl;
+            this->children.back()->value->setNodeType(this->children.front()->value->getNodeType());
+            vector<symbolNode*> childrenBig = this->children.front()->value->children;
+            vector<symbolNode*> childrenSmall = this->children.back()->value->children;
+            for(vector<symbolNode*>::iterator itBig=childrenBig.begin(),itSmall=childrenSmall.begin();itBig!=childrenBig.end()&&itSmall!=childrenSmall.end();itBig++, itSmall++) {
+                (*itSmall)->setNodeType((*itBig)->getNodeType());
+            }
+        } 
+    } else if (this->name == "struct_id") {
+        if (this->countOfChildren >= 2) {
+            this->value = this->children.back()->value;
+        }
     }
 }
 

@@ -1,0 +1,68 @@
+void function(int a){
+	printf(a);
+}
+
+int main(){
+
+	// 注释测试
+	
+	//声明测试
+	int a=0; 
+	scanf(a);
+	//赋值测试
+	a=a+1; 
+
+	//while测试
+	while(a<5){
+		a=a*2;
+	}
+
+	//if测试
+	if(a>1||a<0){
+		a=a/2;
+	}else{
+        a=a*2;
+    }
+	
+	//for测试,函数调用测试,输出测试
+	for(int i=0;i<3;i=i+1){
+		function(i);
+	}
+
+	//数组测试 + 指针测试
+	int b[3]={1,2,3};
+	b[0]=b[1];
+	b[0]=a;
+	b[0]=1+2;
+	int *p;
+    p=&a;
+
+	//代码优化
+    int k;//这个代码应该不出现在四元式和汇编中
+    
+    //类型检查： warning 和 error会显示行号
+
+    //int->char,warning
+    //char c=123;
+
+    //pointer->int, error 
+    //a=p; 
+
+    //数组和指针的类型检查：
+    int w[2];
+    int *e;
+    e=w;//不报错
+
+    //differernt kinds of pointers, error
+    int * pointer_of_int;
+    char * pointer_of_char;
+    //pointer_of_int=pointer_of_char;
+
+	//错误检测：
+   // 报错：未定义就使用，会停止编译
+   // m=123;
+   // 报错：重复定义
+   // int a = 2;
+	return p;
+
+}

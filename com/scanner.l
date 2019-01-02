@@ -893,6 +893,7 @@ ETC .
 					string temp = yytext;
 					temp.append("(STRUCT_DEF)");
 					pnew = new symbolNode(yytext, temp);
+					pnew->children = typedefString.at(i)->children;
 					symboltable->statementNumber = 4;
 					matchStructName = yytext;
 					break;

@@ -1,0 +1,45 @@
+FUNCTION function
+PARAM a
+FUNCTION main
+a := 0
+a := a + 1
+Label label0
+IF a[<]5 GOTO label1
+GOTO label2
+Label label1
+a := a * 2
+GOTO label0
+Label label2
+IF a[>]1 GOTO label3
+GOTO label4
+Label label3
+a := a / 2
+Label label4
+a := a * 2
+Label label5
+i := 0
+Label label6
+IF i[<]3 GOTO label7
+GOTO label8
+Label label7
+i := i + 1
+ARG i
+CALL function
+GOTO label6
+Label label8
+b[t6] := 0 * 4
+b[t7] := 1 * 4
+b[t8] := 2 * 4
+b[t9] := 0 * 4
+b[t10] := 0 * 4
+t12 := 1 + 2
+['27', '[]=', 't11', 'NULL', 'b[t12]']
+p := POINTER
+p := a
+c := 123
+e := POINTER
+e := w
+pointer_of_int := POINTER
+pointer_of_char := POINTER
+a := 2
+RETURN p
