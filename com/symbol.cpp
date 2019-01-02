@@ -177,7 +177,19 @@ symbolNode* symbolTable::findNode(symbolNode * node, string nodeName)
         {
             findResult = node->children.at(a);
             return findResult;
-        }   
+        }
+        if(node->children.at(a)->getNodeLength() == -1)
+        {
+            symbolNode * temp = node->children.at(a);
+            for(int b = 0; b< temp->children.size() ; b++)
+            {
+                if(temp->children.at(b)->getNodeName() == nodeName)
+                {
+                    findResult = temp->children.at(b);
+                    return findResult;
+                }
+            }
+        }  
     }
     if(node->parentNode != NULL)
         findResult = findNode(node->parentNode, nodeName);

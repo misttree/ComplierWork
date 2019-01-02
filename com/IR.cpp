@@ -91,7 +91,7 @@ void dfs(Node *n)
                 Node *son2 ;
                 son2 = child->children.back();
                 string s = son2->children.front()->detail;
-                call_func = "Call("+s+")";
+                call_func = "CALL "+s;
                 if(son2->children.back()->name!="ID")
                 {
                     string arg2 = son2->children.back()->children.back()->children.back()->detail;
@@ -106,7 +106,9 @@ void dfs(Node *n)
             {
                 //普通的赋值语句
                 string result = child->children.front()->detail;
+                Node* temps=child->children.front();
                 Node *factors = child->children.back();
+
                 if (factors->countOfChildren == 1)
                 {
                     Node *t_child = factors->children.front();
@@ -117,6 +119,12 @@ void dfs(Node *n)
                         string factor_offset = snd_child->children.front()->detail; 
                         l.push_back(*(new IR(to_string(seq++), "*", factor_offset, to_string(4), "t" + to_string(tnum))));
                         l.push_back(*(new IR(to_string(seq++), "=[]", fst_child->detail + "[t" + to_string(tnum++) + "]", "NULL", result)));
+                    }
+                    else if(factors->children.front()->detail=="address")
+                    {
+                        Node* address=factors->children.front();
+                        string pointer_address=address->children.front()->detail;
+                        l.push_back(*(new IR(to_string(seq++),"=",pointer_address,"NULL",result)));
                     }
                     else
                     {
@@ -165,6 +173,22 @@ void dfs(Node *n)
             }
         }
 
+         if(child->name=="pointer")
+        {
+            string pointer_name = child->children.front()->detail;
+            l.push_back(*(new IR(to_string(seq++),"POINTER",pointer_name,"","")));
+        }
+        if (child->name=="struct_specifier")
+        {
+            string struct_name = child->children.front()->detail;
+            l.push_back(*(new IR(to_string(seq++),"STRUCT",struct_name,"","")));
+        }
+        if (child->name=="struct_name_specifier")
+        {
+            string struct_name = child->children.front()->detail;
+            string obj_name = child->children.back()->detail;
+            l.push_back(*(new IR(to_string(seq++),"OBJECT",struct_name,obj_name,"")));
+        }
         if (child->name == "while_stmt")
         {
             string arg1 = "";
@@ -224,6 +248,11 @@ void dfs(Node *n)
             for (list<Node *>::iterator inner = child->children.begin(); inner != child->children.end(); inner++)
             {
                 Node *cinner = *inner;
+                if (cinner->name == "var_declaration")
+                {
+                    Node *cinner2 = cinner;
+                    cinner = cinner2->children.back()->children.front();
+                }
                 if (cinner->name == "assignment_expression")
                 {
                     for_true = true;
@@ -427,7 +456,7 @@ void dfs(Node *n)
             }
 
             string func_name = s->detail;
-            l.push_back(*(new IR("Funtion",func_name,"","","")));
+            l.push_back(*(new IR("FUNCTION",func_name,"","","")));
 
             many = 0;
             for(ch= child->children.begin();ch!= child->children.end(); ch++ )
@@ -463,8 +492,8 @@ void dfs(Node *n)
             }
             
             string s = child->children.front()->detail; 
-            l.push_back(*(new IR("Call",s,"","","")));
-            call_func = "Call"+s;
+            l.push_back(*(new IR("CALL",s,"","","")));
+            call_func = "CALL"+s;
             
         }
         
@@ -472,7 +501,7 @@ void dfs(Node *n)
         if(child->name=="return_stmt")
         {
             string return_elem = child->children.front()->children.front()->detail;
-            l.push_back(*(new IR("Return",return_elem,"","","")));
+            l.push_back(*(new IR("RETURN",return_elem,"","","")));
         }
 
         dfs(child);
