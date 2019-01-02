@@ -561,6 +561,7 @@ void initTypeEquivalenceClass() {
 	typeEquivalenceClass.insert(pair<string, int>("float", 4));
 	typeEquivalenceClass.insert(pair<string, int>("double", 4));
 	typeEquivalenceClass.insert(pair<string, int>("", -1));
+	typeEquivalenceClass.insert(pair<string, int>("void", -1));
 }
 
 void initTypeLevel() {
@@ -570,4 +571,5 @@ void initTypeLevel() {
 	typeLevel.insert(pair<string, int>("float", 3));
 	typeLevel.insert(pair<string, int>("double", 4));
 	typeLevel.insert(pair<string, int>("", -1));
+	typeLevel.insert(pair<string, int>("void", -1));
 }
