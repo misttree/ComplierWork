@@ -914,6 +914,12 @@ ETC .
 		}
 		case 1:
 		{
+			pnew = symboltable->findNode(symboltable->now, yytext);
+			if(pnew != NULL)
+			{
+				cout << "ERROR(line: " << yylineno << "): Redefine Variable " << yytext << endl;
+				exit(0);
+			}
 			pnew = new symbolNode(yytext);
 			symboltable->insertNode(pnew);
 			symboltable->statementNumber = 2;
