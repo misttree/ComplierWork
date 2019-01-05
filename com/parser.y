@@ -453,7 +453,7 @@ void outputTable() {
 
 void outputTree(Node* node) {
 	cout << "***************************** tree *****************************" << endl;
-	// node->outputNode();
+	 node->outputNode();
 	list<string> strformat;
 	// strformat.push_back("   ");
 	formatOutputTree(node->children, strformat);

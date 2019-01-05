@@ -59,20 +59,20 @@ void dfs(Node *n)
             if (result_class == "array")
             {
                 //如果是数组的赋值语句
-                //目前不知道数组的基地址，用数组名代替
+                //获取数组的基地址
                 Node *this_array = child->children.front(); //赋值语句左侧
                 Node *next_array = child->children.back();  //赋值语句右侧，可能是个值可能是个式子
                 string base_address = this_array->detail;   //基地址
                 if (next_array->countOfChildren == 1)
                 {
-                    //如果右侧只有一个元素,目前只考虑右边不是数组的情况
+                    //如果右侧只有一个元素
                     string factor_offset = this_array->children.back()->children.front()->detail; //索引乘以4就是地址相对基地址的偏移量，只考虑int型
                     l.push_back(*(new IR(to_string(seq++), "*", factor_offset, to_string(4), "t" + to_string(tnum))));
                     l.push_back(*(new IR(to_string(seq++), "[]=", next_array->children.front()->detail, "NULL", this_array->detail + "[t" + to_string(tnum++) + "]")));
                 }
                 else
                 {
-                    //如果右侧是一个式子，目前只考虑右边不是数组的情况
+                    //如果右侧是一个式子
                     string t_arg1 = next_array->children.front()->children.front()->detail;
                     string t_arg2 = next_array->children.back()->children.front()->detail;
                     string t_op = next_array->detail;

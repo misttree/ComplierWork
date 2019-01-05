@@ -15,3 +15,5 @@ clean:
 
 run:
 	make && ./parser test.txt
+
+
